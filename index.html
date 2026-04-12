@@ -433,6 +433,7 @@ body::before{
   background:var(--card-bg);border:1px solid var(--card-border);
   border-radius:12px;padding:14px;margin-bottom:10px;
   transition:background .3s,border-color .3s;
+  overflow:hidden;
 }
 .diary-card-title{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:10px;}
 .mood-row{display:flex;gap:6px;}
@@ -466,14 +467,15 @@ body::before{
 .enough-val{font-size:22px;font-weight:800;color:var(--gold);min-width:24px;text-align:center;}
 
 /* Heatmap */
-.heatmap-header{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px;}
+.heatmap-header{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px;width:100%;}
 .heatmap-day-name{font-size:9px;font-weight:700;color:var(--ink4);text-align:center;letter-spacing:.03em;}
-.heatmap{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.heatmap{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;width:100%;}
 .hm-day{
   aspect-ratio:1;border-radius:6px;background:var(--cream3);
   display:flex;align-items:center;justify-content:center;
   font-size:11px;font-weight:600;color:var(--ink3);cursor:pointer;
   transition:transform .12s,box-shadow .12s;border:1.5px solid transparent;
+  min-width:0;
 }
 .hm-day:hover{transform:scale(1.1);box-shadow:0 2px 8px var(--shadow);}
 .hm-day.today{border-color:var(--gold);}
@@ -1083,10 +1085,13 @@ function openAddInc(){
     <button class="btn-save" onclick="saveInc()">Guardar</button>`);
 }
 function saveInc(){
-  const desc=document.getElementById('f-desc').value.trim();
-  const amt=parseFloat(document.getElementById('f-amt').value)||0;
+  const descEl=document.getElementById('f-desc');
+  const amtEl=document.getElementById('f-amt');
+  const desc=descEl.value.trim();
+  const amt=parseFloat(amtEl.value)||0;
   const cat=document.getElementById('f-cat').value;
-  if(!desc||!amt)return;
+  if(!desc){descEl.style.borderColor='var(--red)';descEl.focus();return;}
+  if(!amt){amtEl.style.borderColor='var(--red)';amtEl.focus();return;}
   getMonth().income.entries.push({id:uid(),desc,amt,cat});persist();closeModal();render();
 }
 function delInc(id){const d=getMonth();d.income.entries=d.income.entries.filter(e=>e.id!==id);persist();render();}
@@ -1159,10 +1164,13 @@ function openAddGasto(){
     <button class="btn-save" onclick="saveGasto()">Guardar</button>`);
 }
 function saveGasto(){
-  const desc=document.getElementById('f-desc').value.trim();
-  const amt=parseFloat(document.getElementById('f-amt').value)||0;
+  const descEl=document.getElementById('f-desc');
+  const amtEl=document.getElementById('f-amt');
+  const desc=descEl.value.trim();
+  const amt=parseFloat(amtEl.value)||0;
   const cat=document.getElementById('f-cat').value;
-  if(!desc||!amt)return;
+  if(!desc){descEl.style.borderColor='var(--red)';descEl.focus();return;}
+  if(!amt){amtEl.style.borderColor='var(--red)';amtEl.focus();return;}
   getMonth().gastos.push({id:uid(),desc,amt,cat});persist();closeModal();render();
 }
 function delGasto(id){const d=getMonth();d.gastos=d.gastos.filter(g=>g.id!==id);persist();render();}
@@ -1213,11 +1221,14 @@ function openAddAho(){
     <button class="btn-save" onclick="saveAho()">Guardar</button>`);
 }
 function saveAho(){
-  const desc=document.getElementById('f-desc').value.trim();
-  const amt=parseFloat(document.getElementById('f-amt').value)||0;
+  const descEl=document.getElementById('f-desc');
+  const amtEl=document.getElementById('f-amt');
+  const desc=descEl.value.trim();
+  const amt=parseFloat(amtEl.value)||0;
   const cat=document.getElementById('f-cat').value;
   const meta=parseFloat(document.getElementById('f-meta').value)||0;
-  if(!desc||!amt)return;
+  if(!desc){descEl.style.borderColor='var(--red)';descEl.focus();return;}
+  if(!amt){amtEl.style.borderColor='var(--red)';amtEl.focus();return;}
   getMonth().ahorro.push({id:uid(),desc,amt,cat,meta});persist();closeModal();render();
 }
 function delAho(id){const d=getMonth();d.ahorro=d.ahorro.filter(a=>a.id!==id);persist();render();}
@@ -1268,11 +1279,14 @@ function openAddInv(){
     <button class="btn-save" onclick="saveInv()">Guardar</button>`);
 }
 function saveInv(){
-  const desc=document.getElementById('f-desc').value.trim();
-  const amt=parseFloat(document.getElementById('f-amt').value)||0;
+  const descEl=document.getElementById('f-desc');
+  const amtEl=document.getElementById('f-amt');
+  const desc=descEl.value.trim();
+  const amt=parseFloat(amtEl.value)||0;
   const cat=document.getElementById('f-cat').value;
   const meta=parseFloat(document.getElementById('f-meta').value)||0;
-  if(!desc||!amt)return;
+  if(!desc){descEl.style.borderColor='var(--red)';descEl.focus();return;}
+  if(!amt){amtEl.style.borderColor='var(--red)';amtEl.focus();return;}
   getMonth().inversion.push({id:uid(),desc,amt,cat,meta});persist();closeModal();render();
 }
 function delInv(id){const d=getMonth();d.inversion=d.inversion.filter(i=>i.id!==id);persist();render();}
@@ -1321,12 +1335,13 @@ function openAddDeu(){
     <button class="btn-save" onclick="saveDeu()">Guardar</button>`);
 }
 function saveDeu(){
-  const desc=document.getElementById('f-desc').value.trim();
+  const descEl=document.getElementById('f-desc');
+  const desc=descEl.value.trim();
   const total=parseFloat(document.getElementById('f-total').value)||0;
   const saldo=parseFloat(document.getElementById('f-saldo').value)||0;
   const pago=parseFloat(document.getElementById('f-pago').value)||0;
   const cat=document.getElementById('f-cat').value;
-  if(!desc)return;
+  if(!desc){descEl.style.borderColor='var(--red)';descEl.focus();return;}
   getMonth().deudas.push({id:uid(),desc,total,saldo,pago,cat});persist();closeModal();render();
 }
 function delDeu(id){const d=getMonth();d.deudas=d.deudas.filter(x=>x.id!==id);persist();render();}
