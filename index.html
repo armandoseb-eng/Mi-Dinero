@@ -250,6 +250,36 @@ body::before{
   color:var(--cream);cursor:pointer;font-family:'Inter',sans-serif;transition:opacity .15s;
 }
 .btn-add:hover{opacity:.8;}
+
+/* Meta view toggle (Mensual / Anual) in Ahorro & Inversión */
+.meta-toggle{
+  display:inline-flex;
+  background:var(--cream2);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:2px;
+  gap:2px;
+  margin-right:4px;
+}
+.meta-toggle-btn{
+  background:none;
+  border:none;
+  padding:4px 10px;
+  font-size:10.5px;
+  font-weight:700;
+  letter-spacing:.04em;
+  color:var(--ink3);
+  cursor:pointer;
+  border-radius:6px;
+  font-family:'Inter',sans-serif;
+  transition:all .18s;
+  white-space:nowrap;
+}
+.meta-toggle-btn:hover{color:var(--ink);}
+.meta-toggle-btn.on{background:var(--ink);color:var(--cream);}
+@media(max-width:380px){
+  .meta-toggle-btn{padding:3px 8px;font-size:10px;}
+}
 .btn-sm{
   background:var(--cream2);border:1px solid var(--border);
   border-radius:7px;padding:4px 10px;
@@ -1635,6 +1665,9 @@ body::before{
 .ob-title{font-size:26px;font-weight:800;color:var(--ink);letter-spacing:-.03em;text-align:center;margin-bottom:6px;}
 .ob-sub{font-size:13px;color:var(--ink3);line-height:1.5;text-align:center;margin-bottom:24px;}
 .ob-label{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px;display:block;}
+.ob-req{color:var(--gold);margin-left:3px;font-weight:700;}
+.finput.finput-error{border-color:var(--red);background:rgba(184,50,50,.05);animation:shakeX .35s ease-out;}
+@keyframes shakeX{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
 .ob-field{margin-bottom:14px;}
 .cur-btns{display:flex;gap:8px;}
 .cur-btn{
@@ -1774,6 +1807,20 @@ body::before{
   .ov-grid,.ov-row{grid-template-columns:40px 1fr 1fr 1fr;}
   .ov-val:last-child,.ov-hdr:last-child{display:none;}
 }
+/* Extra-small phones (iPhone SE, older Androids) — tighten header layout */
+@media(max-width:380px){
+  .hdr{padding:10px 12px 8px;}
+  .hdr-top{gap:6px;}
+  .hdr-brand{gap:6px;}
+  .hdr-logo{gap:6px;}
+  .hdr-logo svg,.hdr-logo-img{width:24px;height:24px;}
+  .hdr-logo-text{font-size:16px;}
+  .hdr-right{gap:6px;}
+  .period-display{font-size:10.5px;padding:3px 6px;gap:4px;}
+  .nav-btn{width:24px;height:24px;font-size:12px;}
+  .nav-lbl{font-size:12px;min-width:28px;}
+  .profile-btn{width:30px;height:30px;font-size:14px;}
+}
 @media(min-width:700px){
   body{padding:12px 16px 0;background:var(--cream3);}
   .app{border-radius:16px 16px 0 0;max-width:1280px;}
@@ -1840,8 +1887,8 @@ body::before{
       </div>
 
       <div class="ob-field">
-        <label class="ob-label">¿Cómo te llamas?</label>
-        <input class="finput" id="ob-name" placeholder="Tu nombre" maxlength="30">
+        <label class="ob-label">¿Cómo te llamas?<span class="ob-req">*</span></label>
+        <input class="finput" id="ob-name" placeholder="Tu nombre" maxlength="30" required>
       </div>
 
       <div class="ob-field">
@@ -2292,10 +2339,19 @@ const DEF_GAS_GROUPS=[
 // ═══════════════════════════════════
 // STATE
 // ═══════════════════════════════════
-let DB={}, CONFIG={name:'',currency:'£',period:'1-31',periodStart:1,periodEnd:31,photo:null,onboarded:false};
+// Onboarding version: bump this number whenever we make meaningful changes
+// to the onboarding flow (new steps, branding changes, etc.) that we want
+// existing users to see. On load, if CONFIG.onboardingVersion is less than
+// this constant, the onboarding is shown again — existing data is preserved.
+const ONBOARDING_VERSION=2;
+let DB={}, CONFIG={name:'',currency:'£',period:'1-31',periodStart:1,periodEnd:31,photo:null,onboarded:false,onboardingVersion:0};
 let cM=new Date().getMonth(), cY=new Date().getFullYear();
 let activeTab='ingresos', obCur='£', obPeriod='1-31';
 let selectedDiaryDay=null;
+// View mode for goal progress in Ahorro / Inversión tabs: 'mensual' or 'anual'.
+// Independent for each tab. Not persisted — ephemeral view preference per session.
+let viewModeAho='mensual';
+let viewModeInv='mensual';
 // Diary: key of the currently-viewed ISO week. Defaults to current week on load.
 let diaryWeek=null;
 // True when the user re-opens the onboarding from Settings (vs first launch).
@@ -4082,6 +4138,32 @@ function delGasto(id){
 // ═══════════════════════════════════
 // TAB: AHORRO
 // ═══════════════════════════════════
+
+// Resolve which meta to show for a given entry based on the current view mode.
+// Returns {value, mode, label} where value is the numeric meta, mode is the
+// mode actually used ('mensual' | 'anual'), and label is the display string.
+// Fallback logic: if the user has the toggle on 'anual' but only a mensual
+// meta exists, we still show mensual (and vice versa) — never hide useful info.
+function resolveMeta(e, viewMode){
+  const mensual=+e.meta||0;
+  const anual=+e.metaAnnual||0;
+  if(viewMode==='anual'){
+    if(anual>0)return {value:anual, mode:'anual', label:'Meta anual'};
+    if(mensual>0)return {value:mensual, mode:'mensual', label:'Meta mensual'};
+  } else {
+    if(mensual>0)return {value:mensual, mode:'mensual', label:'Meta mensual'};
+    if(anual>0)return {value:anual, mode:'anual', label:'Meta anual'};
+  }
+  return {value:0, mode:viewMode, label:''};
+}
+
+// Toggle the view mode for either ahorro or inversion and re-render.
+function setViewMode(tab, mode){
+  if(tab==='ahorro')viewModeAho=mode;
+  else if(tab==='inversion')viewModeInv=mode;
+  render();
+}
+
 function renderAhorro(){
   const d=getMonth();const t=totals();
   const totalIng=t.ing||1;
@@ -4096,7 +4178,11 @@ function renderAhorro(){
     </div>
   </div>
   <div class="sec-hdr"><span class="sec-title">🏦 Entradas</span>
-    <div style="display:flex;gap:6px">
+    <div style="display:flex;gap:6px;align-items:center">
+      <div class="meta-toggle" role="group" aria-label="Vista de meta">
+        <button class="meta-toggle-btn ${viewModeAho==='mensual'?'on':''}" onclick="setViewMode('ahorro','mensual')">Mensual</button>
+        <button class="meta-toggle-btn ${viewModeAho==='anual'?'on':''}" onclick="setViewMode('ahorro','anual')">Anual</button>
+      </div>
       <button class="btn-sm" onclick="openCatMgr('ahorro')">⚙️</button>
       <button class="btn-add" onclick="openAddAho()">+ Añadir</button>
     </div>
@@ -4142,13 +4228,15 @@ function renderAhorro(){
       html+=`<div id="${groupId}" style="max-height:0;overflow:hidden;transition:max-height .38s cubic-bezier(.4,0,.2,1);">`;
       bucket.entries.forEach(e=>{
         const pct=Math.round(((+e.amt||0)/totalIng)*100);
-        const metaPct=e.meta>0?Math.min(100,Math.round(((+e.amt||0)/e.meta)*100)):0;
+        const resolvedMeta=resolveMeta(e, viewModeAho);
+        const metaVal=resolvedMeta.value;
+        const metaPct=metaVal>0?Math.min(100,Math.round(((+e.amt||0)/metaVal)*100)):0;
         html+=`<div class="entry" style="margin-left:16px;margin-bottom:3px;border-style:dashed;opacity:.92;cursor:pointer;flex-direction:column;align-items:stretch" onclick="editAho('${e.id}')">
           <div style="display:flex;align-items:center;gap:9px">
             <div class="entry-icon" style="font-size:14px">${e.cat.split(' ')[0]}</div>
             <div class="entry-main">
               <div class="entry-desc" style="font-size:12px;font-weight:600">${e.cat.split(' ').slice(1).join(' ')}</div>
-              <div class="entry-cat" style="font-size:11px">${e.desc}${e.meta>0?` · Meta: ${fmt(e.meta)}`:''}</div>
+              <div class="entry-cat" style="font-size:11px">${e.desc}${metaVal>0?` · ${resolvedMeta.label}: ${fmt(metaVal)}`:''}</div>
             </div>
             <div class="entry-right" style="flex-direction:column;align-items:flex-end;gap:2px">
               <div class="entry-amt pos" style="font-size:13px">${fmt(e.amt)}</div>
@@ -4156,9 +4244,9 @@ function renderAhorro(){
             </div>
             <button class="entry-del" onclick="event.stopPropagation();delAho('${e.id}')">✕</button>
           </div>
-          ${e.meta>0?`<div class="prog-wrap" style="padding-left:37px">
+          ${metaVal>0?`<div class="prog-wrap" style="padding-left:37px">
             <div class="prog-track"><div class="prog-fill green" style="width:${metaPct}%"></div></div>
-            <div class="prog-labels"><span>${metaPct}% completado</span><span>Meta: ${fmt(e.meta)}</span></div>
+            <div class="prog-labels"><span>${metaPct}% completado</span><span>${resolvedMeta.label}: ${fmt(metaVal)}</span></div>
           </div>`:''}
         </div>`;
       });
@@ -4213,9 +4301,11 @@ function openAddAho(){
       <input id="f-amt" class="finput" type="number" inputmode="decimal" pattern="[0-9]*"
         placeholder="Aportación este mes" style="font-size:20px;font-weight:700;letter-spacing:-.02em">
     </div>
-    <div class="form-row">
+    <div class="form-row" style="display:flex;gap:8px">
       <input id="f-meta" class="finput" type="number" inputmode="decimal"
-        placeholder="Meta total (opcional)">
+        placeholder="Meta mensual (opcional)" style="flex:1">
+      <input id="f-meta-annual" class="finput" type="number" inputmode="decimal"
+        placeholder="Meta anual (opcional)" style="flex:1">
     </div>
     <div style="margin-bottom:14px">
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;font-family:'Inter',sans-serif">Categoría</div>
@@ -4306,10 +4396,11 @@ function saveAho(){
   const amt=parseFloat(amtEl.value)||0;
   const cat=document.getElementById('f-cat').value;
   const meta=parseFloat(document.getElementById('f-meta').value)||0;
+  const metaAnnual=parseFloat(document.getElementById('f-meta-annual').value)||0;
   if(!desc){descEl.style.borderColor='var(--red)';descEl.focus();return;}
   if(!amt){amtEl.style.borderColor='var(--red)';amtEl.focus();return;}
   if(!cat){document.getElementById('aho-cat-selected').style.borderColor='var(--red)';return;}
-  getMonth().ahorro.push({id:uid(),desc,amt,cat,meta});persist();closeModal();render();
+  getMonth().ahorro.push({id:uid(),desc,amt,cat,meta,metaAnnual});persist();closeModal();render();
 }
 
 function delAho(id){
@@ -4384,9 +4475,11 @@ function editAho(id){
         value="${e.amt}" placeholder="Aportación"
         style="font-size:20px;font-weight:700;letter-spacing:-.02em">
     </div>
-    <div class="form-row">
+    <div class="form-row" style="display:flex;gap:8px">
       <input id="e-meta" class="finput" type="number" inputmode="decimal"
-        value="${e.meta||''}" placeholder="Meta total (opcional)">
+        value="${e.meta||''}" placeholder="Meta mensual (opcional)" style="flex:1">
+      <input id="e-meta-annual" class="finput" type="number" inputmode="decimal"
+        value="${e.metaAnnual||''}" placeholder="Meta anual (opcional)" style="flex:1">
     </div>
     <div style="margin-bottom:14px">
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;font-family:'Inter',sans-serif">Categoría</div>
@@ -4489,10 +4582,11 @@ function saveEditAho(id){
   const amt=parseFloat(amtEl.value)||0;
   const cat=document.getElementById('e-cat').value;
   const meta=parseFloat(document.getElementById('e-meta').value)||0;
+  const metaAnnual=parseFloat(document.getElementById('e-meta-annual').value)||0;
   if(!desc){descEl.style.borderColor='var(--red)';descEl.focus();return;}
   if(!amt){amtEl.style.borderColor='var(--red)';amtEl.focus();return;}
   if(!cat){document.getElementById('edit-aho-cat-selected').style.borderColor='var(--red)';return;}
-  e.desc=desc;e.amt=amt;e.cat=cat;e.meta=meta;
+  e.desc=desc;e.amt=amt;e.cat=cat;e.meta=meta;e.metaAnnual=metaAnnual;
   persist();closeModal();render();
 }
 
@@ -4824,7 +4918,11 @@ function renderInversion(){
     </div>
   </div>
   <div class="sec-hdr"><span class="sec-title">📈 Entradas</span>
-    <div style="display:flex;gap:6px">
+    <div style="display:flex;gap:6px;align-items:center">
+      <div class="meta-toggle" role="group" aria-label="Vista de meta">
+        <button class="meta-toggle-btn ${viewModeInv==='mensual'?'on':''}" onclick="setViewMode('inversion','mensual')">Mensual</button>
+        <button class="meta-toggle-btn ${viewModeInv==='anual'?'on':''}" onclick="setViewMode('inversion','anual')">Anual</button>
+      </div>
       <button class="btn-sm" onclick="openCatMgr('inv')">⚙️</button>
       <button class="btn-add" onclick="openAddInv()">+ Añadir</button>
     </div>
@@ -4865,13 +4963,15 @@ function renderInversion(){
       html+=`<div id="${groupId}" style="max-height:0;overflow:hidden;transition:max-height .38s cubic-bezier(.4,0,.2,1);">`;
       bucket.entries.forEach(e=>{
         const pct=Math.round(((+e.amt||0)/totalIng)*100);
-        const metaPct=e.meta>0?Math.min(100,Math.round(((+e.amt||0)/e.meta)*100)):0;
+        const resolvedMeta=resolveMeta(e, viewModeInv);
+        const metaVal=resolvedMeta.value;
+        const metaPct=metaVal>0?Math.min(100,Math.round(((+e.amt||0)/metaVal)*100)):0;
         html+=`<div class="entry" style="margin-left:16px;margin-bottom:3px;border-style:dashed;opacity:.92;cursor:pointer;flex-direction:column;align-items:stretch" onclick="editInv('${e.id}')">
           <div style="display:flex;align-items:center;gap:9px">
             <div class="entry-icon" style="font-size:14px">${e.cat.split(' ')[0]}</div>
             <div class="entry-main">
               <div class="entry-desc" style="font-size:12px;font-weight:600">${e.cat.split(' ').slice(1).join(' ')}</div>
-              <div class="entry-cat" style="font-size:11px">${e.desc}${e.meta>0?` · Meta mensual: ${fmt(e.meta)}`:''}</div>
+              <div class="entry-cat" style="font-size:11px">${e.desc}${metaVal>0?` · ${resolvedMeta.label}: ${fmt(metaVal)}`:''}</div>
             </div>
             <div class="entry-right" style="flex-direction:column;align-items:flex-end;gap:2px">
               <div class="entry-amt inv" style="font-size:13px">${fmt(e.amt)}</div>
@@ -4879,9 +4979,9 @@ function renderInversion(){
             </div>
             <button class="entry-del" onclick="event.stopPropagation();delInv('${e.id}')">✕</button>
           </div>
-          ${e.meta>0?`<div class="prog-wrap" style="padding-left:37px">
+          ${metaVal>0?`<div class="prog-wrap" style="padding-left:37px">
             <div class="prog-track"><div class="prog-fill blue" style="width:${metaPct}%"></div></div>
-            <div class="prog-labels"><span>${metaPct}% de meta mensual</span><span>Meta: ${fmt(e.meta)}</span></div>
+            <div class="prog-labels"><span>${metaPct}% de ${resolvedMeta.mode==='anual'?'meta anual':'meta mensual'}</span><span>${resolvedMeta.label}: ${fmt(metaVal)}</span></div>
           </div>`:''}
         </div>`;
       });
@@ -4916,7 +5016,10 @@ function openAddInv(){
   openModal(`<div class="modal-title">📈 Nueva Inversión<button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="form-row"><input id="f-desc" class="finput" placeholder="Descripción (ej: DCA VUSA)"></div>
     <div class="form-row"><input id="f-amt" class="finput" type="number" inputmode="decimal" placeholder="Importe este mes" style="font-size:20px;font-weight:700;letter-spacing:-.02em"></div>
-    <div class="form-row"><input id="f-meta" class="finput" type="number" inputmode="decimal" placeholder="Meta mensual (opcional)"></div>
+    <div class="form-row" style="display:flex;gap:8px">
+      <input id="f-meta" class="finput" type="number" inputmode="decimal" placeholder="Meta mensual (opcional)" style="flex:1">
+      <input id="f-meta-annual" class="finput" type="number" inputmode="decimal" placeholder="Meta anual (opcional)" style="flex:1">
+    </div>
     <div style="margin-bottom:14px">
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;font-family:'Inter',sans-serif">Categoría</div>
       <div class="inc-cat-selected" id="inv-cat-selected" onclick="toggleInvCatPicker()"><span id="inv-cat-selected-txt" style="color:var(--ink4)">Seleccionar categoría…</span><span style="color:var(--ink4);font-size:12px">▾</span></div>
@@ -4937,11 +5040,13 @@ function filterInvCats(q){const term=q.toLowerCase().trim();const groups=getInvG
 function saveInv(){
   const descEl=document.getElementById('f-desc');const amtEl=document.getElementById('f-amt');
   const desc=descEl.value.trim();const amt=parseFloat(amtEl.value)||0;
-  const cat=document.getElementById('f-cat').value;const meta=parseFloat(document.getElementById('f-meta').value)||0;
+  const cat=document.getElementById('f-cat').value;
+  const meta=parseFloat(document.getElementById('f-meta').value)||0;
+  const metaAnnual=parseFloat(document.getElementById('f-meta-annual').value)||0;
   if(!desc){descEl.style.borderColor='var(--red)';descEl.focus();return;}
   if(!amt){amtEl.style.borderColor='var(--red)';amtEl.focus();return;}
   if(!cat){document.getElementById('inv-cat-selected').style.borderColor='var(--red)';return;}
-  getMonth().inversion.push({id:uid(),desc,amt,cat,meta});persist();closeModal();render();
+  getMonth().inversion.push({id:uid(),desc,amt,cat,meta,metaAnnual});persist();closeModal();render();
 }
 
 function delInv(id){
@@ -4962,7 +5067,10 @@ function editInv(id){
   openModal(`<div class="modal-title">✏️ Editar Inversión<button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="form-row"><input id="e-desc" class="finput" placeholder="Descripción" value="${e.desc.replace(/"/g,'&quot;')}"></div>
     <div class="form-row"><input id="e-amt" class="finput" type="number" inputmode="decimal" value="${e.amt}" placeholder="Importe" style="font-size:20px;font-weight:700;letter-spacing:-.02em"></div>
-    <div class="form-row"><input id="e-meta" class="finput" type="number" inputmode="decimal" value="${e.meta||''}" placeholder="Meta mensual (opcional)"></div>
+    <div class="form-row" style="display:flex;gap:8px">
+      <input id="e-meta" class="finput" type="number" inputmode="decimal" value="${e.meta||''}" placeholder="Meta mensual (opcional)" style="flex:1">
+      <input id="e-meta-annual" class="finput" type="number" inputmode="decimal" value="${e.metaAnnual||''}" placeholder="Meta anual (opcional)" style="flex:1">
+    </div>
     <div style="margin-bottom:14px">
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;font-family:'Inter',sans-serif">Categoría</div>
       <div class="inc-cat-selected" id="edit-inv-cat-selected" onclick="toggleEditInvCatPicker()"><span id="edit-inv-cat-selected-txt"><span style="font-size:15px;margin-right:6px">${e.cat.split(' ')[0]}</span><span style="color:var(--ink);font-weight:600">${e.cat.split(' ').slice(1).join(' ')}</span></span><span style="color:var(--ink4);font-size:12px">▾</span></div>
@@ -4985,11 +5093,13 @@ function saveEditInv(id){
   const d=getMonth();const e=d.inversion.find(x=>x.id===id);if(!e)return;
   const descEl=document.getElementById('e-desc');const amtEl=document.getElementById('e-amt');
   const desc=descEl.value.trim();const amt=parseFloat(amtEl.value)||0;
-  const cat=document.getElementById('e-cat').value;const meta=parseFloat(document.getElementById('e-meta').value)||0;
+  const cat=document.getElementById('e-cat').value;
+  const meta=parseFloat(document.getElementById('e-meta').value)||0;
+  const metaAnnual=parseFloat(document.getElementById('e-meta-annual').value)||0;
   if(!desc){descEl.style.borderColor='var(--red)';descEl.focus();return;}
   if(!amt){amtEl.style.borderColor='var(--red)';amtEl.focus();return;}
   if(!cat){document.getElementById('edit-inv-cat-selected').style.borderColor='var(--red)';return;}
-  e.desc=desc;e.amt=amt;e.cat=cat;e.meta=meta;persist();closeModal();render();
+  e.desc=desc;e.amt=amt;e.cat=cat;e.meta=meta;e.metaAnnual=metaAnnual;persist();closeModal();render();
 }
 
 /* ─── INVERSIÓN CHART ─── */
@@ -7914,7 +8024,10 @@ function renderOverview(){
 }
 
 function buildNorte(acc,p){
-  const name=CONFIG.name?CONFIG.name.split(' ')[0]:'';
+  // Legacy users may have 'Amigo' saved as a placeholder fallback from a previous
+  // onboarding version. Treat it as empty so the hero doesn't awkwardly say "Amigo, ...".
+  const rawName=CONFIG.name&&CONFIG.name!=='Amigo'?CONFIG.name:'';
+  const name=rawName?rawName.split(' ')[0]:'';
   const greeting=name?`${name}, `:'';
   const cap=greeting?greeting.charAt(0).toUpperCase()+greeting.slice(1):'';
   if(acc.monthsWithData===0){
@@ -9205,12 +9318,25 @@ function obRemovePhoto(){
 }
 
 function finishOnboarding(){
-  const name=document.getElementById('ob-name').value.trim()||'Amigo';
+  const nameInput=document.getElementById('ob-name');
+  const name=nameInput.value.trim();
+  // Validation: name is required. Show error state and abort.
+  if(!name){
+    nameInput.classList.add('finput-error');
+    nameInput.focus();
+    // Remove error class as soon as the user starts typing again
+    nameInput.addEventListener('input',function handler(){
+      nameInput.classList.remove('finput-error');
+      nameInput.removeEventListener('input',handler);
+    });
+    return;
+  }
   CONFIG.name=name;
   CONFIG.currency=obCur;
   // Period defaults to 1-31 (sensible default); user can change in profile later
   if(!CONFIG.period)CONFIG.period='1-31';
   CONFIG.onboarded=true;
+  CONFIG.onboardingVersion=ONBOARDING_VERSION;
   // Save photo if one was uploaded (skipped on review if unchanged)
   if(obPhotoData)CONFIG.photo=obPhotoData;
   obPhotoData=null;
@@ -9228,7 +9354,10 @@ hydrate();
 migrateGroupsToGlobal();
 if(CONFIG.theme){document.documentElement.setAttribute('data-theme',CONFIG.theme);document.getElementById('themeBtn').textContent=CONFIG.theme==='dark'?'☀️':'🌙';}
 loadSampleData();
-if(!CONFIG.onboarded){document.getElementById('onboarding').style.display='flex';}
+// Show onboarding for new users (!onboarded) and for existing users whose
+// stored onboarding version is older than the current one. Data is preserved.
+const storedObVersion=CONFIG.onboardingVersion||0;
+if(!CONFIG.onboarded||storedObVersion<ONBOARDING_VERSION){document.getElementById('onboarding').style.display='flex';}
 else{updateProfileBtn();initMonths();updateTabNav();updatePeriodLabel();render();}
 </script>
 </body>
