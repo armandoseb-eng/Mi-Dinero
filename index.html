@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Polaris</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 /* ═══════════════════════════════════════════
@@ -465,6 +465,7 @@ body::before{
   position:fixed;
   top:0;left:0;
   width:100vw;height:100vh;
+  height:100dvh;
   background:rgba(0,0,0,.5);
   backdrop-filter:blur(6px);
   z-index:99999;
@@ -484,6 +485,7 @@ body::before{
   transition:background .3s;
   box-sizing:border-box;
 }
+.modal-box,.modal-box *{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;}
 .modal-box::-webkit-scrollbar{display:none;}
 @keyframes modalIn{from{transform:scale(.95) translateY(10px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
 .modal-title{
@@ -497,6 +499,54 @@ body::before{
   display:flex;align-items:center;justify-content:center;transition:background .15s;
 }
 .modal-close:hover{background:var(--cream3);}
+
+/* ═══════════════════════════════════════════
+   RESET MODAL — options
+═══════════════════════════════════════════ */
+.reset-intro{font-size:13px;color:var(--ink3);line-height:1.55;margin-bottom:16px;}
+.reset-opts{display:flex;flex-direction:column;gap:10px;margin-bottom:4px;}
+.reset-opt{
+  display:flex;align-items:flex-start;gap:12px;text-align:left;
+  background:var(--cream2);border:1.5px solid var(--border);border-radius:12px;
+  padding:13px 14px;cursor:pointer;transition:all .18s;
+  color:var(--ink);width:100%;-webkit-tap-highlight-color:transparent;
+  user-select:none;
+}
+.reset-opt:hover{border-color:var(--gold);background:rgba(184,134,11,.05);}
+.reset-opt:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+.reset-opt-icon{font-size:22px;flex-shrink:0;line-height:1;margin-top:1px;pointer-events:none;}
+.reset-opt-body{flex:1;min-width:0;pointer-events:none;}
+.reset-opt-title{font-size:14px;font-weight:700;color:var(--ink);letter-spacing:-.01em;margin-bottom:3px;}
+.reset-opt-desc{font-size:12px;color:var(--ink3);line-height:1.45;font-weight:400;}
+.reset-opt-danger:hover{border-color:var(--red);background:rgba(184,50,50,.05);}
+.reset-opt-danger .reset-opt-title{color:var(--red);}
+/* Confirm step */
+.reset-confirm-card{
+  background:var(--cream2);border:1.5px solid var(--border);border-radius:12px;
+  padding:20px 16px;text-align:center;margin-bottom:14px;
+}
+.reset-confirm-icon{font-size:40px;line-height:1;margin-bottom:10px;}
+.reset-confirm-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px;letter-spacing:-.01em;}
+.reset-confirm-desc{font-size:12.5px;color:var(--ink3);line-height:1.5;}
+.reset-confirm-warn{
+  font-size:12px;color:var(--red);text-align:center;
+  background:rgba(184,50,50,.08);border:1px solid rgba(184,50,50,.2);
+  border-radius:8px;padding:8px 12px;margin-bottom:16px;
+}
+.reset-confirm-warn strong{font-weight:700;}
+.reset-confirm-actions{display:flex;gap:10px;}
+.btn-cancel-reset{
+  flex:1;background:var(--cream2);border:1.5px solid var(--border);border-radius:10px;
+  padding:13px;font-size:13px;font-weight:600;color:var(--ink2);cursor:pointer;
+  transition:all .15s;
+}
+.btn-cancel-reset:hover{border-color:var(--ink3);color:var(--ink);}
+.btn-confirm-reset{
+  flex:1;background:var(--red);border:none;border-radius:10px;
+  padding:13px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;
+  letter-spacing:.02em;transition:opacity .15s;
+}
+.btn-confirm-reset:hover{opacity:.88;}
 
 /* ═══════════════════════════════════════════
    DIARY
@@ -544,6 +594,244 @@ body::before{
   box-shadow:0 1px 4px rgba(0,0,0,.2);
 }
 .enough-val{font-size:22px;font-weight:800;color:var(--gold);min-width:24px;text-align:center;}
+
+/* ═══════════════════════════════════
+   WAIT LIST ("En espera") — sub-section of the Diary
+   All classes prefixed .wl- to avoid collisions.
+   Uses theme variables only; light/dark are automatic.
+   ═══════════════════════════════════ */
+.wl-card{
+  background:var(--card-bg);border:1px solid var(--card-border);
+  border-radius:12px;padding:14px;margin-bottom:10px;
+  transition:background .3s,border-color .3s;
+}
+.wl-card-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;gap:12px;}
+.wl-title-stack{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1;}
+.wl-title{
+  font-size:10px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink4);
+}
+.wl-subtitle{
+  font-size:11px;color:var(--ink3);line-height:1.4;
+}
+.wl-add-btn{
+  background:transparent;border:1px solid var(--border);border-radius:8px;
+  padding:4px 10px;font-size:11px;font-weight:700;color:var(--ink2);
+  cursor:pointer;letter-spacing:.03em;font-family:'Inter',sans-serif;
+  transition:border-color .18s,color .18s;
+}
+.wl-add-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+/* Section labels ("Esperando", "Listo para decidir") */
+.wl-section-lbl{
+  font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--gold);margin:14px 0 8px;
+  display:flex;align-items:center;gap:8px;
+}
+.wl-section-lbl:first-of-type{margin-top:0;}
+.wl-section-count{
+  background:rgba(184,134,11,.12);border:1px solid rgba(184,134,11,.22);
+  border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700;
+  color:var(--gold);letter-spacing:0;
+}
+[data-theme="dark"] .wl-section-count{
+  background:rgba(212,160,23,.14);border-color:rgba(212,160,23,.3);
+}
+
+/* Items (shared base for waiting + ready) */
+.wl-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 12px;border:1px solid var(--border);border-radius:10px;
+  background:var(--input-bg);margin-bottom:6px;
+  transition:border-color .18s,background .18s;
+}
+.wl-item:hover{border-color:var(--gold);}
+.wl-item-main{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1;}
+.wl-item-name{
+  font-size:13px;font-weight:600;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.wl-item-meta{font-size:11px;color:var(--ink4);display:flex;gap:6px;align-items:center;}
+.wl-item-meta-dot{color:var(--border2);}
+.wl-item-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.wl-item-price{
+  font-size:12px;font-weight:700;color:var(--ink2);
+  font-variant-numeric:tabular-nums;
+}
+
+/* Ready state — green tint border + soft fill */
+.wl-item.wl-ready{
+  border-color:rgba(45,122,79,.4);
+  background:rgba(45,122,79,.04);
+}
+[data-theme="dark"] .wl-item.wl-ready{
+  border-color:rgba(74,181,116,.5);
+  background:rgba(74,181,116,.07);
+}
+.wl-item.wl-ready:hover{border-color:var(--green);}
+
+/* "Decidir" CTA on ready items */
+.wl-decide-btn{
+  border:none;font-size:11px;font-weight:700;
+  padding:5px 11px;border-radius:8px;cursor:pointer;
+  letter-spacing:.03em;font-family:'Inter',sans-serif;
+  background:var(--gold);color:var(--paper);
+  transition:background .18s;
+}
+.wl-decide-btn:hover{background:var(--gold2);}
+[data-theme="dark"] .wl-decide-btn{color:var(--cream2);}
+
+/* Empty state for either section */
+.wl-empty{
+  font-size:12px;color:var(--ink4);font-style:italic;
+  padding:14px;text-align:center;
+  border:1px dashed var(--border);border-radius:10px;
+}
+
+/* History (collapsed by default) */
+.wl-history-toggle{
+  font-size:11px;color:var(--ink3);cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 0;border-top:1px solid var(--cream2);margin-top:12px;
+  transition:color .18s;
+}
+.wl-history-toggle:hover{color:var(--ink2);}
+.wl-history-arrow{
+  color:var(--ink4);transition:transform .2s;
+  display:inline-block;
+}
+.wl-history-toggle.wl-open .wl-history-arrow{transform:rotate(180deg);}
+.wl-history-list{margin-top:8px;}
+.wl-hist-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 12px;font-size:11px;color:var(--ink3);
+  border-bottom:1px solid var(--cream2);
+}
+.wl-hist-item:last-child{border-bottom:none;}
+.wl-hist-name{display:flex;align-items:center;gap:8px;min-width:0;flex:1;}
+.wl-hist-name-text{
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.wl-hist-tag{
+  font-size:9px;font-weight:700;letter-spacing:.05em;
+  padding:1px 6px;border-radius:6px;text-transform:uppercase;
+  flex-shrink:0;
+}
+.wl-hist-tag.wl-bought{
+  background:rgba(45,122,79,.1);color:var(--green);
+}
+[data-theme="dark"] .wl-hist-tag.wl-bought{
+  background:rgba(74,181,116,.14);
+}
+.wl-hist-tag.wl-discarded{
+  background:rgba(160,155,148,.18);color:var(--ink3);
+}
+[data-theme="dark"] .wl-hist-tag.wl-discarded{
+  background:rgba(154,148,137,.18);
+}
+.wl-hist-meta{color:var(--ink4);font-variant-numeric:tabular-nums;flex-shrink:0;}
+
+/* Add / Decide modal — uses same overlay pattern as the rest of the app */
+.wl-modal-h{
+  font-size:10px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink4);margin-bottom:14px;
+}
+.wl-q-label{
+  font-size:10px;font-weight:700;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:6px;
+}
+.wl-q-text{
+  font-size:14px;font-weight:600;color:var(--ink);
+  margin-bottom:10px;line-height:1.5;
+}
+.wl-q-answer{
+  font-size:12px;color:var(--ink2);background:var(--input-bg);
+  border:1px solid var(--border);border-radius:8px;
+  padding:10px 12px;line-height:1.5;font-style:italic;
+  margin-bottom:14px;
+}
+.wl-input{
+  width:100%;background:var(--input-bg);border:1px solid var(--border2);
+  border-radius:8px;padding:10px 12px;font-size:13px;color:var(--ink);
+  font-family:'Inter',sans-serif;outline:none;
+  transition:border-color .15s;
+}
+.wl-input:focus{border-color:var(--ink3);}
+.wl-textarea{
+  width:100%;background:var(--input-bg);border:1px solid var(--border2);
+  border-radius:8px;padding:10px 12px;font-size:13px;color:var(--ink);
+  font-family:'Inter',sans-serif;resize:vertical;min-height:70px;
+  outline:none;transition:border-color .15s;line-height:1.5;
+}
+.wl-textarea:focus{border-color:var(--ink3);}
+.wl-field-row{display:flex;gap:10px;margin-bottom:14px;}
+.wl-field{flex:1;display:flex;flex-direction:column;gap:5px;}
+.wl-field-lbl{
+  font-size:10px;font-weight:700;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--ink4);
+}
+
+/* Decision flow — 3 buttons */
+.wl-flow-btns{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;
+}
+.wl-flow-btn{
+  padding:10px 8px;border-radius:8px;font-size:11px;font-weight:700;
+  cursor:pointer;letter-spacing:.03em;border:1.5px solid;
+  font-family:'Inter',sans-serif;transition:background .18s,border-color .18s;
+}
+.wl-flow-btn.wl-buy{
+  background:rgba(45,122,79,.08);border-color:var(--green);color:var(--green);
+}
+.wl-flow-btn.wl-buy:hover{background:rgba(45,122,79,.16);}
+[data-theme="dark"] .wl-flow-btn.wl-buy{background:rgba(74,181,116,.1);}
+[data-theme="dark"] .wl-flow-btn.wl-buy:hover{background:rgba(74,181,116,.18);}
+.wl-flow-btn.wl-discard{
+  background:rgba(160,155,148,.1);border-color:var(--ink4);color:var(--ink3);
+}
+.wl-flow-btn.wl-discard:hover{background:rgba(160,155,148,.18);}
+[data-theme="dark"] .wl-flow-btn.wl-discard{background:rgba(154,148,137,.12);}
+[data-theme="dark"] .wl-flow-btn.wl-discard:hover{background:rgba(154,148,137,.2);}
+.wl-flow-btn.wl-keep-waiting{
+  background:transparent;border-color:var(--border);color:var(--ink2);
+}
+.wl-flow-btn.wl-keep-waiting:hover{border-color:var(--ink3);}
+
+/* Kebab (three-dots) button on each item */
+.wl-kebab{
+  background:transparent;border:none;color:var(--ink4);
+  font-size:18px;line-height:1;padding:4px 6px;cursor:pointer;
+  border-radius:6px;transition:background .15s,color .15s;
+  font-family:inherit;letter-spacing:.05em;
+}
+.wl-kebab:hover{background:var(--cream2);color:var(--ink2);}
+[data-theme="dark"] .wl-kebab:hover{background:var(--cream3);}
+
+/* Floating action menu — positioned absolute next to item */
+.wl-menu{
+  position:absolute;right:0;top:100%;margin-top:4px;
+  background:var(--card-bg);border:1px solid var(--border2);
+  border-radius:10px;padding:4px;min-width:180px;
+  box-shadow:0 4px 16px var(--shadow);
+  z-index:50;
+}
+.wl-menu-item{
+  display:block;width:100%;text-align:left;
+  background:transparent;border:none;padding:8px 12px;
+  font-size:13px;color:var(--ink2);font-family:inherit;
+  border-radius:6px;cursor:pointer;transition:background .12s;
+}
+.wl-menu-item:hover{background:var(--cream2);color:var(--ink);}
+[data-theme="dark"] .wl-menu-item:hover{background:var(--cream3);}
+.wl-menu-item.wl-danger{color:var(--red);}
+.wl-menu-item.wl-danger:hover{background:rgba(184,50,50,.08);color:var(--red2);}
+[data-theme="dark"] .wl-menu-item.wl-danger:hover{background:rgba(212,68,68,.12);}
+.wl-menu-sep{
+  height:1px;background:var(--border);margin:4px 2px;
+}
+
+/* Wrapper to anchor the menu */
+.wl-item{position:relative;}
 
 /* Heatmap */
 .heatmap-header{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px;width:100%;}
@@ -660,6 +948,19 @@ body::before{
 }
 @media(max-width:540px){
   .dw-card{padding:14px 15px 16px;}
+}
+
+/* Section header (lives outside any card, titles a region) */
+.dw-section-head{
+  margin:18px 2px 10px;
+}
+.dw-section-head:first-child{margin-top:0;}
+.dw-section-kicker{
+  font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:4px;
+}
+.dw-section-sub{
+  font-size:13.5px;color:var(--ink4);font-style:italic;line-height:1.45;
 }
 
 /* Area head inside entry card */
@@ -792,6 +1093,47 @@ body::before{
 }
 .dw-state-empty-msg{
   font-size:13px;color:var(--ink4);font-style:italic;line-height:1.5;
+}
+
+/* Layer 2 — Diary patterns card */
+.dw-layer2{
+  border-left:3px solid var(--gold);
+  position:relative;
+}
+.dw-layer2-kicker{
+  font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:4px;
+}
+.dw-layer2-sub{
+  font-size:11.5px;color:var(--ink4);font-style:italic;line-height:1.4;margin-bottom:14px;
+}
+.dw-layer2-obs{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:12px 0;
+  border-top:1px dashed var(--card-border);
+}
+.dw-layer2-obs:first-of-type{border-top:none;padding-top:0;}
+.dw-layer2-obs:last-of-type{padding-bottom:0;}
+.dw-layer2-obs-emoji{
+  font-size:18px;line-height:1.3;flex-shrink:0;
+}
+.dw-layer2-obs-body{flex:1;}
+.dw-layer2-obs-title{
+  font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink4);margin-bottom:4px;
+}
+.dw-layer2-obs-text{
+  font-size:13.5px;line-height:1.55;color:var(--ink2);
+}
+.dw-layer2-obs-text strong{color:var(--ink);font-weight:700;}
+
+/* Layer 3 — Diary ↔ Money correlations card */
+.dw-layer3{
+  border-left:3px solid var(--green);
+}
+.dw-layer3-kicker{
+  font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--green);margin-bottom:4px;
 }
 
 /* Reflection & freetext cards */
@@ -1262,7 +1604,7 @@ body::before{
 }
 .ov-ask-catpicker-search input:focus{outline:none;border-color:var(--gold);}
 .ov-ask-catpicker-list{
-  overflow-y:auto;flex:1;padding:4px 0;
+  overflow-y:auto;flex:1;padding:0 0 4px 0;
 }
 .ov-ask-catpicker-group{
   font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
@@ -1272,20 +1614,22 @@ body::before{
 }
 .ov-ask-catpicker-item{
   padding:7px 12px;font-size:12.5px;cursor:pointer;
-  display:flex;justify-content:space-between;align-items:center;gap:8px;
+  display:flex;align-items:center;gap:6px;
   color:var(--ink);font-variant-numeric:tabular-nums;
   transition:background .1s ease;
 }
+.ov-ask-catpicker-item>span{
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1;
+}
 .ov-ask-catpicker-item:hover{background:var(--cream2);}
 .ov-ask-catpicker-item.parent{font-weight:600;}
-.ov-ask-catpicker-item.sub{padding-left:26px;color:var(--ink2);}
+.ov-ask-catpicker-item.sub{padding-left:20px;color:var(--ink2);}
 .ov-ask-catpicker-item.sub::before{
-  content:'↳';color:var(--ink4);margin-right:4px;margin-left:-14px;font-size:11px;
+  content:'↳';color:var(--ink4);margin-right:4px;margin-left:-10px;font-size:11px;flex-shrink:0;
 }
 .ov-ask-catpicker-item.selected{background:rgba(212,168,77,.14);color:var(--ink);}
 .ov-ask-catpicker-item.disabled{opacity:.35;cursor:not-allowed;}
 .ov-ask-catpicker-item.disabled:hover{background:transparent;}
-.ov-ask-catpicker-item .amt{font-size:11.5px;color:var(--ink3);flex-shrink:0;}
 .ov-ask-catpicker-empty{
   padding:18px 14px;text-align:center;font-size:12px;color:var(--ink4);
   font-style:italic;
@@ -1539,6 +1883,14 @@ body::before{
 }
 .catmgr-search input::placeholder{color:var(--ink4);}
 .catmgr-search .lupa{font-size:15px;color:var(--ink4);}
+.catmgr-search-clear{
+  background:none;border:none;color:var(--ink4);cursor:pointer;
+  font-size:15px;padding:0;line-height:1;
+  display:none;
+}
+.catmgr-search-clear:hover{color:var(--ink2);}
+/* Show the clear button only when the sibling input has a value */
+.catmgr-search input:not(:placeholder-shown)~.catmgr-search-clear{display:block;}
 .catmgr-group{margin-bottom:10px;border:1px solid var(--border);border-radius:11px;overflow:hidden;}
 .catmgr-group-hdr{
   display:flex;align-items:center;justify-content:space-between;
@@ -1600,6 +1952,7 @@ body::before{
 .catmgr-add-group button:hover{opacity:.8;}
 .catmgr-count{font-size:10px;color:var(--ink4);font-weight:500;margin-left:4px;font-family:'Inter',sans-serif;}
 .catmgr-highlight{background:rgba(184,134,11,.15);border-radius:3px;}
+.catmgr-hl{background:rgba(184,134,11,.25);border-radius:2px;padding:0 1px;}
 
 /* ── Income category picker (add modal) ── */
 .inc-cat-selected{
@@ -1654,12 +2007,16 @@ body::before{
 .onboarding{
   position:fixed;inset:0;z-index:500;
   background:var(--cream2);
-  display:flex;align-items:center;justify-content:center;padding:20px;
+  display:flex;align-items:flex-start;justify-content:center;padding:20px;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
 }
+.onboarding,.onboarding *{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;}
 .ob-box{
   background:var(--paper);border:1px solid var(--border2);border-radius:20px;
   padding:32px 28px;width:100%;max-width:420px;
   box-shadow:0 20px 60px rgba(0,0,0,.12);
+  margin:auto 0;
 }
 .ob-logo-big{width:96px;height:96px;display:block;margin:0 auto 14px;color:var(--ink);object-fit:contain;border-radius:50%;}
 .ob-title{font-size:26px;font-weight:800;color:var(--ink);letter-spacing:-.03em;text-align:center;margin-bottom:6px;}
@@ -1883,7 +2240,7 @@ body::before{
         </div>
         <input type="file" id="ob-photo-input" accept="image/*" style="display:none" onchange="obSelectPhoto(event)">
         <div class="ob-photo-hint">Una foto tuya (opcional)</div>
-        <button class="ob-photo-remove" onclick="obRemovePhoto()">Quitar foto</button>
+        <button class="ob-photo-remove" onclick="obRemovePhoto(event)">Quitar foto</button>
       </div>
 
       <div class="ob-field">
@@ -2366,13 +2723,80 @@ let ovPeriod={kind:'year',from:0,to:11,customFrom:null,customTo:null};
 // ═══════════════════════════════════
 // PERSISTENCE
 // ═══════════════════════════════════
-function persist(){localStorage.setItem('md_db6',JSON.stringify(DB));localStorage.setItem('md_cfg6',JSON.stringify(CONFIG));}
+function persist(){
+  try{
+    localStorage.setItem('md_db6',JSON.stringify(DB));
+    localStorage.setItem('md_cfg6',JSON.stringify(CONFIG));
+    return true;
+  }catch(e){
+    // Most likely QuotaExceededError. Log for debugging and return false
+    // so callers can react (e.g. show a toast).
+    console.error('[persist] localStorage write failed:',e);
+    return false;
+  }
+}
 function hydrate(){
   try{const d=localStorage.getItem('md_db6');const c=localStorage.getItem('md_cfg6');
   if(d)DB=JSON.parse(d);if(c)CONFIG={...CONFIG,...JSON.parse(c)};}catch(e){}
+  // Migration: ensure date field exists on all entries across the 5 sections.
+  // Old entries get date=null (they predate the date-tracking feature).
+  // income.saldoAnterior is intentionally excluded — it's a balance, not an event.
+  try{
+    Object.keys(DB).forEach(k=>{
+      if(!/^\d{4}-\d{2}$/.test(k))return;
+      const d=DB[k];
+      ['gastos','ahorro','inversion','deudas'].forEach(sec=>{
+        if(Array.isArray(d[sec]))d[sec].forEach(e=>{if(!('date' in e))e.date=null;});
+      });
+      if(d.income&&Array.isArray(d.income.entries)){
+        d.income.entries.forEach(e=>{if(!('date' in e))e.date=null;});
+      }
+    });
+  }catch(e){console.warn('[hydrate] date migration skipped:',e);}
 }
 
 function mKey(m,y){return `${y}-${String(m).padStart(2,'0')}`;}
+
+// ═══════════════════════════════════
+// DATE HELPERS (for entry timestamps)
+// ═══════════════════════════════════
+// Returns "YYYY-MM-DD" for day 1 of the navigated month
+function firstDayOfNavMonth(m=cM,y=cY){
+  return `${y}-${String(m+1).padStart(2,'0')}-01`;
+}
+// Returns "YYYY-MM-DD" for the last day of the navigated month
+function lastDayOfNavMonth(m=cM,y=cY){
+  const last=new Date(y,m+1,0).getDate();
+  return `${y}-${String(m+1).padStart(2,'0')}-${String(last).padStart(2,'0')}`;
+}
+// Default date for the input when opening a new-entry form:
+// today if navigating the current month, day 1 otherwise
+function defaultDateForNavMonth(m=cM,y=cY){
+  const now=new Date();
+  if(m===now.getMonth()&&y===now.getFullYear()){
+    return `${y}-${String(m+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  }
+  return firstDayOfNavMonth(m,y);
+}
+// "YYYY-MM-DD" → timestamp in ms (noon local, avoids timezone day-boundary issues)
+function dateStrToMs(s){
+  if(!s)return null;
+  const [y,m,d]=s.split('-').map(Number);
+  return new Date(y,m-1,d,12,0,0,0).getTime();
+}
+// timestamp ms → "YYYY-MM-DD" for prefilling the input on edit
+function msToDateStr(ms){
+  if(!ms)return '';
+  const d=new Date(ms);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+// timestamp ms → "DD/MM" for compact display next to entry descriptions.
+// Returns empty string for null (old pre-feature entries) so callers can omit cleanly.
+function fmtEntryDate(ms){
+  if(!ms)return '';
+  const d=new Date(ms);
+  return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
+}
 
 // ═══════════════════════════════════
 // GLOBAL CATEGORY GROUPS (single source of truth)
@@ -2539,6 +2963,122 @@ function saveDiaryAnswer(weekKey,field,value){
   persist();
 }
 
+// ═══════════════════════════════════
+// WAIT LIST ("En espera") — global storage + helpers
+// ═══════════════════════════════════
+// Sub-section of the Diary. Lives at DB._waitlist as a plain object keyed
+// by item id (not per-month, not per-week — it's its own list with its own
+// lifecycle). Tone is judgement-free: items don't fail, they transition.
+//
+// Item shape:
+// {
+//   id:        string (uid)
+//   name:      string                 — what the user wants
+//   category:  string|null            — optional, free text
+//   priceEst:  number|null            — estimated cost (null if unknown)
+//   currency:  string                 — defaults to active currency
+//   q1:        string                 — answer to "¿Por qué lo quiero?"
+//   q2:        string                 — answer to "¿Qué pasa si espero un mes?"
+//   status:    'waiting'|'ready'|'bought'|'discarded'
+//   createdAt: number (ms epoch)
+//   updatedAt: number (ms epoch)
+//   readyAt:   number|null            — when it transitioned to 'ready'
+//   decidedAt: number|null            — when it was bought/discarded
+//   linkedTxId:string|null            — future: id of gasto entry if bought
+// }
+
+function ensureWaitlistStore(){
+  if(!DB._waitlist)DB._waitlist={};
+  return DB._waitlist;
+}
+
+function getWaitlistAll(){
+  ensureWaitlistStore();
+  return Object.values(DB._waitlist);
+}
+
+function getWaitlistByStatus(status){
+  return getWaitlistAll().filter(it=>it.status===status);
+}
+
+function getWaitlistItem(id){
+  ensureWaitlistStore();
+  return DB._waitlist[id]||null;
+}
+
+// Add a new item. Returns the created item (with id assigned).
+// Required fields: name, q1, q2. Everything else has sensible defaults.
+function addWaitlistItem({name,q1,q2,category=null,priceEst=null,currency=null}){
+  ensureWaitlistStore();
+  const now=Date.now();
+  const id=uid();
+  const item={
+    id,
+    name:String(name||'').trim(),
+    category:category||null,
+    priceEst:(priceEst===''||priceEst==null||isNaN(+priceEst))?null:+priceEst,
+    currency:currency||(CONFIG&&CONFIG.currency)||'EUR',
+    q1:String(q1||'').trim(),
+    q2:String(q2||'').trim(),
+    status:'waiting',
+    createdAt:now,
+    updatedAt:now,
+    readyAt:null,
+    decidedAt:null,
+    linkedTxId:null
+  };
+  DB._waitlist[id]=item;
+  persist();
+  return item;
+}
+
+// Update arbitrary fields on an item (excluding id, createdAt, status).
+// For status changes use transitionWaitlistItem() so timestamps stay consistent.
+function updateWaitlistItem(id,patch){
+  ensureWaitlistStore();
+  const it=DB._waitlist[id];
+  if(!it)return null;
+  const safe={...patch};
+  delete safe.id;delete safe.createdAt;delete safe.status;
+  delete safe.readyAt;delete safe.decidedAt;
+  Object.assign(it,safe);
+  it.updatedAt=Date.now();
+  persist();
+  return it;
+}
+
+// Transition an item to a new status. Stamps the right timestamp:
+//   waiting → ready    : sets readyAt
+//   * → bought|discarded : sets decidedAt
+// Going back to 'waiting' clears readyAt/decidedAt (rare, but harmless).
+function transitionWaitlistItem(id,newStatus,extra={}){
+  ensureWaitlistStore();
+  const it=DB._waitlist[id];
+  if(!it)return null;
+  const valid=['waiting','ready','bought','discarded'];
+  if(!valid.includes(newStatus))return null;
+  const now=Date.now();
+  it.status=newStatus;
+  it.updatedAt=now;
+  if(newStatus==='ready')it.readyAt=now;
+  else if(newStatus==='bought'||newStatus==='discarded')it.decidedAt=now;
+  else if(newStatus==='waiting'){it.readyAt=null;it.decidedAt=null;}
+  // Optional extras: linkedTxId when 'bought' is wired to a gasto entry
+  if(extra&&typeof extra==='object'){
+    if('linkedTxId' in extra)it.linkedTxId=extra.linkedTxId||null;
+  }
+  persist();
+  return it;
+}
+
+function deleteWaitlistItem(id){
+  ensureWaitlistStore();
+  if(!DB._waitlist[id])return false;
+  delete DB._waitlist[id];
+  persist();
+  return true;
+}
+
 function getMonth(m=cM,y=cY){
   // Derive flat cat lists from the global groups so newly-created months
   // inherit the user's current categories (not stale DEF_* defaults).
@@ -2578,7 +3118,25 @@ function totals(m=cM,y=cY){
 }
 
 function uid(){return Math.random().toString(36).slice(2,9);}
-function fmt(n){const s=CONFIG.currency||'£';const v=Math.abs(+n||0);const str=v.toLocaleString('en-GB',{minimumFractionDigits:0,maximumFractionDigits:0});return(+n<0?'-':'')+s+str;}
+function fmt(n){
+  const s=CONFIG.currency||'£';
+  const num=+n||0;
+  const v=Math.abs(num);
+  let str;
+  if(v>=100){
+    // Importes grandes: sin decimales para legibilidad
+    str=Math.round(v).toLocaleString('en-GB',{minimumFractionDigits:0,maximumFractionDigits:0});
+  } else {
+    // Importes pequeños: 2 decimales, pero omitidos si son cero
+    const rounded=Math.round(v*100)/100;
+    const isWhole=rounded===Math.floor(rounded);
+    str=rounded.toLocaleString('en-GB',{
+      minimumFractionDigits:isWhole?0:2,
+      maximumFractionDigits:2
+    });
+  }
+  return(num<0?'-':'')+s+str;
+}
 
 // ═══════════════════════════════════
 // OVERVIEW PERIOD HELPERS
@@ -2625,59 +3183,6 @@ function accumTotals(from,to,year){
     ing+=t.ing;gas+=t.gas;aho+=t.aho;inv+=t.inv;deu+=t.deu;
   }
   return{ing,gas,aho,inv,deu,totalGas:gas+deu,totalAho:aho+inv,monthsWithData,totalMonths:to-from+1};
-}
-
-// ═══════════════════════════════════
-// SAMPLE DATA
-// ═══════════════════════════════════
-function loadSampleData(){
-  const names=['Armando'];
-  const months=[0,1,2,3,4,5,6,7,8,9,10,11];
-  months.forEach(m=>{
-    const k=mKey(m,2026);
-    if(DB[k])return;
-    const base=5000;
-    const varInc=Math.round((Math.random()-.3)*400);
-    const mainInc=base+varInc;
-    DB[k]={
-      income:{saldoAnterior:m===0?0:Math.round(Math.random()*300),entries:[
-        {id:uid(),desc:'Salario',amt:mainInc,cat:'💼 Salario principal'},
-        ...(Math.random()>.5?[{id:uid(),desc:'Freelance',amt:Math.round(200+Math.random()*300),cat:'🎯 Freelance'}]:[])
-      ]},
-      gastos:[
-        {id:uid(),desc:'Alquiler',amt:1400,cat:'🏠 Alquiler'},
-        {id:uid(),desc:'Council Tax',amt:180,cat:'🏛️ Council Tax'},
-        {id:uid(),desc:'Internet',amt:35,cat:'📡 Internet'},
-        {id:uid(),desc:'Tesco',amt:Math.round(300+Math.random()*100),cat:'🛒 Supermercado'},
-        {id:uid(),desc:'TFL',amt:80,cat:'🚇 Transporte público'},
-        {id:uid(),desc:'Gym',amt:40,cat:'💪 Gimnasio'},
-        {id:uid(),desc:'Spotify',amt:11,cat:'🎵 Música'},
-        {id:uid(),desc:'Netflix',amt:18,cat:'📺 Streaming'},
-        {id:uid(),desc:'Apple Cloud',amt:3,cat:'☁️ Suscripciones digitales'},
-        {id:uid(),desc:'Electricidad',amt:Math.round(60+Math.random()*40),cat:'💡 Electricidad'},
-        {id:uid(),desc:'Restaurantes',amt:Math.round(100+Math.random()*150),cat:'🍽️ Restaurantes'},
-        {id:uid(),desc:'Cafés',amt:Math.round(40+Math.random()*40),cat:'☕ Cafés'},
-        ...(Math.random()>.4?[{id:uid(),desc:'Ropa',amt:Math.round(50+Math.random()*150),cat:'👕 Ropa y calzado'}]:[]),
-        ...(Math.random()>.6?[{id:uid(),desc:'Salida',amt:Math.round(30+Math.random()*80),cat:'🎭 Teatro / Conciertos'}]:[]),
-      ],
-      ahorro:[
-        {id:uid(),desc:'Fondo emergencia',amt:300,cat:'🛡️ Fondo de emergencia',meta:5000},
-        {id:uid(),desc:'Viaje verano',amt:Math.round(100+Math.random()*100),cat:'✈️ Viajes',meta:2000},
-      ],
-      inversion:[
-        {id:uid(),desc:'DCA VUSA',amt:200,cat:'📊 ETFs / Fondos indexados',meta:2400},
-        {id:uid(),desc:'DCA BTC',amt:Math.round(100+Math.random()*100),cat:'₿ Criptomonedas',meta:1200},
-        {id:uid(),desc:'JEPQ',amt:100,cat:'📊 ETFs / Fondos indexados',meta:1200},
-      ],
-      deudas:[
-        {id:uid(),desc:'AMEX',cat:'💳 Tarjeta de crédito 1',total:3000,saldo:Math.round(1000+Math.random()*1500),pago:200},
-      ],
-      diary:{},
-      cats:{income:[...DEF_INC],gasto:[...DEF_GAS],ahorro:[...DEF_AHO],inv:[...DEF_INV],deuda:[...DEF_DEU]},
-      budgets:{'🛒 Supermercado':400,'🍽️ Restaurantes':250,'☕ Cafés':80,'👕 Ropa y calzado':200}
-    };
-    // Diary is now weekly and lives at DB._diary — starts empty for sample data.
-  });
 }
 
 // ═══════════════════════════════════
@@ -2820,7 +3325,7 @@ function renderIngresos(){
     <div class="entry-icon">🔄</div>
     <div class="entry-main"><div class="entry-desc">Saldo del mes anterior</div></div>
     <div class="entry-right">
-      <input type="number" class="finput" style="width:110px;text-align:right" value="${saldoAnt}" onchange="saveSaldoAnt(this.value)">
+      <input type="number" inputmode="decimal" pattern="[0-9]*" class="finput" style="width:110px;text-align:right" value="${saldoAnt}" onchange="saveSaldoAnt(this.value)">
     </div>
   </div>
   <div class="divider"></div>
@@ -2878,7 +3383,7 @@ function renderIngresos(){
           <div class="entry-icon" style="font-size:14px">${e.cat.split(' ')[0]}</div>
           <div class="entry-main">
             <div class="entry-desc" style="font-size:12px;font-weight:600">${e.cat.split(' ').slice(1).join(' ')}</div>
-            <div class="entry-cat" style="font-size:11px">${e.desc}</div>
+            <div class="entry-cat" style="font-size:11px">${e.desc}${e.date?` · ${fmtEntryDate(e.date)}`:''}</div>
           </div>
           <div class="entry-right" style="flex-direction:column;align-items:flex-end;gap:2px">
             <div class="entry-amt pos" style="font-size:13px">${fmt(e.amt)}</div>
@@ -3326,6 +3831,10 @@ function openAddInc(){
       <input id="f-amt" class="finput" type="number" inputmode="decimal" pattern="[0-9]*"
         placeholder="Importe" style="font-size:20px;font-weight:700;letter-spacing:-.02em">
     </div>
+    <div class="form-row">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px;font-family:'Inter',sans-serif">📅 Fecha</div>
+      <input id="f-date" class="finput" type="date" value="${defaultDateForNavMonth()}" min="${firstDayOfNavMonth()}" max="${lastDayOfNavMonth()}">
+    </div>
     <div style="margin-bottom:14px">
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;font-family:'Inter',sans-serif">Categoría</div>
       <div class="inc-cat-selected" id="inc-cat-selected" onclick="toggleIncCatPicker()">
@@ -3420,10 +3929,11 @@ function saveInc(){
   const desc=descEl.value.trim();
   const amt=parseFloat(amtEl.value)||0;
   const cat=document.getElementById('f-cat').value;
+  const date=dateStrToMs(document.getElementById('f-date').value);
   if(!desc){descEl.style.borderColor='var(--red)';descEl.focus();return;}
   if(!amt){amtEl.style.borderColor='var(--red)';amtEl.focus();return;}
   if(!cat){document.getElementById('inc-cat-selected').style.borderColor='var(--red)';return;}
-  getMonth().income.entries.push({id:uid(),desc,amt,cat});persist();closeModal();render();
+  getMonth().income.entries.push({id:uid(),desc,amt,cat,date});persist();closeModal();render();
 }
 function delInc(id){
   const d=getMonth();
@@ -3529,6 +4039,10 @@ function editInc(id){
         value="${e.amt}" placeholder="Importe"
         style="font-size:20px;font-weight:700;letter-spacing:-.02em">
     </div>
+    <div class="form-row">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px;font-family:'Inter',sans-serif">📅 Fecha</div>
+      <input id="e-date" class="finput" type="date" value="${msToDateStr(e.date)||defaultDateForNavMonth()}" min="${firstDayOfNavMonth()}" max="${lastDayOfNavMonth()}">
+    </div>
     <div style="margin-bottom:14px">
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;font-family:'Inter',sans-serif">Categoría</div>
       <div class="inc-cat-selected" id="edit-cat-selected" onclick="toggleEditIncCatPicker()">
@@ -3631,10 +4145,11 @@ function saveEditInc(id){
   const desc=descEl.value.trim();
   const amt=parseFloat(amtEl.value)||0;
   const cat=document.getElementById('e-cat').value;
+  const date=dateStrToMs(document.getElementById('e-date').value);
   if(!desc){descEl.style.borderColor='var(--red)';descEl.focus();return;}
   if(!amt){amtEl.style.borderColor='var(--red)';amtEl.focus();return;}
   if(!cat){document.getElementById('edit-cat-selected').style.borderColor='var(--red)';return;}
-  e.desc=desc;e.amt=amt;e.cat=cat;
+  e.desc=desc;e.amt=amt;e.cat=cat;e.date=date;
   persist();closeModal();render();
 }
 
@@ -3714,7 +4229,7 @@ function renderGastos(){
           <div class="entry-icon" style="font-size:14px">${e.cat.split(' ')[0]}</div>
           <div class="entry-main">
             <div class="entry-desc" style="font-size:12px;font-weight:600">${e.cat.split(' ').slice(1).join(' ')}${overSub?`<span style="color:var(--red);font-size:10px;margin-left:4px">⚠️</span>`:''}</div>
-            <div class="entry-cat" style="font-size:11px">${e.desc}${subBudget?` · ${fmt(subBudget)} presupuestado`:''}</div>
+            <div class="entry-cat" style="font-size:11px">${e.desc}${e.date?` · ${fmtEntryDate(e.date)}`:''}${subBudget?` · ${fmt(subBudget)} presupuestado`:''}</div>
           </div>
           <div class="entry-right" style="flex-direction:column;align-items:flex-end;gap:2px">
             <div class="entry-amt neg" style="font-size:13px">${fmt(e.amt)}</div>
@@ -3781,6 +4296,10 @@ function editGasto(id){
       <input id="e-amt" class="finput" type="number" inputmode="decimal" pattern="[0-9]*"
         value="${e.amt}" placeholder="Importe"
         style="font-size:20px;font-weight:700;letter-spacing:-.02em">
+    </div>
+    <div class="form-row">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px;font-family:'Inter',sans-serif">📅 Fecha</div>
+      <input id="e-date" class="finput" type="date" value="${msToDateStr(e.date)||defaultDateForNavMonth()}" min="${firstDayOfNavMonth()}" max="${lastDayOfNavMonth()}">
     </div>
     <div style="margin-bottom:14px">
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;font-family:'Inter',sans-serif">Categoría</div>
@@ -3883,10 +4402,11 @@ function saveEditGasto(id){
   const desc=descEl.value.trim();
   const amt=parseFloat(amtEl.value)||0;
   const cat=document.getElementById('e-cat').value;
+  const date=dateStrToMs(document.getElementById('e-date').value);
   if(!desc){descEl.style.borderColor='var(--red)';descEl.focus();return;}
   if(!amt){amtEl.style.borderColor='var(--red)';amtEl.focus();return;}
   if(!cat){document.getElementById('edit-gas-cat-selected').style.borderColor='var(--red)';return;}
-  e.desc=desc;e.amt=amt;e.cat=cat;
+  e.desc=desc;e.amt=amt;e.cat=cat;e.date=date;
   persist();closeModal();render();
 }
 
@@ -3997,6 +4517,10 @@ function openAddGasto(){
       <input id="f-amt" class="finput" type="number" inputmode="decimal" pattern="[0-9]*"
         placeholder="Importe" style="font-size:20px;font-weight:700;letter-spacing:-.02em">
     </div>
+    <div class="form-row">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px;font-family:'Inter',sans-serif">📅 Fecha</div>
+      <input id="f-date" class="finput" type="date" value="${defaultDateForNavMonth()}" min="${firstDayOfNavMonth()}" max="${lastDayOfNavMonth()}">
+    </div>
     <div style="margin-bottom:14px">
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;font-family:'Inter',sans-serif">Categoría</div>
       <div class="inc-cat-selected" id="gas-cat-selected" onclick="toggleGasCatPicker()">
@@ -4086,10 +4610,11 @@ function saveGasto(){
   const desc=descEl.value.trim();
   const amt=parseFloat(amtEl.value)||0;
   const cat=document.getElementById('f-cat').value;
+  const date=dateStrToMs(document.getElementById('f-date').value);
   if(!desc){descEl.style.borderColor='var(--red)';descEl.focus();return;}
   if(!amt){amtEl.style.borderColor='var(--red)';amtEl.focus();return;}
   if(!cat){document.getElementById('gas-cat-selected').style.borderColor='var(--red)';return;}
-  getMonth().gastos.push({id:uid(),desc,amt,cat});persist();closeModal();render();
+  getMonth().gastos.push({id:uid(),desc,amt,cat,date});persist();closeModal();render();
 }
 function delGasto(id){
   const d=getMonth();
@@ -4144,20 +4669,56 @@ function delGasto(id){
 // mode actually used ('mensual' | 'anual'), and label is the display string.
 // Fallback logic: if the user has the toggle on 'anual' but only a mensual
 // meta exists, we still show mensual (and vice versa) — never hide useful info.
+// Resolve which meta value to show given the active toggle (mensual/anual).
+// Rules:
+//   - If the user defined BOTH metas, respect whichever matches the viewMode.
+//   - If the user defined ONLY ONE, auto-convert to the requested view
+//     (mensual→anual = ×12; anual→mensual = ÷12). The `converted` flag
+//     is true in that case so the UI can label it honestly.
+//   - Returns {value:0,...} when neither meta is set.
 function resolveMeta(e, viewMode){
   const mensual=+e.meta||0;
   const anual=+e.metaAnnual||0;
   if(viewMode==='anual'){
-    if(anual>0)return {value:anual, mode:'anual', label:'Meta anual'};
-    if(mensual>0)return {value:mensual, mode:'mensual', label:'Meta mensual'};
+    if(anual>0)return {value:anual, mode:'anual', label:'Meta anual', converted:false};
+    if(mensual>0)return {value:mensual*12, mode:'anual', label:'Meta anual', converted:true};
   } else {
-    if(mensual>0)return {value:mensual, mode:'mensual', label:'Meta mensual'};
-    if(anual>0)return {value:anual, mode:'anual', label:'Meta anual'};
+    if(mensual>0)return {value:mensual, mode:'mensual', label:'Meta mensual', converted:false};
+    if(anual>0)return {value:anual/12, mode:'mensual', label:'Meta mensual', converted:true};
   }
-  return {value:0, mode:viewMode, label:''};
+  return {value:0, mode:viewMode, label:'', converted:false};
 }
 
-// Toggle the view mode for either ahorro or inversion and re-render.
+// Compute how much has been contributed to a given category under the active view mode.
+//   - type: 'ahorro' | 'inversion'
+//   - viewMode: 'mensual' → sum of contributions in the current month only
+//               'anual'   → sum of contributions from January up to (and including) the current month
+// The "current month" is driven by global cM/cY (the month the user is viewing).
+// This matches the Housel-style philosophy: goals track behavior across a category,
+// not individual transactions.
+function computeCatMetaProgress(cat, type, viewMode){
+  if(!cat)return 0;
+  const listKey=type==='inversion'?'inversion':'ahorro';
+  let total=0;
+  if(viewMode==='anual'){
+    // Accumulate from January (m=0) through the current month (cM) in year cY
+    for(let m=0;m<=cM;m++){
+      const k=mKey(m,cY);if(!DB[k])continue;
+      (DB[k][listKey]||[]).forEach(x=>{
+        if((x.cat||'')===cat)total+=(+x.amt||0);
+      });
+    }
+  } else {
+    // Only the current month
+    const k=mKey(cM,cY);if(!DB[k])return 0;
+    (DB[k][listKey]||[]).forEach(x=>{
+      if((x.cat||'')===cat)total+=(+x.amt||0);
+    });
+  }
+  return total;
+}
+
+
 function setViewMode(tab, mode){
   if(tab==='ahorro')viewModeAho=mode;
   else if(tab==='inversion')viewModeInv=mode;
@@ -4226,17 +4787,24 @@ function renderAhorro(){
       </div>`;
 
       html+=`<div id="${groupId}" style="max-height:0;overflow:hidden;transition:max-height .38s cubic-bezier(.4,0,.2,1);">`;
+      const seenCats=new Set(); // show the progress bar only once per category within this bucket
       bucket.entries.forEach(e=>{
         const pct=Math.round(((+e.amt||0)/totalIng)*100);
         const resolvedMeta=resolveMeta(e, viewModeAho);
         const metaVal=resolvedMeta.value;
-        const metaPct=metaVal>0?Math.min(100,Math.round(((+e.amt||0)/metaVal)*100)):0;
+        const isFirstInCat=!seenCats.has(e.cat);
+        if(isFirstInCat)seenCats.add(e.cat);
+        // Accumulated contribution for the category across the relevant window
+        const catContrib=metaVal>0?computeCatMetaProgress(e.cat,'ahorro',viewModeAho):0;
+        const metaPct=metaVal>0?Math.min(100,Math.round((catContrib/metaVal)*100)):0;
+        const showBar=metaVal>0&&isFirstInCat;
+        const convertedNote=resolvedMeta.converted?' · convertida':'';
         html+=`<div class="entry" style="margin-left:16px;margin-bottom:3px;border-style:dashed;opacity:.92;cursor:pointer;flex-direction:column;align-items:stretch" onclick="editAho('${e.id}')">
           <div style="display:flex;align-items:center;gap:9px">
             <div class="entry-icon" style="font-size:14px">${e.cat.split(' ')[0]}</div>
             <div class="entry-main">
               <div class="entry-desc" style="font-size:12px;font-weight:600">${e.cat.split(' ').slice(1).join(' ')}</div>
-              <div class="entry-cat" style="font-size:11px">${e.desc}${metaVal>0?` · ${resolvedMeta.label}: ${fmt(metaVal)}`:''}</div>
+              <div class="entry-cat" style="font-size:11px">${e.desc}${e.date?` · ${fmtEntryDate(e.date)}`:''}${metaVal>0?` · ${resolvedMeta.label}: ${fmt(metaVal)}${convertedNote}`:''}</div>
             </div>
             <div class="entry-right" style="flex-direction:column;align-items:flex-end;gap:2px">
               <div class="entry-amt pos" style="font-size:13px">${fmt(e.amt)}</div>
@@ -4244,9 +4812,9 @@ function renderAhorro(){
             </div>
             <button class="entry-del" onclick="event.stopPropagation();delAho('${e.id}')">✕</button>
           </div>
-          ${metaVal>0?`<div class="prog-wrap" style="padding-left:37px">
+          ${showBar?`<div class="prog-wrap" style="padding-left:37px">
             <div class="prog-track"><div class="prog-fill green" style="width:${metaPct}%"></div></div>
-            <div class="prog-labels"><span>${metaPct}% completado</span><span>${resolvedMeta.label}: ${fmt(metaVal)}</span></div>
+            <div class="prog-labels"><span>${fmt(catContrib)} de ${fmt(metaVal)} · ${metaPct}%</span><span>${resolvedMeta.label}${convertedNote}</span></div>
           </div>`:''}
         </div>`;
       });
@@ -4300,6 +4868,10 @@ function openAddAho(){
     <div class="form-row">
       <input id="f-amt" class="finput" type="number" inputmode="decimal" pattern="[0-9]*"
         placeholder="Aportación este mes" style="font-size:20px;font-weight:700;letter-spacing:-.02em">
+    </div>
+    <div class="form-row">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px;font-family:'Inter',sans-serif">📅 Fecha</div>
+      <input id="f-date" class="finput" type="date" value="${defaultDateForNavMonth()}" min="${firstDayOfNavMonth()}" max="${lastDayOfNavMonth()}">
     </div>
     <div class="form-row" style="display:flex;gap:8px">
       <input id="f-meta" class="finput" type="number" inputmode="decimal"
@@ -4397,10 +4969,11 @@ function saveAho(){
   const cat=document.getElementById('f-cat').value;
   const meta=parseFloat(document.getElementById('f-meta').value)||0;
   const metaAnnual=parseFloat(document.getElementById('f-meta-annual').value)||0;
+  const date=dateStrToMs(document.getElementById('f-date').value);
   if(!desc){descEl.style.borderColor='var(--red)';descEl.focus();return;}
   if(!amt){amtEl.style.borderColor='var(--red)';amtEl.focus();return;}
   if(!cat){document.getElementById('aho-cat-selected').style.borderColor='var(--red)';return;}
-  getMonth().ahorro.push({id:uid(),desc,amt,cat,meta,metaAnnual});persist();closeModal();render();
+  getMonth().ahorro.push({id:uid(),desc,amt,cat,meta,metaAnnual,date});persist();closeModal();render();
 }
 
 function delAho(id){
@@ -4474,6 +5047,10 @@ function editAho(id){
       <input id="e-amt" class="finput" type="number" inputmode="decimal" pattern="[0-9]*"
         value="${e.amt}" placeholder="Aportación"
         style="font-size:20px;font-weight:700;letter-spacing:-.02em">
+    </div>
+    <div class="form-row">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px;font-family:'Inter',sans-serif">📅 Fecha</div>
+      <input id="e-date" class="finput" type="date" value="${msToDateStr(e.date)||defaultDateForNavMonth()}" min="${firstDayOfNavMonth()}" max="${lastDayOfNavMonth()}">
     </div>
     <div class="form-row" style="display:flex;gap:8px">
       <input id="e-meta" class="finput" type="number" inputmode="decimal"
@@ -4583,10 +5160,11 @@ function saveEditAho(id){
   const cat=document.getElementById('e-cat').value;
   const meta=parseFloat(document.getElementById('e-meta').value)||0;
   const metaAnnual=parseFloat(document.getElementById('e-meta-annual').value)||0;
+  const date=dateStrToMs(document.getElementById('e-date').value);
   if(!desc){descEl.style.borderColor='var(--red)';descEl.focus();return;}
   if(!amt){amtEl.style.borderColor='var(--red)';amtEl.focus();return;}
   if(!cat){document.getElementById('edit-aho-cat-selected').style.borderColor='var(--red)';return;}
-  e.desc=desc;e.amt=amt;e.cat=cat;e.meta=meta;e.metaAnnual=metaAnnual;
+  e.desc=desc;e.amt=amt;e.cat=cat;e.meta=meta;e.metaAnnual=metaAnnual;e.date=date;
   persist();closeModal();render();
 }
 
@@ -4834,8 +5412,8 @@ function openAhoCatMgr(searchVal){
     <div class="catmgr-search">
       <span class="lupa">🔍</span>
       <input id="ahcatmgr-q" placeholder="Buscar categoría…" value="${searchVal||''}"
-        oninput="openAhoCatMgr(this.value)" autocomplete="off">
-      ${q?`<button onclick="openAhoCatMgr('')" style="background:none;border:none;color:var(--ink4);cursor:pointer;font-size:16px;padding:0">✕</button>`:''}
+        oninput="catMgrLiveFilter(this.value)" autocomplete="off">
+      <button class="catmgr-search-clear" onclick="const i=document.getElementById('acatmgr-q');if(i){i.value='';i.focus();}catMgrLiveFilter('');">✕</button>
     </div>
     <div id="ahcatmgr-groups">${groupsHtml||'<div class="empty">Sin resultados para "'+q+'"</div>'}</div>
     <div class="catmgr-add-group">
@@ -4961,17 +5539,23 @@ function renderInversion(){
         </div>
       </div>`;
       html+=`<div id="${groupId}" style="max-height:0;overflow:hidden;transition:max-height .38s cubic-bezier(.4,0,.2,1);">`;
+      const seenCats=new Set();
       bucket.entries.forEach(e=>{
         const pct=Math.round(((+e.amt||0)/totalIng)*100);
         const resolvedMeta=resolveMeta(e, viewModeInv);
         const metaVal=resolvedMeta.value;
-        const metaPct=metaVal>0?Math.min(100,Math.round(((+e.amt||0)/metaVal)*100)):0;
+        const isFirstInCat=!seenCats.has(e.cat);
+        if(isFirstInCat)seenCats.add(e.cat);
+        const catContrib=metaVal>0?computeCatMetaProgress(e.cat,'inversion',viewModeInv):0;
+        const metaPct=metaVal>0?Math.min(100,Math.round((catContrib/metaVal)*100)):0;
+        const showBar=metaVal>0&&isFirstInCat;
+        const convertedNote=resolvedMeta.converted?' · convertida':'';
         html+=`<div class="entry" style="margin-left:16px;margin-bottom:3px;border-style:dashed;opacity:.92;cursor:pointer;flex-direction:column;align-items:stretch" onclick="editInv('${e.id}')">
           <div style="display:flex;align-items:center;gap:9px">
             <div class="entry-icon" style="font-size:14px">${e.cat.split(' ')[0]}</div>
             <div class="entry-main">
               <div class="entry-desc" style="font-size:12px;font-weight:600">${e.cat.split(' ').slice(1).join(' ')}</div>
-              <div class="entry-cat" style="font-size:11px">${e.desc}${metaVal>0?` · ${resolvedMeta.label}: ${fmt(metaVal)}`:''}</div>
+              <div class="entry-cat" style="font-size:11px">${e.desc}${e.date?` · ${fmtEntryDate(e.date)}`:''}${metaVal>0?` · ${resolvedMeta.label}: ${fmt(metaVal)}${convertedNote}`:''}</div>
             </div>
             <div class="entry-right" style="flex-direction:column;align-items:flex-end;gap:2px">
               <div class="entry-amt inv" style="font-size:13px">${fmt(e.amt)}</div>
@@ -4979,9 +5563,9 @@ function renderInversion(){
             </div>
             <button class="entry-del" onclick="event.stopPropagation();delInv('${e.id}')">✕</button>
           </div>
-          ${metaVal>0?`<div class="prog-wrap" style="padding-left:37px">
+          ${showBar?`<div class="prog-wrap" style="padding-left:37px">
             <div class="prog-track"><div class="prog-fill blue" style="width:${metaPct}%"></div></div>
-            <div class="prog-labels"><span>${metaPct}% de ${resolvedMeta.mode==='anual'?'meta anual':'meta mensual'}</span><span>${resolvedMeta.label}: ${fmt(metaVal)}</span></div>
+            <div class="prog-labels"><span>${fmt(catContrib)} de ${fmt(metaVal)} · ${metaPct}%</span><span>${resolvedMeta.label}${convertedNote}</span></div>
           </div>`:''}
         </div>`;
       });
@@ -5016,6 +5600,10 @@ function openAddInv(){
   openModal(`<div class="modal-title">📈 Nueva Inversión<button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="form-row"><input id="f-desc" class="finput" placeholder="Descripción (ej: DCA VUSA)"></div>
     <div class="form-row"><input id="f-amt" class="finput" type="number" inputmode="decimal" placeholder="Importe este mes" style="font-size:20px;font-weight:700;letter-spacing:-.02em"></div>
+    <div class="form-row">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px;font-family:'Inter',sans-serif">📅 Fecha</div>
+      <input id="f-date" class="finput" type="date" value="${defaultDateForNavMonth()}" min="${firstDayOfNavMonth()}" max="${lastDayOfNavMonth()}">
+    </div>
     <div class="form-row" style="display:flex;gap:8px">
       <input id="f-meta" class="finput" type="number" inputmode="decimal" placeholder="Meta mensual (opcional)" style="flex:1">
       <input id="f-meta-annual" class="finput" type="number" inputmode="decimal" placeholder="Meta anual (opcional)" style="flex:1">
@@ -5043,10 +5631,11 @@ function saveInv(){
   const cat=document.getElementById('f-cat').value;
   const meta=parseFloat(document.getElementById('f-meta').value)||0;
   const metaAnnual=parseFloat(document.getElementById('f-meta-annual').value)||0;
+  const date=dateStrToMs(document.getElementById('f-date').value);
   if(!desc){descEl.style.borderColor='var(--red)';descEl.focus();return;}
   if(!amt){amtEl.style.borderColor='var(--red)';amtEl.focus();return;}
   if(!cat){document.getElementById('inv-cat-selected').style.borderColor='var(--red)';return;}
-  getMonth().inversion.push({id:uid(),desc,amt,cat,meta,metaAnnual});persist();closeModal();render();
+  getMonth().inversion.push({id:uid(),desc,amt,cat,meta,metaAnnual,date});persist();closeModal();render();
 }
 
 function delInv(id){
@@ -5067,6 +5656,10 @@ function editInv(id){
   openModal(`<div class="modal-title">✏️ Editar Inversión<button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="form-row"><input id="e-desc" class="finput" placeholder="Descripción" value="${e.desc.replace(/"/g,'&quot;')}"></div>
     <div class="form-row"><input id="e-amt" class="finput" type="number" inputmode="decimal" value="${e.amt}" placeholder="Importe" style="font-size:20px;font-weight:700;letter-spacing:-.02em"></div>
+    <div class="form-row">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px;font-family:'Inter',sans-serif">📅 Fecha</div>
+      <input id="e-date" class="finput" type="date" value="${msToDateStr(e.date)||defaultDateForNavMonth()}" min="${firstDayOfNavMonth()}" max="${lastDayOfNavMonth()}">
+    </div>
     <div class="form-row" style="display:flex;gap:8px">
       <input id="e-meta" class="finput" type="number" inputmode="decimal" value="${e.meta||''}" placeholder="Meta mensual (opcional)" style="flex:1">
       <input id="e-meta-annual" class="finput" type="number" inputmode="decimal" value="${e.metaAnnual||''}" placeholder="Meta anual (opcional)" style="flex:1">
@@ -5096,10 +5689,11 @@ function saveEditInv(id){
   const cat=document.getElementById('e-cat').value;
   const meta=parseFloat(document.getElementById('e-meta').value)||0;
   const metaAnnual=parseFloat(document.getElementById('e-meta-annual').value)||0;
+  const date=dateStrToMs(document.getElementById('e-date').value);
   if(!desc){descEl.style.borderColor='var(--red)';descEl.focus();return;}
   if(!amt){amtEl.style.borderColor='var(--red)';amtEl.focus();return;}
   if(!cat){document.getElementById('edit-inv-cat-selected').style.borderColor='var(--red)';return;}
-  e.desc=desc;e.amt=amt;e.cat=cat;e.meta=meta;e.metaAnnual=metaAnnual;persist();closeModal();render();
+  e.desc=desc;e.amt=amt;e.cat=cat;e.meta=meta;e.metaAnnual=metaAnnual;e.date=date;persist();closeModal();render();
 }
 
 /* ─── INVERSIÓN CHART ─── */
@@ -5216,7 +5810,7 @@ function openInvCatMgr(searchVal){
     groupsHtml+=`<div class="catmgr-group"><div class="catmgr-group-hdr${isOpen?' open':''}" onclick="toggleCatGroup(this)"><span>${grp.g}<span class="catmgr-count">(${grp.subs.length})</span></span><div style="display:flex;align-items:center;gap:8px"><button onclick="event.stopPropagation();delInvGroup(${gi})" style="background:none;border:none;color:var(--ink4);font-size:12px;cursor:pointer;padding:2px 4px" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--ink4)'">🗑</button><span class="toggle">›</span></div></div><div class="catmgr-group-body${isOpen?' open':''}"><div style="padding:0 8px 4px">${subsHtml}</div><div class="catmgr-add-sub"><input id="ivnewsub-emoji-${gi}" placeholder="🏷️" style="max-width:46px;text-align:center"><input id="ivnewsub-name-${gi}" placeholder="Nueva subcategoría…" onkeydown="if(event.key==='Enter')addInvSub(${gi})"><button onclick="addInvSub(${gi})">+ Añadir</button></div></div></div>`;
   });
   openModal(`<div class="modal-title">📈 Categorías de Inversión<button class="modal-close" onclick="closeModal()">✕</button></div>
-    <div class="catmgr-search"><span class="lupa">🔍</span><input id="ivcatmgr-q" placeholder="Buscar categoría…" value="${searchVal||''}" oninput="openInvCatMgr(this.value)" autocomplete="off">${q?`<button onclick="openInvCatMgr('')" style="background:none;border:none;color:var(--ink4);cursor:pointer;font-size:16px;padding:0">✕</button>`:''}</div>
+    <div class="catmgr-search"><span class="lupa">🔍</span><input id="ivcatmgr-q" placeholder="Buscar categoría…" value="${searchVal||''}" oninput="catMgrLiveFilter(this.value)" autocomplete="off"><button class="catmgr-search-clear" onclick="const i=document.getElementById('ivcatmgr-q');if(i){i.value='';i.focus();}catMgrLiveFilter('');">✕</button></div>
     <div>${groupsHtml||'<div class="empty">Sin resultados</div>'}</div>
     <div class="catmgr-add-group"><input id="ivnewgrp-emoji" placeholder="📁" style="max-width:46px;text-align:center"><input id="ivnewgrp-name" placeholder="Nuevo grupo…" onkeydown="if(event.key==='Enter')addInvGroup()"><button onclick="addInvGroup()">+ Grupo</button></div>`);
   if(q)setTimeout(()=>{const el=document.getElementById('ivcatmgr-q');if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length);}},50);
@@ -5295,7 +5889,7 @@ function renderDeudas(){
           <div class="entry-icon" style="font-size:14px">${e.cat.split(' ')[0]}</div>
           <div class="entry-main">
             <div class="entry-desc" style="font-size:12px;font-weight:600">${e.cat.split(' ').slice(1).join(' ')}</div>
-            <div class="entry-cat" style="font-size:11px">${e.desc}</div>
+            <div class="entry-cat" style="font-size:11px">${e.desc}${e.date?` · ${fmtEntryDate(e.date)}`:''}</div>
           </div>
           <div class="entry-right" style="flex-direction:column;align-items:flex-end;gap:2px">
             <div class="entry-amt neg" style="font-size:13px">${fmt(e.amt)}</div>
@@ -5332,6 +5926,10 @@ function openAddDeu(){
   openModal(`<div class="modal-title">💳 Nuevo Pago<button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="form-row"><input id="f-desc" class="finput" placeholder="Descripción (ej: Cuota AMEX enero)"></div>
     <div class="form-row"><input id="f-amt" class="finput" type="number" inputmode="decimal" placeholder="Importe pagado" style="font-size:20px;font-weight:700;letter-spacing:-.02em"></div>
+    <div class="form-row">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px;font-family:'Inter',sans-serif">📅 Fecha</div>
+      <input id="f-date" class="finput" type="date" value="${defaultDateForNavMonth()}" min="${firstDayOfNavMonth()}" max="${lastDayOfNavMonth()}">
+    </div>
     <div style="margin-bottom:14px">
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;font-family:'Inter',sans-serif">Categoría</div>
       <div class="inc-cat-selected" id="deu-cat-selected" onclick="toggleDeuCatPicker()"><span id="deu-cat-selected-txt" style="color:var(--ink4)">Seleccionar categoría…</span><span style="color:var(--ink4);font-size:12px">▾</span></div>
@@ -5352,10 +5950,11 @@ function filterDeuCats(q){const term=q.toLowerCase().trim();const groups=getDeuG
 function saveDeu(){
   const descEl=document.getElementById('f-desc');const amtEl=document.getElementById('f-amt');
   const desc=descEl.value.trim();const amt=parseFloat(amtEl.value)||0;const cat=document.getElementById('f-cat').value;
+  const date=dateStrToMs(document.getElementById('f-date').value);
   if(!desc){descEl.style.borderColor='var(--red)';descEl.focus();return;}
   if(!amt){amtEl.style.borderColor='var(--red)';amtEl.focus();return;}
   if(!cat){document.getElementById('deu-cat-selected').style.borderColor='var(--red)';return;}
-  getMonth().deudas.push({id:uid(),desc,amt,cat});persist();closeModal();render();
+  getMonth().deudas.push({id:uid(),desc,amt,cat,date});persist();closeModal();render();
 }
 
 function delDeu(id){
@@ -5378,6 +5977,10 @@ function editDeu(id){
   openModal(`<div class="modal-title">✏️ Editar Pago<button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="form-row"><input id="e-desc" class="finput" placeholder="Descripción" value="${e.desc.replace(/"/g,'&quot;')}"></div>
     <div class="form-row"><input id="e-amt" class="finput" type="number" inputmode="decimal" value="${e.amt}" placeholder="Importe" style="font-size:20px;font-weight:700;letter-spacing:-.02em"></div>
+    <div class="form-row">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px;font-family:'Inter',sans-serif">📅 Fecha</div>
+      <input id="e-date" class="finput" type="date" value="${msToDateStr(e.date)||defaultDateForNavMonth()}" min="${firstDayOfNavMonth()}" max="${lastDayOfNavMonth()}">
+    </div>
     <div style="margin-bottom:14px">
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;font-family:'Inter',sans-serif">Categoría</div>
       <div class="inc-cat-selected" id="edit-deu-cat-selected" onclick="toggleEditDeuCatPicker()"><span id="edit-deu-cat-selected-txt"><span style="font-size:15px;margin-right:6px">${e.cat.split(' ')[0]}</span><span style="color:var(--ink);font-weight:600">${e.cat.split(' ').slice(1).join(' ')}</span></span><span style="color:var(--ink4);font-size:12px">▾</span></div>
@@ -5400,10 +6003,11 @@ function saveEditDeu(id){
   const d=getMonth();const e=d.deudas.find(x=>x.id===id);if(!e)return;
   const descEl=document.getElementById('e-desc');const amtEl=document.getElementById('e-amt');
   const desc=descEl.value.trim();const amt=parseFloat(amtEl.value)||0;const cat=document.getElementById('e-cat').value;
+  const date=dateStrToMs(document.getElementById('e-date').value);
   if(!desc){descEl.style.borderColor='var(--red)';descEl.focus();return;}
   if(!amt){amtEl.style.borderColor='var(--red)';amtEl.focus();return;}
   if(!cat){document.getElementById('edit-deu-cat-selected').style.borderColor='var(--red)';return;}
-  e.desc=desc;e.amt=amt;e.cat=cat;persist();closeModal();render();
+  e.desc=desc;e.amt=amt;e.cat=cat;e.date=date;persist();closeModal();render();
 }
 
 /* ─── DEUDAS CHART ─── */
@@ -5511,7 +6115,7 @@ function openDeuCatMgr(searchVal){
     groupsHtml+=`<div class="catmgr-group"><div class="catmgr-group-hdr${isOpen?' open':''}" onclick="toggleCatGroup(this)"><span>${grp.g}<span class="catmgr-count">(${grp.subs.length})</span></span><div style="display:flex;align-items:center;gap:8px"><button onclick="event.stopPropagation();delDeuGroup(${gi})" style="background:none;border:none;color:var(--ink4);font-size:12px;cursor:pointer;padding:2px 4px" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--ink4)'">🗑</button><span class="toggle">›</span></div></div><div class="catmgr-group-body${isOpen?' open':''}"><div style="padding:0 8px 4px">${subsHtml}</div><div class="catmgr-add-sub"><input id="dunewsub-emoji-${gi}" placeholder="🏷️" style="max-width:46px;text-align:center"><input id="dunewsub-name-${gi}" placeholder="Nueva subcategoría…" onkeydown="if(event.key==='Enter')addDeuSub(${gi})"><button onclick="addDeuSub(${gi})">+ Añadir</button></div></div></div>`;
   });
   openModal(`<div class="modal-title">💳 Categorías de Deudas<button class="modal-close" onclick="closeModal()">✕</button></div>
-    <div class="catmgr-search"><span class="lupa">🔍</span><input id="ducatmgr-q" placeholder="Buscar categoría…" value="${searchVal||''}" oninput="openDeuCatMgr(this.value)" autocomplete="off">${q?`<button onclick="openDeuCatMgr('')" style="background:none;border:none;color:var(--ink4);cursor:pointer;font-size:16px;padding:0">✕</button>`:''}</div>
+    <div class="catmgr-search"><span class="lupa">🔍</span><input id="ducatmgr-q" placeholder="Buscar categoría…" value="${searchVal||''}" oninput="catMgrLiveFilter(this.value)" autocomplete="off"><button class="catmgr-search-clear" onclick="const i=document.getElementById('ducatmgr-q');if(i){i.value='';i.focus();}catMgrLiveFilter('');">✕</button></div>
     <div>${groupsHtml||'<div class="empty">Sin resultados</div>'}</div>
     <div class="catmgr-add-group"><input id="dunewgrp-emoji" placeholder="📁" style="max-width:46px;text-align:center"><input id="dunewgrp-name" placeholder="Nuevo grupo…" onkeydown="if(event.key==='Enter')addDeuGroup()"><button onclick="addDeuGroup()">+ Grupo</button></div>`);
   if(q)setTimeout(()=>{const el=document.getElementById('ducatmgr-q');if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length);}},50);
@@ -5562,11 +6166,22 @@ function renderDiario(){
 
     ${renderDiaryHero(area)}
 
+    <div class="dw-section-head">
+      <div class="dw-section-kicker">📋 Mi lista de espera</div>
+      <div class="dw-section-sub">Antes de comprar por impulso, anótalo aquí. Después de unos días, vas a poder releerlo y decidir con la cabeza fría.</div>
+    </div>
+
+    ${renderWaitlistSection()}
+
     ${renderWeekStrip(strip,currentKey)}
 
     ${renderDiaryEntryCard(area,entry,isFuture)}
 
     ${renderDiaryStateCard(state,area,entry)}
+
+    ${renderDiaryLayer2Card()}
+
+    ${renderDiaryLayer3Card()}
 
     ${renderReflectionCard(entry,isFuture)}
 
@@ -5583,6 +6198,587 @@ function renderDiaryHero(area){
     <div class="dw-hero-kicker">Tu dinero no empieza en tu cuenta.<br>Empieza en tu mente.</div>
     <div class="dw-hero-sub">Cada semana, entiende cómo estás tomando decisiones. Sin juicios. Solo claridad.</div>
   </div>`;
+}
+
+// ═══════════════════════════════════
+// WAIT LIST — render (sub-section of the Diary)
+// ═══════════════════════════════════
+// Shows two sections: "Esperando" (waiting items) + "Listo para decidir"
+// (ready items). Plus a collapsible history of bought/discarded items.
+// Add and Decide buttons are wired in steps 4 and 6 — for now they call
+// stubs that the user sees as "coming soon" if they tap.
+
+let wlHistoryOpen=false;
+
+// Number of days an item must spend in 'waiting' before being promoted to
+// 'ready'. The promotion runs at render time (not on a timer), so anything
+// that triggers a re-render of the Diary tab will pick up newly-eligible
+// items. Adjust freely — this is the only place to change the threshold.
+const WL_READY_DAYS=30;
+
+// Scan all waiting items and promote any that are old enough. Returns the
+// number of items promoted (useful for future toasts/notifications, but not
+// surfaced in UI yet — silent promotion keeps the experience calm).
+function wlPromoteReady(){
+  ensureWaitlistStore();
+  const cutoff=Date.now()-WL_READY_DAYS*86400000;
+  let promoted=0;
+  Object.values(DB._waitlist).forEach(it=>{
+    if(it.status==='waiting'&&it.createdAt<=cutoff){
+      transitionWaitlistItem(it.id,'ready');
+      promoted++;
+    }
+  });
+  return promoted;
+}
+
+// Returns whole days elapsed since timestamp `ts`, floored, min 0.
+function wlDaysSince(ts){
+  if(!ts)return 0;
+  const ms=Date.now()-ts;
+  return Math.max(0,Math.floor(ms/86400000));
+}
+
+// Tiny formatter for prices on items. Returns '' if no price set.
+function wlFmtPrice(item){
+  if(item.priceEst==null)return '';
+  const sym=CONFIG.currency||'€';
+  return sym+Math.round(item.priceEst).toLocaleString('en-GB');
+}
+
+// Format month/year for history rows. Uses 'updatedAt' as the decision date
+// fallback when 'decidedAt' is missing (shouldn't happen, but be defensive).
+function wlFmtHistDate(item){
+  const ts=item.decidedAt||item.updatedAt||item.createdAt;
+  const d=new Date(ts);
+  const m=MONTHS_S[d.getMonth()];
+  return `${m} ${d.getFullYear()}`;
+}
+
+function renderWaitlistSection(){
+  ensureWaitlistStore();
+  // Promote any waiting items that have crossed the WL_READY_DAYS threshold.
+  // Done at render time so we don't need timers — every Diary visit refreshes.
+  wlPromoteReady();
+  const all=getWaitlistAll();
+  const waiting=all.filter(it=>it.status==='waiting').sort((a,b)=>b.createdAt-a.createdAt);
+  const ready=all.filter(it=>it.status==='ready').sort((a,b)=>b.readyAt-a.readyAt);
+  const decided=all.filter(it=>it.status==='bought'||it.status==='discarded')
+    .sort((a,b)=>(b.decidedAt||0)-(a.decidedAt||0));
+
+  // Empty state for the whole section: cleaner than empty subsections
+  const totalActive=waiting.length+ready.length;
+  const isFullyEmpty=totalActive===0&&decided.length===0;
+
+  const waitingHtml=waiting.length
+    ? waiting.map(it=>renderWaitlistItem(it,false)).join('')
+    : `<div class="wl-empty">Nada en espera. Cuando aparezca un impulso de compra, anótalo aquí.</div>`;
+
+  const readyHtml=ready.length
+    ? `<div class="wl-section-lbl">Listo para decidir <span class="wl-section-count">${ready.length}</span></div>
+       ${ready.map(it=>renderWaitlistItem(it,true)).join('')}`
+    : '';
+
+  const historyHtml=decided.length
+    ? renderWaitlistHistory(decided)
+    : '';
+
+  if(isFullyEmpty){
+    return `
+    <div class="wl-card">
+      <div class="wl-card-head">
+        <div class="wl-title-stack">
+          <div class="wl-title">En espera</div>
+        </div>
+        <button class="wl-add-btn" onclick="wlOpenAdd()">+ Añadir</button>
+      </div>
+      <div class="wl-empty">Cuando algo te tiente, anótalo aquí. Después de unos días, vas a poder releerlo y decidir con la cabeza fría.</div>
+    </div>`;
+  }
+
+  return `
+  <div class="wl-card">
+    <div class="wl-card-head">
+      <div class="wl-title-stack">
+        <div class="wl-title">En espera</div>
+      </div>
+      <button class="wl-add-btn" onclick="wlOpenAdd()">+ Añadir</button>
+    </div>
+
+    <div class="wl-section-lbl">Esperando <span class="wl-section-count">${waiting.length}</span></div>
+    ${waitingHtml}
+
+    ${readyHtml}
+
+    ${historyHtml}
+  </div>`;
+}
+
+function renderWaitlistItem(item,isReady){
+  const name=escapeHtml(item.name);
+  const cat=item.category?escapeHtml(item.category):'';
+  const price=wlFmtPrice(item);
+  const days=wlDaysSince(item.createdAt);
+
+  // Meta line varies by state:
+  //   waiting → "{cat} · hace {N} días"            (default)
+  //              "{cat} · hace {N} días · listo en {M} días"  (when M ≤ 7)
+  //   ready   → "{cat} · esperaste {N} días"
+  let dayPhrase;
+  if(isReady){
+    dayPhrase=`esperaste ${days} días`;
+  }else if(days===0){
+    dayPhrase='recién añadido';
+  }else{
+    const remaining=WL_READY_DAYS-days;
+    if(remaining>0&&remaining<=7){
+      dayPhrase=`hace ${days} días · listo en ${remaining} ${remaining===1?'día':'días'}`;
+    }else{
+      dayPhrase=`hace ${days} días`;
+    }
+  }
+  const metaParts=[];
+  if(cat)metaParts.push(cat);
+  metaParts.push(dayPhrase);
+  const metaHtml=metaParts.map((p,i)=>
+    i===0?p:`<span class="wl-item-meta-dot">·</span> ${p}`
+  ).join(' ');
+
+  const priceHtml=price?`<div class="wl-item-price">${price}</div>`:'';
+  const decideBtn=isReady
+    ? `<button class="wl-decide-btn" onclick="wlOpenDecide('${item.id}')">Decidir</button>`
+    : '';
+  const kebab=`<button class="wl-kebab" onclick="event.stopPropagation();wlToggleMenu('${item.id}')" aria-label="Acciones">⋯</button>`;
+  const menu=wlOpenMenuId===item.id?wlRenderMenu(item):'';
+
+  const itemCls='wl-item'+(isReady?' wl-ready':'');
+
+  return `
+  <div class="${itemCls}">
+    <div class="wl-item-main">
+      <div class="wl-item-name">${name}</div>
+      <div class="wl-item-meta">${metaHtml}</div>
+    </div>
+    <div class="wl-item-right">
+      ${priceHtml}
+      ${decideBtn}
+      ${kebab}
+    </div>
+    ${menu}
+  </div>`;
+}
+
+function renderWaitlistHistory(decided){
+  const openCls=wlHistoryOpen?' wl-open':'';
+  const listHtml=wlHistoryOpen
+    ? `<div class="wl-history-list">${decided.map(renderWaitlistHistItem).join('')}</div>`
+    : '';
+  return `
+  <div class="wl-history-toggle${openCls}" onclick="wlToggleHistory()">
+    <div>Historial · ${decided.length} ${decided.length===1?'elemento':'elementos'}</div>
+    <div class="wl-history-arrow">▾</div>
+  </div>
+  ${listHtml}`;
+}
+
+function renderWaitlistHistItem(item){
+  const name=escapeHtml(item.name);
+  const tag=item.status==='bought'
+    ? '<span class="wl-hist-tag wl-bought">Comprado</span>'
+    : '<span class="wl-hist-tag wl-discarded">Descartado</span>';
+  const date=wlFmtHistDate(item);
+  const price=item.status==='bought'?wlFmtPrice(item):'';
+  const meta=price?`${date} · ${price}`:date;
+  const kebab=`<button class="wl-kebab" onclick="event.stopPropagation();wlToggleMenu('${item.id}')" aria-label="Acciones" style="padding:2px 4px;font-size:14px">⋯</button>`;
+  const menu=wlOpenMenuId===item.id?wlRenderMenu(item):'';
+  return `
+  <div class="wl-hist-item" style="position:relative">
+    <div class="wl-hist-name">
+      <span class="wl-hist-name-text">${name}</span>
+      ${tag}
+    </div>
+    <div style="display:flex;align-items:center;gap:4px">
+      <span class="wl-hist-meta">${meta}</span>
+      ${kebab}
+    </div>
+    ${menu}
+  </div>`;
+}
+
+// ----- Action menu (three-dots) -----
+// Tracks which item's menu is currently open. Only one menu open at a time.
+let wlOpenMenuId=null;
+
+function wlToggleMenu(id){
+  wlOpenMenuId=(wlOpenMenuId===id)?null:id;
+  renderTab();
+}
+
+function wlCloseMenu(){
+  if(wlOpenMenuId===null)return;
+  wlOpenMenuId=null;
+  renderTab();
+}
+
+// Returns menu HTML for the given item, contents adapted to its status.
+function wlRenderMenu(item){
+  const id=item.id;
+  const items=[];
+  if(item.status==='waiting'){
+    items.push(`<button class="wl-menu-item" onclick="event.stopPropagation();wlEdit('${id}')">Editar</button>`);
+    items.push(`<button class="wl-menu-item" onclick="event.stopPropagation();wlDiscard('${id}')">Descartar ahora</button>`);
+    items.push(`<div class="wl-menu-sep"></div>`);
+    items.push(`<button class="wl-menu-item wl-danger" onclick="event.stopPropagation();wlDelete('${id}')">Eliminar</button>`);
+  }else if(item.status==='ready'){
+    items.push(`<button class="wl-menu-item" onclick="event.stopPropagation();wlEdit('${id}')">Editar</button>`);
+    items.push(`<div class="wl-menu-sep"></div>`);
+    items.push(`<button class="wl-menu-item wl-danger" onclick="event.stopPropagation();wlDelete('${id}')">Eliminar</button>`);
+  }else{
+    // bought or discarded
+    items.push(`<button class="wl-menu-item" onclick="event.stopPropagation();wlReopen('${id}')">Volver a esperar</button>`);
+    items.push(`<div class="wl-menu-sep"></div>`);
+    items.push(`<button class="wl-menu-item wl-danger" onclick="event.stopPropagation();wlDelete('${id}')">Eliminar</button>`);
+  }
+  return `<div class="wl-menu" onclick="event.stopPropagation()">${items.join('')}</div>`;
+}
+
+// ----- Action handlers -----
+
+function wlEdit(id){
+  wlOpenMenuId=null;
+  wlOpenAdd(id); // edit mode
+}
+
+// Discard from menu — used by waiting items to skip the wait and reject.
+// Goes through the same transition as the decide flow's "discarded" path.
+function wlDiscard(id){
+  const item=getWaitlistItem(id);
+  if(!item)return;
+  if(!confirm(`¿Descartar "${item.name}"? Pasará al historial.`))return;
+  transitionWaitlistItem(id,'discarded');
+  wlOpenMenuId=null;
+  renderTab();
+}
+
+// Permanent delete. Different from discard: removes the item entirely
+// instead of moving it to history. Confirmation dialog because it's
+// irreversible.
+function wlDelete(id){
+  const item=getWaitlistItem(id);
+  if(!item)return;
+  if(!confirm(`¿Eliminar "${item.name}"? Esta acción no se puede deshacer.`))return;
+  deleteWaitlistItem(id);
+  wlOpenMenuId=null;
+  renderTab();
+}
+
+// Reopen — moves a bought/discarded item back to 'waiting' and resets
+// createdAt so the 30-day timer starts fresh. Used when the user changes
+// their mind after a decision.
+function wlReopen(id){
+  const item=getWaitlistItem(id);
+  if(!item)return;
+  // Reset the createdAt so the wait timer starts over
+  updateWaitlistItem(id,{}); // touch to update updatedAt
+  // Direct property set since transitionWaitlistItem doesn't reset createdAt
+  DB._waitlist[id].createdAt=Date.now();
+  transitionWaitlistItem(id,'waiting');
+  wlOpenMenuId=null;
+  renderTab();
+}
+
+function wlToggleHistory(){
+  wlHistoryOpen=!wlHistoryOpen;
+  renderTab();
+}
+
+// Open the "Add / Edit" modal. If `editId` is provided, the modal is in
+// edit mode and pre-fills all fields; otherwise it's add mode.
+// The category picker shares categories with the Gastos tab — when the user
+// adds a new category in Gastos, it appears here automatically (and vice
+// versa). Categories live in DB._groups.gas, the single source of truth.
+function wlOpenAdd(editId){
+  const cur=CONFIG.currency||'€';
+  const editing=!!editId;
+  const item=editing?getWaitlistItem(editId):null;
+  if(editing&&!item){
+    // Item vanished between menu open and click — fail gracefully
+    return;
+  }
+
+  const groups=getGasGroups();
+  const groupsHtml=wlBuildCatGroupsHtml(groups);
+
+  const titleTxt=editing?'✏️ Editar en espera':'⏳ Nuevo en espera';
+  const saveTxt=editing?'Guardar cambios':'Guardar en espera';
+  const saveFn=editing?`wlSaveEdit('${editId}')`:'wlSaveNew()';
+
+  // Pre-filled values for edit mode
+  const vName=editing?escapeHtml(item.name):'';
+  const vCat=editing&&item.category?item.category:'';
+  const vCatEsc=editing&&item.category?escapeHtml(item.category):'';
+  const vPrice=editing&&item.priceEst!=null?item.priceEst:'';
+  const vQ1=editing?escapeHtml(item.q1||''):'';
+  const vQ2=editing?escapeHtml(item.q2||''):'';
+
+  // Pre-rendered category selected display
+  const catSelHtml=vCat
+    ? `<span style="font-size:15px;margin-right:6px">${vCat.split(' ')[0]}</span><span style="color:var(--ink);font-weight:600">${escapeHtml(vCat.split(' ').slice(1).join(' '))}</span>`
+    : `<span style="color:var(--ink4)">Seleccionar categoría…</span>`;
+
+  openModal(`<div class="modal-title">${titleTxt}<button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="form-row">
+      <input id="wl-f-name" class="finput" placeholder="¿Qué quieres comprar?" value="${vName}" autocomplete="off">
+    </div>
+    <div class="form-row">
+      <input id="wl-f-price" class="finput" type="number" inputmode="decimal" placeholder="${cur} Precio (opcional)" value="${vPrice}" autocomplete="off">
+    </div>
+    <div style="margin-bottom:14px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;font-family:'Inter',sans-serif">Categoría (opcional)</div>
+      <div class="inc-cat-selected" id="wl-cat-selected" onclick="wlToggleCatPicker()">
+        <span id="wl-cat-selected-txt">${catSelHtml}</span>
+        <span style="color:var(--ink4);font-size:12px">▾</span>
+      </div>
+      <input type="hidden" id="wl-f-cat" value="${vCatEsc}">
+      <div class="inc-cat-picker" id="wl-cat-picker" style="display:none">
+        <div class="inc-cat-search-wrap">
+          <span style="font-size:13px;color:var(--ink4)">🔍</span>
+          <input id="wl-cat-q" class="inc-cat-search-input" placeholder="Buscar categoría…"
+            oninput="wlFilterCats(this.value)" autocomplete="off">
+        </div>
+        <div id="wl-cat-list">${groupsHtml}</div>
+      </div>
+    </div>
+
+    <div class="wl-q-label" style="margin-top:6px">Pregunta 1</div>
+    <div class="wl-q-text">¿Por qué lo quieres?</div>
+    <textarea id="wl-f-q1" class="wl-textarea" placeholder="Escríbele al tú del mes que viene…">${vQ1}</textarea>
+
+    <div class="wl-q-label" style="margin-top:14px">Pregunta 2</div>
+    <div class="wl-q-text">¿Qué pasa si esperas otro mes?</div>
+    <textarea id="wl-f-q2" class="wl-textarea" placeholder="Imagina escenarios. Sé honesto.">${vQ2}</textarea>
+
+    <div id="wl-f-err" style="display:none;font-size:12px;color:var(--red);margin-top:10px;font-weight:600"></div>
+
+    <button class="btn-save" style="margin-top:14px" onclick="${saveFn}">${saveTxt}</button>`);
+  setTimeout(()=>document.getElementById('wl-f-name')?.focus(),60);
+}
+
+// ----- Category picker helpers (mirror of Gastos picker, prefixed wl-) -----
+
+function wlBuildCatGroupsHtml(groups){
+  return groups.map((grp,gi)=>`
+    <div class="inc-cat-group" id="wl-cg-${gi}">
+      <div class="inc-cat-group-hdr" onclick="wlToggleCatGroup(${gi})">
+        <span>${grp.g}</span>
+        <span class="inc-cat-toggle" id="wl-cgt-${gi}">›</span>
+      </div>
+      <div class="inc-cat-subs" id="wl-cgs-${gi}" style="display:none">
+        ${grp.subs.map(sub=>`
+          <div class="inc-cat-opt" onclick="wlSelectCat(this,'${sub.replace(/'/g,"\\'")}')">
+            <span style="font-size:14px">${sub.split(' ')[0]}</span>
+            <span class="inc-cat-opt-name">${sub.split(' ').slice(1).join(' ')}</span>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function wlToggleCatPicker(){
+  const picker=document.getElementById('wl-cat-picker');
+  if(!picker)return;
+  const isOpen=picker.style.display!=='none';
+  picker.style.display=isOpen?'none':'block';
+  if(!isOpen)setTimeout(()=>document.getElementById('wl-cat-q')?.focus(),60);
+}
+
+function wlToggleCatGroup(gi){
+  const subs=document.getElementById(`wl-cgs-${gi}`);
+  const toggle=document.getElementById(`wl-cgt-${gi}`);
+  if(!subs)return;
+  const hdr=subs.previousElementSibling;
+  const isOpen=subs.style.display!=='none';
+  subs.style.display=isOpen?'none':'block';
+  if(toggle)toggle.style.transform=isOpen?'':'rotate(90deg)';
+  if(hdr)hdr.classList.toggle('open',!isOpen);
+}
+
+function wlSelectCat(el,cat){
+  const hidden=document.getElementById('wl-f-cat');
+  const txt=document.getElementById('wl-cat-selected-txt');
+  const picker=document.getElementById('wl-cat-picker');
+  if(!hidden||!txt||!picker)return;
+  hidden.value=cat;
+  const icon=cat.split(' ')[0];
+  const name=cat.split(' ').slice(1).join(' ');
+  txt.innerHTML=`<span style="font-size:15px;margin-right:6px">${icon}</span><span style="color:var(--ink);font-weight:600">${escapeHtml(name)}</span>`;
+  picker.style.display='none';
+  document.querySelectorAll('#wl-cat-list .inc-cat-opt').forEach(o=>o.classList.remove('selected'));
+  if(el)el.classList.add('selected');
+}
+
+function wlFilterCats(q){
+  const term=q.toLowerCase().trim();
+  const groups=getGasGroups();
+  const list=document.getElementById('wl-cat-list');
+  if(!list)return;
+  if(!term){
+    list.innerHTML=wlBuildCatGroupsHtml(groups);
+    return;
+  }
+  const all=[];
+  groups.forEach(grp=>grp.subs.forEach(sub=>{
+    if(sub.toLowerCase().includes(term))all.push(sub);
+  }));
+  if(!all.length){
+    list.innerHTML=`<div style="padding:12px;text-align:center;font-size:12px;color:var(--ink4)">Sin resultados</div>`;
+    return;
+  }
+  const hi=txt=>{
+    const re=new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi');
+    return txt.replace(re,m=>`<mark style="background:rgba(184,134,11,.25);border-radius:2px;padding:0 1px">${m}</mark>`);
+  };
+  list.innerHTML=all.map(sub=>`
+    <div class="inc-cat-opt" onclick="wlSelectCat(this,'${sub.replace(/'/g,"\\'")}')">
+      <span style="font-size:14px">${sub.split(' ')[0]}</span>
+      <span class="inc-cat-opt-name">${hi(sub.split(' ').slice(1).join(' '))}</span>
+    </div>`).join('');
+}
+
+// ----- Save handlers (add + edit) -----
+
+// Read & validate form values. Returns {ok:true, data} or {ok:false} and
+// surfaces the error inline. Shared by wlSaveNew and wlSaveEdit.
+function wlReadForm(){
+  const name=document.getElementById('wl-f-name')?.value.trim()||'';
+  const cat=document.getElementById('wl-f-cat')?.value.trim()||'';
+  const priceRaw=document.getElementById('wl-f-price')?.value.trim()||'';
+  const q1=document.getElementById('wl-f-q1')?.value.trim()||'';
+  const q2=document.getElementById('wl-f-q2')?.value.trim()||'';
+
+  const missing=[];
+  if(!name)missing.push({id:'wl-f-name',label:'el nombre'});
+  if(!q1)missing.push({id:'wl-f-q1',label:'la pregunta 1'});
+  if(!q2)missing.push({id:'wl-f-q2',label:'la pregunta 2'});
+
+  const errBox=document.getElementById('wl-f-err');
+  ['wl-f-name','wl-f-q1','wl-f-q2','wl-f-price'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.style.borderColor='';
+  });
+
+  if(missing.length){
+    if(errBox){
+      errBox.textContent='Falta '+missing.map(m=>m.label).join(', ')+'.';
+      errBox.style.display='block';
+    }
+    missing.forEach(m=>{
+      const el=document.getElementById(m.id);
+      if(el)el.style.borderColor='var(--red)';
+    });
+    document.getElementById(missing[0].id)?.focus();
+    return {ok:false};
+  }
+
+  let price=null;
+  if(priceRaw!==''){
+    const n=parseFloat(priceRaw);
+    if(isNaN(n)||n<0){
+      if(errBox){
+        errBox.textContent='El precio debe ser un número positivo.';
+        errBox.style.display='block';
+      }
+      const pEl=document.getElementById('wl-f-price');
+      if(pEl)pEl.style.borderColor='var(--red)';
+      pEl?.focus();
+      return {ok:false};
+    }
+    price=n;
+  }
+
+  return {ok:true,data:{name,cat,price,q1,q2}};
+}
+
+function wlSaveNew(){
+  const r=wlReadForm();
+  if(!r.ok)return;
+  addWaitlistItem({
+    name:r.data.name,
+    q1:r.data.q1,
+    q2:r.data.q2,
+    category:r.data.cat||null,
+    priceEst:r.data.price
+  });
+  closeModal();
+  renderTab();
+}
+
+function wlSaveEdit(id){
+  const r=wlReadForm();
+  if(!r.ok)return;
+  updateWaitlistItem(id,{
+    name:r.data.name,
+    q1:r.data.q1,
+    q2:r.data.q2,
+    category:r.data.cat||null,
+    priceEst:r.data.price
+  });
+  closeModal();
+  renderTab();
+}
+
+// Decision flow. Re-shows the user's own answers from when the item was
+// created, then offers three paths: buy, discard, or keep waiting.
+// Tone: judgement-free. No "are you sure?" — every option is valid.
+function wlOpenDecide(id){
+  const item=getWaitlistItem(id);
+  if(!item){
+    alert('Este item ya no existe.');
+    return;
+  }
+  const days=wlDaysSince(item.createdAt);
+  const price=wlFmtPrice(item);
+  const cat=item.category?escapeHtml(item.category):'';
+  const subParts=[];
+  if(cat)subParts.push(cat);
+  if(price)subParts.push(price);
+  subParts.push(`esperaste ${days} días`);
+  const subLine=subParts.join(' · ');
+
+  openModal(`<div class="modal-title">⏳ Decidir<button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="wl-modal-h" style="margin-bottom:6px">${escapeHtml(item.name)}</div>
+    <div style="font-size:11px;color:var(--ink4);margin-bottom:18px">${subLine}</div>
+
+    <div class="wl-q-label">Pregunta 1 — lo que escribiste</div>
+    <div class="wl-q-text">¿Por qué lo quieres?</div>
+    <div class="wl-q-answer">${escapeHtml(item.q1||'(no respondida)')}</div>
+
+    <div class="wl-q-label">Pregunta 2 — lo que escribiste</div>
+    <div class="wl-q-text">¿Qué pasa si esperas otro mes?</div>
+    <div class="wl-q-answer">${escapeHtml(item.q2||'(no respondida)')}</div>
+
+    <div class="wl-flow-btns">
+      <button class="wl-flow-btn wl-buy" onclick="wlDecide('${item.id}','bought')">La compro</button>
+      <button class="wl-flow-btn wl-discard" onclick="wlDecide('${item.id}','discarded')">Ya no la quiero</button>
+      <button class="wl-flow-btn wl-keep-waiting" onclick="closeModal()">Sigo esperando</button>
+    </div>`);
+}
+
+// Apply the decision. 'bought' and 'discarded' both transition the item out
+// of the active list into history. The third option ("Sigo esperando") is
+// handled inline via closeModal() — no state change, item stays ready.
+function wlDecide(id,decision){
+  if(decision!=='bought'&&decision!=='discarded'){
+    return; // defensive guard
+  }
+  const item=getWaitlistItem(id);
+  if(!item){
+    closeModal();
+    renderTab();
+    return;
+  }
+  transitionWaitlistItem(id,decision);
+  closeModal();
+  renderTab();
 }
 
 function renderWeekStrip(keys,currentKey){
@@ -5716,6 +6912,45 @@ function renderDiaryStateCard(state,area,entry){
   </div>`;
 }
 
+function renderDiaryLayer2Card(){
+  const obs=computeDiaryLayer2();
+  if(!obs.length)return ''; // silence when no patterns yet
+  const items=obs.map(o=>`
+    <div class="dw-layer2-obs">
+      <div class="dw-layer2-obs-emoji">${o.emoji}</div>
+      <div class="dw-layer2-obs-body">
+        <div class="dw-layer2-obs-title">${o.title}</div>
+        <div class="dw-layer2-obs-text">${o.body}</div>
+      </div>
+    </div>`).join('');
+  return `
+  <div class="dw-card dw-layer2">
+    <div class="dw-layer2-kicker">Patrones · Capa 2</div>
+    <div class="dw-layer2-sub">Lo que se repite cuando miras varias semanas juntas.</div>
+    ${items}
+  </div>`;
+}
+
+function renderDiaryLayer3Card(){
+  const obs=computeDiaryLayer3();
+  if(!obs.length)return ''; // silence when no crossed data yet
+  // Reuse Layer 2's CSS for observation rows — only the kicker color differs
+  const items=obs.map(o=>`
+    <div class="dw-layer2-obs">
+      <div class="dw-layer2-obs-emoji">${o.emoji}</div>
+      <div class="dw-layer2-obs-body">
+        <div class="dw-layer2-obs-title">${o.title}</div>
+        <div class="dw-layer2-obs-text">${o.body}</div>
+      </div>
+    </div>`).join('');
+  return `
+  <div class="dw-card dw-layer3">
+    <div class="dw-layer3-kicker">Patrones · Capa 3</div>
+    <div class="dw-layer2-sub">Cómo conversa tu estado emocional con tus movimientos de dinero.</div>
+    ${items}
+  </div>`;
+}
+
 function renderReflectionCard(entry,isFuture){
   const r=entry.reflection||{};
   return `
@@ -5817,6 +7052,369 @@ function computeWeekState(entry,area){
   return null;
 }
 
+// ═══════════════════════════════════
+// DIARIO — CAPA 2: Patrones temporales
+// ═══════════════════════════════════
+// Detecta patrones dentro del propio Diario (sin cruzar con datos financieros).
+// Solo se activa con ≥3 semanas con estado computado.
+// Devuelve hasta 2 observaciones priorizadas, o [] si no hay nada que decir.
+//
+// Filosofía: observación, no juicio. Sin "deberías", sin alarmas.
+// Patrones detectados:
+//   1. Racha (N semanas seguidas en el mismo estado)
+//   2. Dominancia por dimensión (estado X domina una dimensión específica)
+//   3. Emoción/chip recurrente (mismo chip aparece N veces)
+
+function _collectDiaryHistory(){
+  // Returns array of {weekKey, areaKey, areaTitle, areaEmoji, state, chips, ts}
+  // sorted chronologically (oldest first), only weeks with computable state.
+  ensureDiaryStore();
+  const out=[];
+  Object.keys(DB._diary).forEach(wk=>{
+    if(!/^\d{4}-W\d{2}$/.test(wk))return;
+    const entry=DB._diary[wk];
+    if(!entry||!entry.areaId)return;
+    const area=DIARY_AREAS.find(a=>a.id===entry.areaId);
+    if(!area)return;
+    const state=computeWeekState(entry,area);
+    if(!state)return; // skip weeks without enough data
+    out.push({
+      weekKey:wk,
+      areaKey:area.key,
+      areaTitle:area.title,
+      areaEmoji:area.emoji,
+      state,
+      chips:Array.isArray(entry.answers?.chips)?entry.answers.chips.slice():[],
+      ts:entry.updatedAt||0
+    });
+  });
+  // Sort chronologically by weekKey (lex order works for "YYYY-WNN" within same year;
+  // for cross-year we parse to be safe).
+  out.sort((a,b)=>{
+    const pa=isoWeekFromKey(a.weekKey),pb=isoWeekFromKey(b.weekKey);
+    if(pa.year!==pb.year)return pa.year-pb.year;
+    return pa.week-pb.week;
+  });
+  return out;
+}
+
+// Pattern 1: streak — N consecutive weeks in same state (looking at the tail)
+function _detectStreak(history){
+  if(history.length<3)return null;
+  const last=history[history.length-1];
+  let n=1;
+  for(let i=history.length-2;i>=0;i--){
+    if(history[i].state===last.state)n++;
+    else break;
+  }
+  if(n<3)return null;
+  const stateCfg=DIARY_STATES[last.state];
+  const phrasings={
+    reactivo:`Llevas <strong>${n} semanas</strong> en <strong>${stateCfg.label}</strong>. Es información, no un juicio — algo está pidiendo atención.`,
+    fragil:`<strong>${n} semanas</strong> en <strong>${stateCfg.label}</strong>. La balanza sigue moviéndose. Observa qué inclina más.`,
+    intencional:`<strong>${n} semanas</strong> seguidas en <strong>${stateCfg.label}</strong>. Estás construyendo algo.`,
+    alineado:`<strong>${n} semanas</strong> en <strong>${stateCfg.label}</strong>. Esto es ritmo, no suerte.`
+  };
+  return {
+    type:'streak',
+    priority:last.state==='reactivo'?100:(last.state==='alineado'?90:70),
+    emoji:stateCfg.emoji,
+    title:'Patrón de constancia',
+    body:phrasings[last.state],
+    tone:stateCfg.tone
+  };
+}
+
+// Pattern 2: dominance per dimension — same state appears ≥N of last M visits to one area
+function _detectDominance(history){
+  // Group by areaKey, only consider areas with ≥3 visits
+  const byArea={};
+  history.forEach(h=>{
+    if(!byArea[h.areaKey])byArea[h.areaKey]={key:h.areaKey,title:h.areaTitle,emoji:h.areaEmoji,visits:[]};
+    byArea[h.areaKey].visits.push(h);
+  });
+  let best=null;
+  Object.values(byArea).forEach(a=>{
+    if(a.visits.length<3)return;
+    // Count states across this area's visits
+    const counts={};
+    a.visits.forEach(v=>{counts[v.state]=(counts[v.state]||0)+1;});
+    Object.entries(counts).forEach(([state,count])=>{
+      if(count<3)return; // need at least 3 of that state
+      if(count/a.visits.length<0.6)return; // need ≥60% dominance
+      const score=count*10+(state==='reactivo'?5:0); // reactive patterns surface first
+      if(!best||score>best._score){
+        best={
+          area:a,
+          state,
+          count,
+          total:a.visits.length,
+          _score:score
+        };
+      }
+    });
+  });
+  if(!best)return null;
+  const stateCfg=DIARY_STATES[best.state];
+  const phrasings={
+    reactivo:`En <strong>${best.area.title}</strong> has estado en <strong>${stateCfg.label}</strong> ${best.count} de ${best.total} visitas. Vale la pena observar qué dispara eso.`,
+    fragil:`En <strong>${best.area.title}</strong> aparece <strong>${stateCfg.label}</strong> con frecuencia (${best.count} de ${best.total}). Una zona aún en movimiento.`,
+    intencional:`En <strong>${best.area.title}</strong> sostienes <strong>${stateCfg.label}</strong> ${best.count} de ${best.total} veces. Hay claridad ahí.`,
+    alineado:`En <strong>${best.area.title}</strong> apareces <strong>${stateCfg.label}</strong> ${best.count} de ${best.total} veces. Ahí ya tienes raíz.`
+  };
+  return {
+    type:'dominance',
+    priority:best.state==='reactivo'?95:75,
+    emoji:best.area.emoji,
+    title:'Patrón por dimensión',
+    body:phrasings[best.state],
+    tone:stateCfg.tone
+  };
+}
+
+// Pattern 3: recurring chip — same emotion/chip appears in ≥3 of recent weeks
+function _detectRecurringChip(history){
+  // Look at last 6 weeks (or all if less)
+  const recent=history.slice(-6);
+  if(recent.length<3)return null;
+  const counts={};
+  recent.forEach(h=>{
+    h.chips.forEach(c=>{
+      // Skip neutral/structural chips — only emotional ones are interesting
+      const skip=['Ninguno','Indiferencia','No estoy seguro/a','Una mezcla de ambas',
+                  'Ni lo uno ni lo otro','No lo recuerdo','Otra'];
+      if(skip.includes(c))return;
+      if(!counts[c])counts[c]={count:0,weeks:new Set()};
+      counts[c].count++;
+      counts[c].weeks.add(h.weekKey);
+    });
+  });
+  let top=null;
+  Object.entries(counts).forEach(([chip,data])=>{
+    const weekCount=data.weeks.size;
+    if(weekCount<3)return; // must appear in ≥3 distinct weeks
+    if(!top||weekCount>top.weekCount)top={chip,weekCount,total:recent.length};
+  });
+  if(!top)return null;
+  // Tone the phrasing by the chip's emotional valence
+  const negativeChips=['Envidia','Ansiedad','Estrés','Tristeza','Aburrimiento','Cansancio',
+                       'Bien pero culpable','Peor que antes','Con frustración','Con duda',
+                       'Preocupación repetitiva'];
+  const positiveChips=['Inspiración','Alivio','Bien y tranquilo/a','Con calma','Con orgullo',
+                       'Planificación útil'];
+  const isNeg=negativeChips.includes(top.chip);
+  const isPos=positiveChips.includes(top.chip);
+  let body;
+  if(isNeg){
+    body=`<strong>${top.chip}</strong> aparece en ${top.weekCount} de tus últimas ${top.total} semanas. Está pidiendo atención — sin urgencia, sin culpa.`;
+  } else if(isPos){
+    body=`<strong>${top.chip}</strong> se repite en ${top.weekCount} de tus últimas ${top.total} semanas. Algo está sosteniéndote ahí.`;
+  } else {
+    body=`<strong>${top.chip}</strong> aparece ${top.weekCount} veces en tus últimas ${top.total} semanas. Es un compañero recurrente — vale la pena mirarlo.`;
+  }
+  return {
+    type:'chip',
+    priority:isNeg?85:(isPos?60:50),
+    emoji:isNeg?'🌊':(isPos?'🌱':'👁'),
+    title:'Patrón emocional',
+    body,
+    tone:isNeg?'amb':(isPos?'pos':'blu')
+  };
+}
+
+// Main entry: returns up to 2 observations, sorted by priority desc.
+// Returns [] if not enough data (< 3 computable weeks) — caller should hide the card.
+function computeDiaryLayer2(){
+  const history=_collectDiaryHistory();
+  if(history.length<3)return [];
+  const candidates=[
+    _detectStreak(history),
+    _detectDominance(history),
+    _detectRecurringChip(history)
+  ].filter(Boolean);
+  candidates.sort((a,b)=>b.priority-a.priority);
+  return candidates.slice(0,2);
+}
+
+// ═══════════════════════════════════
+// DIARIO — CAPA 3: Correlaciones Diario ↔ Dinero
+// ═══════════════════════════════════
+// Cruza el estado emocional semanal con los movimientos financieros de esa
+// misma semana ISO. Solo usa entradas con `date` no nulo (las pre-feature
+// con date=null se excluyen automáticamente — cero contaminación retroactiva).
+//
+// Restricciones de honestidad:
+//   - Mínimo 5 semanas con estado computado + ≥1 movimiento con fecha
+//   - Mínimo 2 semanas en cada grupo comparado (sin n=1 vs n=N)
+//   - Diferencia relativa ≥20% para reportar (filtra ruido)
+//   - Lenguaje correlacional, nunca causal ("coincidieron con", no "causaron")
+
+const _LAYER3_MIN_WEEKS=5;
+const _LAYER3_MIN_PER_GROUP=2;
+const _LAYER3_MIN_DELTA=0.20; // 20%
+
+// Build a map weekKey → {gas, aho, inv, deu, hasData}
+// Aggregates all dated entries across all months in DB.
+function _collectFinanceByWeek(){
+  const byWeek={};
+  const ensureBucket=wk=>{
+    if(!byWeek[wk])byWeek[wk]={gas:0,aho:0,inv:0,deu:0,hasData:false};
+    return byWeek[wk];
+  };
+  Object.keys(DB).forEach(k=>{
+    if(!/^\d{4}-\d{2}$/.test(k))return;
+    const d=DB[k];
+    const buckets=[
+      ['gastos','gas'],['ahorro','aho'],['inversion','inv'],['deudas','deu']
+    ];
+    buckets.forEach(([sec,field])=>{
+      if(!Array.isArray(d[sec]))return;
+      d[sec].forEach(e=>{
+        if(!e.date)return; // skip pre-feature entries
+        const wk=isoWeekKey(new Date(e.date));
+        const b=ensureBucket(wk);
+        b[field]+=(+e.amt||0);
+        b.hasData=true;
+      });
+    });
+    // income.entries also have date; we don't need them for L3 patterns yet,
+    // but we leave the door open for future patterns.
+  });
+  return byWeek;
+}
+
+// Cross diary history with finance-by-week. Returns array of:
+//   {weekKey, state, areaKey, gas, aho, inv, deu, savingsPlus}
+// Only weeks that have BOTH a computed state AND at least one dated movement.
+function _collectCrossedHistory(){
+  const diary=_collectDiaryHistory();
+  if(!diary.length)return [];
+  const fin=_collectFinanceByWeek();
+  const out=[];
+  diary.forEach(h=>{
+    const f=fin[h.weekKey];
+    if(!f||!f.hasData)return;
+    out.push({
+      weekKey:h.weekKey,
+      state:h.state,
+      areaKey:h.areaKey,
+      gas:f.gas,
+      aho:f.aho,
+      inv:f.inv,
+      deu:f.deu,
+      savingsPlus:f.aho+f.inv // ahorro + inversión combinados
+    });
+  });
+  return out;
+}
+
+// Group states into "reactive side" (reactivo+fragil) vs "intentional side" (intencional+alineado)
+function _stateBucket(state){
+  if(state==='reactivo'||state==='fragil')return 'reactive';
+  if(state==='intencional'||state==='alineado')return 'intentional';
+  return null;
+}
+
+// Pattern 1: state cluster ↔ total spending
+// Compare mean gas+deu (total outflow) between reactive-side weeks and intentional-side weeks.
+function _detectStateVsSpending(crossed){
+  const reactive=crossed.filter(c=>_stateBucket(c.state)==='reactive');
+  const intentional=crossed.filter(c=>_stateBucket(c.state)==='intentional');
+  if(reactive.length<_LAYER3_MIN_PER_GROUP||intentional.length<_LAYER3_MIN_PER_GROUP)return null;
+  const meanR=reactive.reduce((a,c)=>a+c.gas+c.deu,0)/reactive.length;
+  const meanI=intentional.reduce((a,c)=>a+c.gas+c.deu,0)/intentional.length;
+  // Need both to be > 0 and a meaningful relative gap
+  if(meanR<=0||meanI<=0)return null;
+  const higher=Math.max(meanR,meanI);
+  const lower=Math.min(meanR,meanI);
+  const delta=(higher-lower)/lower; // relative diff vs lower base
+  if(delta<_LAYER3_MIN_DELTA)return null;
+  const reactiveHigher=meanR>meanI;
+  const pct=Math.round(delta*100);
+  let body;
+  if(reactiveHigher){
+    body=`Las <strong>${reactive.length} semanas</strong> en estados <strong>Reactivo o Frágil</strong> promediaron <strong>${fmt(meanR)}</strong> en gastos. Las <strong>${intentional.length} semanas</strong> en <strong>Intencional o Alineado</strong>, <strong>${fmt(meanI)}</strong>. Una diferencia del <strong>${pct}%</strong>.`;
+  } else {
+    // Counterintuitive direction — surface honestly without judging
+    body=`Las <strong>${intentional.length} semanas</strong> en <strong>Intencional o Alineado</strong> promediaron <strong>${fmt(meanI)}</strong> en gastos — <strong>${pct}%</strong> más que las <strong>${reactive.length} semanas</strong> en <strong>Reactivo o Frágil</strong> (<strong>${fmt(meanR)}</strong>). Vale la pena observar qué hay detrás.`;
+  }
+  return {
+    type:'state_vs_spending',
+    priority:reactiveHigher?100:80, // expected direction surfaces first; counterintuitive still shown
+    emoji:'💸',
+    title:'Estado emocional ↔ Gastos',
+    body,
+    tone:'neg'
+  };
+}
+
+// Pattern 2: state cluster ↔ savings + investments
+// Compare mean (aho+inv) between reactive-side weeks and intentional-side weeks.
+function _detectStateVsSavings(crossed){
+  const reactive=crossed.filter(c=>_stateBucket(c.state)==='reactive');
+  const intentional=crossed.filter(c=>_stateBucket(c.state)==='intentional');
+  if(reactive.length<_LAYER3_MIN_PER_GROUP||intentional.length<_LAYER3_MIN_PER_GROUP)return null;
+  const meanR=reactive.reduce((a,c)=>a+c.savingsPlus,0)/reactive.length;
+  const meanI=intentional.reduce((a,c)=>a+c.savingsPlus,0)/intentional.length;
+  // If both sides have ~zero savings, no pattern to surface
+  if(Math.max(meanR,meanI)<=0)return null;
+  // Special case: one side is zero, the other is meaningful
+  if(meanR===0&&meanI>0){
+    return {
+      type:'state_vs_savings',
+      priority:90,
+      emoji:'🌱',
+      title:'Estado emocional ↔ Ahorro',
+      body:`Las <strong>${intentional.length} semanas</strong> en <strong>Intencional o Alineado</strong> promediaron <strong>${fmt(meanI)}</strong> en ahorro+inversión. En las <strong>${reactive.length} semanas</strong> en <strong>Reactivo o Frágil</strong>, ese aporte fue cero.`,
+      tone:'pos'
+    };
+  }
+  if(meanI===0&&meanR>0){
+    return {
+      type:'state_vs_savings',
+      priority:75,
+      emoji:'🌊',
+      title:'Estado emocional ↔ Ahorro',
+      body:`Las <strong>${reactive.length} semanas</strong> en <strong>Reactivo o Frágil</strong> promediaron <strong>${fmt(meanR)}</strong> en ahorro+inversión. En las <strong>${intentional.length} semanas</strong> en <strong>Intencional o Alineado</strong>, ese aporte fue cero. Es contraintuitivo — vale mirarlo.`,
+      tone:'amb'
+    };
+  }
+  // Both > 0: relative diff
+  const higher=Math.max(meanR,meanI);
+  const lower=Math.min(meanR,meanI);
+  const delta=(higher-lower)/lower;
+  if(delta<_LAYER3_MIN_DELTA)return null;
+  const intentionalHigher=meanI>meanR;
+  const pct=Math.round(delta*100);
+  let body;
+  if(intentionalHigher){
+    body=`Las <strong>${intentional.length} semanas</strong> en <strong>Intencional o Alineado</strong> aportaron <strong>${pct}% más</strong> a ahorro+inversión (<strong>${fmt(meanI)}</strong> de promedio) que las <strong>${reactive.length} semanas</strong> en <strong>Reactivo o Frágil</strong> (<strong>${fmt(meanR)}</strong>).`;
+  } else {
+    body=`Curiosamente, las <strong>${reactive.length} semanas</strong> en <strong>Reactivo o Frágil</strong> aportaron <strong>${pct}% más</strong> a ahorro+inversión (<strong>${fmt(meanR)}</strong>) que las <strong>${intentional.length} semanas</strong> en <strong>Intencional o Alineado</strong> (<strong>${fmt(meanI)}</strong>). Patrón inesperado — observa qué lo explica.`;
+  }
+  return {
+    type:'state_vs_savings',
+    priority:intentionalHigher?90:70,
+    emoji:'🌱',
+    title:'Estado emocional ↔ Ahorro',
+    body,
+    tone:'pos'
+  };
+}
+
+// Main entry: returns up to 2 observations, sorted by priority desc.
+// Returns [] if not enough crossed data (< 5 weeks) — caller should hide the card.
+function computeDiaryLayer3(){
+  const crossed=_collectCrossedHistory();
+  if(crossed.length<_LAYER3_MIN_WEEKS)return [];
+  const candidates=[
+    _detectStateVsSpending(crossed),
+    _detectStateVsSavings(crossed)
+  ].filter(Boolean);
+  candidates.sort((a,b)=>b.priority-a.priority);
+  return candidates.slice(0,2);
+}
+
 // --- Handlers ---
 function setDiaryWeek(key){
   diaryWeek=key;
@@ -5880,10 +7478,14 @@ function ovSpendByCat(from,to,year){
   return acc;
 }
 
-// Sums per-group (parent) spend using DEF_GAS_GROUPS mapping
+// Sums per-group (parent) spend using the USER'S current group mapping
+// (DB._groups.gas), so insights reflect any category reorganization the
+// user has done (e.g. moving Council Tax from Servicios to Vivienda).
 function ovSpendByGroup(from,to,year){
+  ensureGlobalGroups();
   const byCat=ovSpendByCat(from,to,year);
-  const groupOf={};DEF_GAS_GROUPS.forEach(g=>g.subs.forEach(s=>{groupOf[s]=g.g;}));
+  const groupOf={};
+  (DB._groups.gas||[]).forEach(g=>(g.subs||[]).forEach(s=>{groupOf[s]=g.g;}));
   const acc={};
   Object.entries(byCat).forEach(([cat,amt])=>{
     const grp=groupOf[cat]||cat;
@@ -5922,6 +7524,27 @@ function ovPrevPeriod(p){
     from+=12;to+=12;
   }
   return{from,to,year};
+}
+
+// Short human-readable label for any {from,to,year} range.
+// Used by the compare-mode selector to show exactly which period
+// is being compared against (e.g. "Marzo 2026", "Q1 2026", "Ene–Abr 2025", "Todo 2025").
+function ovPeriodLabel(pp){
+  const span=pp.to-pp.from+1;
+  // Single month → "Abril 2026"
+  if(span===1)return `${MONTHS[pp.from]} ${pp.year}`;
+  // Full year → "Todo 2025"
+  if(pp.from===0&&pp.to===11)return `Todo ${pp.year}`;
+  // Semesters
+  if(pp.from===0&&pp.to===5)return `H1 ${pp.year}`;
+  if(pp.from===6&&pp.to===11)return `H2 ${pp.year}`;
+  // Quarters
+  if(pp.from===0&&pp.to===2)return `Q1 ${pp.year}`;
+  if(pp.from===3&&pp.to===5)return `Q2 ${pp.year}`;
+  if(pp.from===6&&pp.to===8)return `Q3 ${pp.year}`;
+  if(pp.from===9&&pp.to===11)return `Q4 ${pp.year}`;
+  // Generic range → "Ene–Abr 2025"
+  return `${MONTHS_S[pp.from]}–${MONTHS_S[pp.to]} ${pp.year}`;
 }
 
 // Budget consumption per category in period
@@ -6273,28 +7896,6 @@ function ovCandBestMonth(p){
   };
 }
 
-// 13. Contextual Housel line (always available, lowest priority fallback)
-function ovCandHouselLine(p){
-  const acc=accumTotals(p.from,p.to,p.year);
-  if(acc.ing<=0)return null;
-  const lines=[
-    'La riqueza real es lo que no ves — las opciones que tienes.',
-    'Ahorrar es la brecha entre tu ego y tus ingresos.',
-    'El mayor dividendo del dinero es la libertad sobre tu tiempo.',
-    'Cada gasto fijo es una decisión sobre tu yo futuro.',
-    'Lo ostentoso rara vez construye riqueza.',
-    'Nadie está tan impresionado con tus cosas como tú.'
-  ];
-  const idx=(p.from+p.to+p.year)%lines.length;
-  return{
-    id:'housel',category:'housel',tone:'ctx',icon:'✦',
-    title:'Para pensar',
-    body:`<em style="font-weight:500">${lines[idx]}</em>`,
-    foot:`— Morgan Housel`,
-    severity:10,recency:10
-  };
-}
-
 // ---- Priority engine ----
 function ovBuildInsights(p){
   const builders=[
@@ -6309,8 +7910,7 @@ function ovBuildInsights(p){
     ovCandTopSpendCategory,
     ovCandDebtBurden,
     ovCandAntSpending,
-    ovCandBestMonth,
-    ovCandHouselLine
+    ovCandBestMonth
   ];
   const candidates=[];
   builders.forEach(fn=>{try{const c=fn(p);if(c)candidates.push(c);}catch(e){console.warn('insight failed',fn.name,e);}});
@@ -6473,18 +8073,21 @@ function ovAskEntriesOf(d,type){
   return d[type.listKey]||[];
 }
 
-// Resolve the most recent month (within period) that has a groups definition
-// for a given type. Falls back to the default if nothing is stored yet.
+// Resolve the user's current category groups for a given type.
+// Reads from the GLOBAL DB._groups storage (single source of truth),
+// which matches exactly what the user has configured in each tab's
+// category manager. Per-month groupsKey storage is legacy and unused.
 function ovAskGroupsFor(type,p){
-  // Walk from latest month backwards in the period; if nothing, widen to full year
-  const yearKeys=Object.keys(DB).filter(k=>k.endsWith('-'+p.year)).sort().reverse();
-  for(const k of yearKeys){
-    const d=DB[k];
-    if(d&&Array.isArray(d[type.groupsKey])&&d[type.groupsKey].length){
-      return d[type.groupsKey];
-    }
+  ensureGlobalGroups();
+  // Map type.key → DB._groups subkey
+  const subKeyMap={gastos:'gas',ingresos:'inc',ahorro:'aho',inversion:'inv',deudas:'deu'};
+  const subKey=subKeyMap[type.key];
+  const groups=subKey?DB._groups[subKey]:null;
+  if(groups&&Array.isArray(groups)&&groups.length){
+    // Return a shallow copy so callers can't mutate the source
+    return groups.map(g=>({g:g.g,subs:[...(g.subs||[])]}));
   }
-  // Fallback to defaults
+  // Fallback to defaults (shouldn't normally happen since ensureGlobalGroups seeds these)
   const defMap={gasGroups:DEF_GAS_GROUPS,incGroups:DEF_INC_GROUPS,ahoGroups:DEF_AHO_GROUPS,invGroups:DEF_INV_GROUPS,deuGroups:DEF_DEU_GROUPS};
   const fb=defMap[type.groupsKey];
   return fb?fb.map(g=>({g:g.g,subs:[...g.subs]})):[];
@@ -6679,14 +8282,23 @@ function ovHistoricalAvg(p,monthExtractor){
 // monthExtractor: a function (m,y) => number for that single month's value of the metric.
 // periodExtractor: a function (periodObj) => cumulative value over a period.
 function ovBuildCompareOptions(p,periodExtractor,monthExtractor){
+  // Compute the concrete compared ranges so labels can show them explicitly
+  const prevP=ovPrevPeriod(p);
+  const yoyP={from:p.from,to:p.to,year:p.year-1};
+  // Detect duplicate: when the active period is a full year, "previous period"
+  // and "year-over-year" point to the same range. Hide prev to avoid redundancy.
+  const prevEqualsYoy=(prevP.from===yoyP.from&&prevP.to===yoyP.to&&prevP.year===yoyP.year);
+
   const options=[
-    {value:'prev',label:'Período anterior',available:false,figure:null},
-    {value:'yoy',label:'Año anterior',available:false,figure:null},
-    {value:'avg',label:'Promedio histórico',available:false,figure:null},
-    {value:'none',label:'Sin comparar',available:true,figure:null}
+    {value:'prev',label:`vs ${ovPeriodLabel(prevP)}`,available:false,figure:null},
+    {value:'yoy', label:`vs ${ovPeriodLabel(yoyP)}`, available:false,figure:null},
+    {value:'avg', label:'vs Promedio histórico',     available:false,figure:null},
+    {value:'none',label:'Sin comparar',              available:true, figure:null}
   ];
-  const prev=ovPrevFigure(p,periodExtractor);
-  if(prev!=null){options[0].available=true;options[0].figure=prev;}
+  if(!prevEqualsYoy){
+    const prev=ovPrevFigure(p,periodExtractor);
+    if(prev!=null){options[0].available=true;options[0].figure=prev;}
+  }
   const yoy=ovYoYFigure(p,periodExtractor);
   if(yoy!=null){options[1].available=true;options[1].figure=yoy;}
   const avg=ovHistoricalAvg(p,monthExtractor);
@@ -6852,9 +8464,9 @@ function ovQueryMonth(p){
   //   - yoy: same month, prior year
   //   - avg: average monthly totalGas across all months EXCEPT targetM
   //   - none
-  let prev=null;
+  let prev=null,prevMonth=null;
   for(let m=targetM-1;m>=0;m--){
-    if(DB[mKey(m,p.year)]){prev=totals(m,p.year).totalGas;break;}
+    if(DB[mKey(m,p.year)]){prev=totals(m,p.year).totalGas;prevMonth=m;break;}
   }
   let yoy=null;
   if(DB[mKey(targetM,p.year-1)])yoy=totals(targetM,p.year-1).totalGas;
@@ -6867,9 +8479,9 @@ function ovQueryMonth(p){
   });
   if(samples.length>=2)avg=samples.reduce((a,b)=>a+b,0)/samples.length;
   const compareOpts=[
-    {value:'prev',label:'Mes anterior',available:prev!=null,figure:prev},
-    {value:'yoy',label:'Mismo mes año anterior',available:yoy!=null,figure:yoy},
-    {value:'avg',label:'Promedio histórico',available:avg!=null,figure:avg},
+    {value:'prev',label:prevMonth!=null?`vs ${MONTHS[prevMonth]} ${p.year}`:'Mes anterior',available:prev!=null,figure:prev},
+    {value:'yoy',label:`vs ${MONTHS[targetM]} ${p.year-1}`,available:yoy!=null,figure:yoy},
+    {value:'avg',label:'vs Promedio histórico',available:avg!=null,figure:avg},
     {value:'none',label:'Sin comparar',available:true,figure:null}
   ];
   const picked=ovResolveCompare(compareOpts);
@@ -7770,7 +9382,6 @@ function ovAskRenderOnePicker(slot,q,excludeId){
       const onclick=isExcluded?'':`onclick="ovAskPickEntry('${slot}','${ovAskEscAttr(id)}');event.stopPropagation();"`;
       rows.push(`<div class="${cls}" ${onclick}>
         <span>${it.name}</span>
-        <span class="amt">${fmt(it.amt)}</span>
       </div>`);
     });
     if(rows.length>0){
@@ -7875,7 +9486,6 @@ function ovAskPickerSearchInput(slot,val){
       const onclick=isExcluded?'':`onclick="ovAskPickEntry('${slot}','${ovAskEscAttr(id)}');event.stopPropagation();"`;
       rows.push(`<div class="${cls}" ${onclick}>
         <span>${it.name}</span>
-        <span class="amt">${fmt(it.amt)}</span>
       </div>`);
     });
     if(rows.length>0){
@@ -7908,14 +9518,22 @@ function ovQueryCurrent(p){
   return null;
 }
 
-// Close any open picker on outside click
+// Close any open picker on outside click.
+// Registered in BUBBLE phase (not capture) so that event.stopPropagation()
+// on picker children (search input, buttons, list items) works correctly.
+// In capture phase this listener would fire BEFORE the picker's own handlers,
+// closing the dropdown the moment the user tapped the search input.
 document.addEventListener('click',function(){
   if(ovAskPickerOpen!==null){
     ovAskPickerOpen=null;
     // Lightweight re-render
     try{renderTab();}catch(e){}
   }
-},true);
+  if(wlOpenMenuId!==null){
+    wlOpenMenuId=null;
+    try{renderTab();}catch(e){}
+  }
+});
 
 
 // Comparison selector (dropdown on the right of the question)
@@ -8824,8 +10442,8 @@ function openIncCatMgr(searchVal){
     <div class="catmgr-search">
       <span class="lupa">🔍</span>
       <input id="catmgr-q" placeholder="Buscar categoría…" value="${searchVal||''}"
-        oninput="openIncCatMgr(this.value)" autocomplete="off">
-      ${q?`<button onclick="openIncCatMgr('')" style="background:none;border:none;color:var(--ink4);cursor:pointer;font-size:16px;padding:0">✕</button>`:''}
+        oninput="catMgrLiveFilter(this.value)" autocomplete="off">
+      <button class="catmgr-search-clear" onclick="const i=document.getElementById('catmgr-q');if(i){i.value='';i.focus();}catMgrLiveFilter('');">✕</button>
     </div>
     <div id="catmgr-groups">${groupsHtml||'<div class="empty">Sin resultados para "'+q+'"</div>'}</div>
     <div class="catmgr-add-group">
@@ -8842,6 +10460,65 @@ function toggleCatGroup(hdr){
   hdr.classList.toggle('open');
   const body=hdr.nextElementSibling;
   body.classList.toggle('open');
+}
+
+// ═══════════════════════════════════
+// Live filter for category manager modals (no re-render, no focus loss)
+// Called on every keystroke from the search input. Operates on the currently
+// open modal only, via CSS classes. Avoids the modal-jump issue on mobile.
+// ═══════════════════════════════════
+function catMgrLiveFilter(q){
+  const box=document.getElementById('modalBox');
+  if(!box)return;
+  const needle=(q||'').toLowerCase().trim();
+  const HL='catmgr-hl';
+  const escapeRe=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const stripMarks=html=>html.replace(/<mark class="catmgr-hl">([^<]*)<\/mark>/g,'$1');
+
+  box.querySelectorAll('.catmgr-group').forEach(grp=>{
+    let groupHasMatch=false;
+    grp.querySelectorAll('.catmgr-sub').forEach(sub=>{
+      const nameEl=sub.querySelector('.catmgr-sub-name');
+      if(!nameEl)return;
+      // Preserve the raw text on the element the first time we see it.
+      if(!nameEl.dataset.raw)nameEl.dataset.raw=nameEl.textContent;
+      const raw=nameEl.dataset.raw;
+      const match=!needle||raw.toLowerCase().includes(needle);
+      sub.style.display=match?'':'none';
+      if(match)groupHasMatch=true;
+      // Highlight matching portion
+      if(needle&&match){
+        nameEl.innerHTML=raw.replace(new RegExp(`(${escapeRe(needle)})`,'gi'),m=>`<mark class="${HL}">${m}</mark>`);
+      }else{
+        nameEl.textContent=raw;
+      }
+    });
+    // Hide the entire group when searching and it has no matches
+    grp.style.display=(needle&&!groupHasMatch)?'none':'';
+    // Auto-open groups with matches while searching; restore normal behavior when clear
+    const hdr=grp.querySelector('.catmgr-group-hdr');
+    const body=grp.querySelector('.catmgr-group-body');
+    if(hdr&&body){
+      if(needle&&groupHasMatch){
+        hdr.classList.add('open');body.classList.add('open');
+      }
+    }
+  });
+
+  // Empty-state message
+  let empty=box.querySelector('.catmgr-empty-msg');
+  const anyVisible=[...box.querySelectorAll('.catmgr-group')].some(g=>g.style.display!=='none');
+  if(needle&&!anyVisible){
+    if(!empty){
+      empty=document.createElement('div');
+      empty.className='empty catmgr-empty-msg';
+      const groupsContainer=box.querySelector('[id$="catmgr-groups"]');
+      if(groupsContainer)groupsContainer.appendChild(empty);
+    }
+    empty.textContent=`Sin resultados para "${needle}"`;
+  }else if(empty){
+    empty.remove();
+  }
 }
 
 function addIncSub(gi){
@@ -8959,8 +10636,8 @@ function openGasCatMgr(searchVal){
     <div class="catmgr-search">
       <span class="lupa">🔍</span>
       <input id="gcatmgr-q" placeholder="Buscar categoría…" value="${searchVal||''}"
-        oninput="openGasCatMgr(this.value)" autocomplete="off">
-      ${q?`<button onclick="openGasCatMgr('')" style="background:none;border:none;color:var(--ink4);cursor:pointer;font-size:16px;padding:0">✕</button>`:''}
+        oninput="catMgrLiveFilter(this.value)" autocomplete="off">
+      <button class="catmgr-search-clear" onclick="const i=document.getElementById('gcatmgr-q');if(i){i.value='';i.focus();}catMgrLiveFilter('');">✕</button>
     </div>
     <div id="gcatmgr-groups">${groupsHtml||'<div class="empty">Sin resultados para "'+q+'"</div>'}</div>
     <div class="catmgr-add-group">
@@ -9054,7 +10731,7 @@ function openProfile(){
     <button class="btn-save" onclick="saveProfile()">Guardar cambios</button>
     <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:10px;align-items:center">
       <button onclick="showOnboardingAgain()" style="background:none;border:none;color:var(--ink3);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600">👋 Ver pantalla de bienvenida</button>
-      <button onclick="resetAll()" style="background:none;border:none;color:var(--red);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600">⚠️ Resetear todos los datos</button>
+      <button onclick="openResetModal()" style="background:none;border:none;color:var(--red);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600">⚠️ Resetear mis datos</button>
     </div>`);
 }
 
@@ -9072,9 +10749,27 @@ function saveProfile(){
   persist();updateProfileBtn();updatePeriodLabel();closeModal();render();
 }
 function handlePhoto(e){
-  const file=e.target.files[0];if(!file)return;
+  const file=e.target.files&&e.target.files[0];
+  try{e.target.value='';}catch(_){}
+  if(!file)return;
+  if(!file.type||!file.type.startsWith('image/'))return;
   const reader=new FileReader();
-  reader.onload=ev=>{CONFIG.photo=ev.target.result;persist();updateProfileBtn();if(document.querySelector('#modalBox'))openProfile();};
+  reader.onload=ev=>{
+    const img=new Image();
+    img.onload=()=>{
+      const MAX=400;
+      let w=img.width,h=img.height;
+      if(w>h){if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}}
+      else{if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}}
+      const canvas=document.createElement('canvas');
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      CONFIG.photo=canvas.toDataURL('image/jpeg',0.82);
+      persist();updateProfileBtn();
+      if(document.querySelector('#modalBox'))openProfile();
+    };
+    img.src=ev.target.result;
+  };
   reader.readAsDataURL(file);
 }
 function updateProfileBtn(){
@@ -9107,7 +10802,82 @@ function savePeriodEdit(){
   if(v)CONFIG.periodLabel=v;
   persist();updatePeriodLabel();closeModal();
 }
-function resetAll(){if(confirm('¿Resetear TODOS los datos? Esta acción no se puede deshacer.')){localStorage.removeItem('md_db6');localStorage.removeItem('md_cfg6');location.reload();}}
+// ═══════════════════════════════════
+// RESET GRANULAR
+// ═══════════════════════════════════
+// Tres ámbitos posibles:
+//   'profile' → solo CONFIG (nombre, foto, moneda, período, tema) → md_cfg6
+//   'data'    → solo DB (ingresos, gastos, ahorro, inversión, deudas, diario) → md_db6
+//   'all'     → ambos
+function openResetModal(){
+  openModal(`<div class="modal-title">⚠️ Resetear mis datos<button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="reset-body">
+      <div class="reset-intro">Elige qué quieres borrar. Esta acción <strong style="color:var(--red)">no se puede deshacer</strong>.</div>
+      <div class="reset-opts">
+        <div class="reset-opt" role="button" tabindex="0" onclick="confirmReset('profile')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();confirmReset('profile');}">
+          <div class="reset-opt-icon">👤</div>
+          <div class="reset-opt-body">
+            <div class="reset-opt-title">Solo mi perfil</div>
+            <div class="reset-opt-desc">Borra tu nombre, foto, moneda y período. Tus entradas se mantienen intactas.</div>
+          </div>
+        </div>
+        <div class="reset-opt" role="button" tabindex="0" onclick="confirmReset('data')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();confirmReset('data');}">
+          <div class="reset-opt-icon">📊</div>
+          <div class="reset-opt-body">
+            <div class="reset-opt-title">Solo mis entradas</div>
+            <div class="reset-opt-desc">Borra todo lo registrado en Ingresos, Gastos, Ahorro, Inversión, Deudas y Diario. Tu perfil se mantiene.</div>
+          </div>
+        </div>
+        <div class="reset-opt reset-opt-danger" role="button" tabindex="0" onclick="confirmReset('all')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();confirmReset('all');}">
+          <div class="reset-opt-icon">🗑️</div>
+          <div class="reset-opt-body">
+            <div class="reset-opt-title">Todo</div>
+            <div class="reset-opt-desc">Borra perfil y entradas. La app vuelve al estado inicial como si fuera la primera vez.</div>
+          </div>
+        </div>
+      </div>
+    </div>`);
+}
+function confirmReset(scope){
+  const details={
+    profile:{
+      title:'Borrar solo mi perfil',
+      icon:'👤',
+      desc:'Se borrará tu nombre, foto, moneda y período. Tus entradas (Ingresos, Gastos, Ahorro, Inversión, Deudas y Diario) se mantienen intactas.'
+    },
+    data:{
+      title:'Borrar solo mis entradas',
+      icon:'📊',
+      desc:'Se borrará todo lo registrado en Ingresos, Gastos, Ahorro, Inversión, Deudas y Diario. Tu perfil se mantiene.'
+    },
+    all:{
+      title:'Borrar todo',
+      icon:'🗑️',
+      desc:'Se borrará tu perfil y todas tus entradas. La app volverá al estado inicial como si fuera la primera vez.'
+    }
+  };
+  const d=details[scope];
+  openModal(`<div class="modal-title">⚠️ ¿Seguro?<button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="reset-body">
+      <div class="reset-confirm-card">
+        <div class="reset-confirm-icon">${d.icon}</div>
+        <div class="reset-confirm-title">${d.title}</div>
+        <div class="reset-confirm-desc">${d.desc}</div>
+      </div>
+      <div class="reset-confirm-warn">Esta acción <strong>no se puede deshacer</strong>.</div>
+      <div class="reset-confirm-actions">
+        <button class="btn-cancel-reset" onclick="openResetModal()">← Atrás</button>
+        <button class="btn-confirm-reset" onclick="executeReset('${scope}')">Sí, borrar</button>
+      </div>
+    </div>`);
+}
+function executeReset(scope){
+  if(scope==='profile'||scope==='all')localStorage.removeItem('md_cfg6');
+  if(scope==='data'||scope==='all')localStorage.removeItem('md_db6');
+  location.reload();
+}
+// Alias retrocompatible por si alguna parte del código aún llama a resetAll()
+function resetAll(){openResetModal();}
 
 // Re-show the onboarding screen without deleting any data. Closes the profile
 // modal first, pre-fills the onboarding form with current CONFIG values, and
@@ -9298,23 +11068,56 @@ function obNextStep(){obGoToStep(2);}
 function obPrevStep(){obGoToStep(1);}
 
 // Photo upload (uses same base64 storage as the profile system)
+// Photos are resized to max 400x400 and re-encoded as JPEG (quality 0.82)
+// to stay well under the ~5MB localStorage quota. A typical phone photo
+// (3-5MB) becomes ~40-80KB after this.
 function obSelectPhoto(e){
-  const file=e.target.files[0];if(!file)return;
+  const file=e.target.files&&e.target.files[0];
+  // Clear the input value immediately so the same file can be re-selected
+  // after removal (onchange only fires when the value changes).
+  try{e.target.value='';}catch(_){}
+  if(!file)return;
+  if(!file.type||!file.type.startsWith('image/'))return;
   const reader=new FileReader();
   reader.onload=ev=>{
-    obPhotoData=ev.target.result;
-    const circle=document.getElementById('ob-photo-circle');
-    circle.classList.add('has-photo');
-    circle.innerHTML=`<img src="${obPhotoData}" alt="foto">`;
+    const img=new Image();
+    img.onload=()=>{
+      const MAX=400;
+      let w=img.width,h=img.height;
+      if(w>h){if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}}
+      else{if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}}
+      const canvas=document.createElement('canvas');
+      canvas.width=w;canvas.height=h;
+      const ctx=canvas.getContext('2d');
+      ctx.drawImage(img,0,0,w,h);
+      obPhotoData=canvas.toDataURL('image/jpeg',0.82);
+      const circle=document.getElementById('ob-photo-circle');
+      if(!circle)return;
+      circle.classList.add('has-photo');
+      // Use an img with pointer-events:none so clicks on the photo bubble
+      // up to the circle's onclick handler (allows replacing the photo).
+      circle.innerHTML=`<img src="${obPhotoData}" alt="foto" style="pointer-events:none">`;
+    };
+    img.onerror=()=>{obPhotoData=null;};
+    img.src=ev.target.result;
+  };
+  reader.onerror=()=>{
+    // Silent fail — leave the circle untouched so user can retry.
+    obPhotoData=null;
   };
   reader.readAsDataURL(file);
 }
-function obRemovePhoto(){
+function obRemovePhoto(e){
+  // Prevent the click from bubbling up to the circle (which would reopen the file picker)
+  if(e){e.stopPropagation();}
   obPhotoData=null;
   const circle=document.getElementById('ob-photo-circle');
-  circle.classList.remove('has-photo');
-  circle.innerHTML='<span id="ob-photo-icon">+</span>';
-  document.getElementById('ob-photo-input').value='';
+  if(circle){
+    circle.classList.remove('has-photo');
+    circle.innerHTML='<span id="ob-photo-icon">+</span>';
+  }
+  const inp=document.getElementById('ob-photo-input');
+  if(inp)inp.value='';
 }
 
 function finishOnboarding(){
@@ -9353,7 +11156,6 @@ function finishOnboarding(){
 hydrate();
 migrateGroupsToGlobal();
 if(CONFIG.theme){document.documentElement.setAttribute('data-theme',CONFIG.theme);document.getElementById('themeBtn').textContent=CONFIG.theme==='dark'?'☀️':'🌙';}
-loadSampleData();
 // Show onboarding for new users (!onboarded) and for existing users whose
 // stored onboarding version is older than the current one. Data is preserved.
 const storedObVersion=CONFIG.onboardingVersion||0;
