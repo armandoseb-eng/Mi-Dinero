@@ -384,6 +384,16 @@ body::before{
   width:100%;outline:none;transition:border-color .15s,background .15s;
 }
 .finput:focus{border-color:var(--ink3);background:var(--input-focus);}
+.finput[type="date"]{
+  -webkit-appearance:none;appearance:none;
+  text-align:left;
+  font-family:'Inter',sans-serif;font-size:13px;
+  padding:9px 12px;line-height:1.4;
+  min-height:0;height:auto;
+  display:block;
+}
+.finput[type="date"]::-webkit-date-and-time-value{text-align:left;}
+.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:pointer;}
 .fselect{
   background:var(--input-bg);border:1px solid var(--border2);border-radius:8px;
   padding:9px 12px;font-size:13px;color:var(--ink);font-family:'Inter',sans-serif;
