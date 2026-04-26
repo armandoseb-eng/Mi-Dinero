@@ -7,24 +7,6 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>Polaris</title>
-
-<!-- PWA & App Icons -->
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#1c1a17">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Polaris">
-<meta name="mobile-web-app-capable" content="yes">
-
-<!-- Open Graph / Social Preview -->
-<meta property="og:title" content="Polaris">
-<meta property="og:description" content="Tus finanzas personales con propósito. Reflexión sobre métricas.">
-<meta property="og:image" content="icon-512.png">
-<meta property="og:type" content="website">
-<meta name="description" content="Tus finanzas personales con propósito. Reflexión sobre métricas.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -1693,31 +1675,58 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
 
 /* Mini-chart (bars per month) */
 .ov-ask-chart{
-  margin:12px 0 2px;
-  display:flex;align-items:flex-end;justify-content:space-between;
-  gap:3px;height:48px;
-  padding:0 2px 20px;position:relative;
+  margin:12px 0 4px;
+  display:grid;
+  grid-template-rows:48px auto;
+  gap:6px;
+  padding:0 2px;
+  position:relative;
+}
+/* Baseline line at the foot of the bars row */
+.ov-ask-chart::before{
+  content:"";position:absolute;
+  left:2px;right:2px;top:48px;
+  height:1px;background:var(--border2);
+  opacity:.6;pointer-events:none;
+}
+.ov-ask-chart-bars{
+  display:grid;
+  grid-template-columns:repeat(var(--cols,12),1fr);
+  align-items:end;
+  gap:3px;
+  height:48px;
+}
+.ov-ask-chart-labels{
+  display:grid;
+  grid-template-columns:repeat(var(--cols,12),1fr);
+  gap:3px;
+}
+.ov-ask-chart-label{
+  font-size:9px;color:var(--ink4);font-weight:600;
+  text-transform:uppercase;letter-spacing:.04em;
+  text-align:center;
+  white-space:nowrap;
+  overflow:hidden;
 }
 .ov-ask-chart-bar{
-  flex:1;min-width:6px;
+  min-width:0;
   background:var(--ink4);
   border-radius:3px 3px 0 0;
   position:relative;
   transition:background .15s ease;
-  min-height:2px;
+  align-self:end;
 }
 .ov-ask-chart-bar.tone-neg{background:var(--red);}
 .ov-ask-chart-bar.tone-pos{background:var(--green);}
 .ov-ask-chart-bar.tone-blu{background:var(--blue);}
 .ov-ask-chart-bar.tone-amb{background:var(--amber);}
-.ov-ask-chart-bar.empty{background:var(--cream2);border:1px dashed var(--border2);}
-.ov-ask-chart-bar:hover{filter:brightness(1.15);}
-.ov-ask-chart-bar .ov-ask-chart-lbl{
-  position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);
-  font-size:9px;color:var(--ink4);font-weight:600;
-  text-transform:uppercase;letter-spacing:.04em;
-  white-space:nowrap;
+/* Empty months: no visible bar, label still claims its grid column */
+.ov-ask-chart-bar.empty{
+  background:transparent;
+  height:0;
+  pointer-events:none;
 }
+.ov-ask-chart-bar:hover{filter:brightness(1.15);}
 .ov-ask-chart-bar .ov-ask-chart-tip{
   position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);
   background:var(--ink);color:var(--cream);
@@ -1846,10 +1855,12 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
   }
   .ov-ask-vs::before{left:6%;}
   .ov-ask-vs::after{right:6%;}
-  .ov-ask-chart{height:40px;}
+  .ov-ask-chart-bars{height:40px;}
   /* Stack A/B mini-charts vertically so month labels breathe */
   .ov-ask-chart-dual{grid-template-columns:1fr;gap:14px;}
-  .ov-ask-chart-dual .ov-ask-chart{height:52px;}
+  .ov-ask-chart-dual .ov-ask-chart-bars{height:52px;}
+  /* On narrow screens, drop labels for non-mod-3 months to avoid overlap */
+  .ov-ask-chart-label{font-size:8px;}
 }
 
 /* Mobile adjustments for Overview */
@@ -2051,6 +2062,29 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
   padding:32px 28px;width:100%;max-width:420px;
   box-shadow:0 20px 60px rgba(0,0,0,.12);
   margin:auto 0;
+  position:relative;
+}
+
+/* ─── Language toggle (onboarding header, top-right of ob-box) ─── */
+.ob-lang-toggle{
+  position:absolute;top:14px;right:14px;
+  display:flex;gap:2px;
+  background:var(--cream2);border:1px solid var(--border);
+  border-radius:8px;padding:2px;
+  font-family:'Inter',sans-serif;
+}
+.ob-lang-btn{
+  background:transparent;border:none;
+  padding:4px 9px;border-radius:6px;
+  font-size:11px;font-weight:700;letter-spacing:.04em;
+  color:var(--ink4);cursor:pointer;
+  transition:all .18s;
+  font-family:'Inter',sans-serif;
+}
+.ob-lang-btn:hover{color:var(--ink2);}
+.ob-lang-btn.on{
+  background:var(--paper);color:var(--gold);
+  box-shadow:0 1px 3px rgba(0,0,0,.06);
 }
 .ob-logo-big{width:96px;height:96px;display:block;margin:0 auto 14px;color:var(--ink);object-fit:contain;border-radius:50%;}
 .ob-title{font-size:26px;font-weight:800;color:var(--ink);letter-spacing:-.03em;text-align:center;margin-bottom:6px;}
@@ -2233,6 +2267,12 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
 <div class="onboarding" id="onboarding" style="display:none">
   <div class="ob-box">
 
+    <!-- Language toggle (top-right, persistent across steps) -->
+    <div class="ob-lang-toggle" role="group" aria-label="Cambiar idioma" data-t-aria="onboarding.langToggleAria">
+      <button type="button" class="ob-lang-btn" id="ob-lang-es" onclick="obSetLang('es')">ES</button>
+      <button type="button" class="ob-lang-btn" id="ob-lang-en" onclick="obSetLang('en')">EN</button>
+    </div>
+
     <!-- Step indicator -->
     <div class="ob-steps">
       <div class="ob-step-dot active" id="ob-dot-1"></div>
@@ -2246,13 +2286,13 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
       <div class="ob-welcome">
         <img class="ob-logo-big" src="data:image/jpeg;base64,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" alt="Polaris" aria-hidden="true">
         <div class="ob-title">Polaris</div>
-        <div class="ob-manifesto">
+        <div class="ob-manifesto" data-t-html="onboarding.welcomeManifesto">
           Tu dinero cuenta una historia.<br>
           <strong>Polaris te ayuda a escucharla.</strong>
         </div>
       </div>
-      <button class="btn-start" onclick="obNextStep()">Comenzar →</button>
-      <span class="ob-badge">🔒 Beta v0.1 · Tus datos son locales y privados</span>
+      <button class="btn-start" onclick="obNextStep()" data-t="onboarding.welcomeStart">Comenzar →</button>
+      <span class="ob-badge" data-t="onboarding.welcomeBadge">🔒 Beta v0.1 · Tus datos son locales y privados</span>
     </div>
 
     <!-- ════════════════════════════════
@@ -2262,8 +2302,8 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
       <div class="ob-setup-header">
         <img class="ob-setup-header-img" src="data:image/jpeg;base64,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" alt="Polaris" aria-hidden="true">
         <div class="ob-setup-title">
-          <div class="ob-setup-title-main">Cuéntame algo sobre ti</div>
-          <div class="ob-setup-title-sub">Solo lo esencial para empezar.</div>
+          <div class="ob-setup-title-main" data-t="onboarding.setupTitle">Cuéntame algo sobre ti</div>
+          <div class="ob-setup-title-sub" data-t="onboarding.setupSubtitle">Solo lo esencial para empezar.</div>
         </div>
       </div>
 
@@ -2273,17 +2313,17 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
           <span id="ob-photo-icon">+</span>
         </div>
         <input type="file" id="ob-photo-input" accept="image/*" style="display:none" onchange="obSelectPhoto(event)">
-        <div class="ob-photo-hint">Una foto tuya (opcional)</div>
-        <button class="ob-photo-remove" onclick="obRemovePhoto(event)">Quitar foto</button>
+        <div class="ob-photo-hint" data-t="onboarding.photoHint">Una foto tuya (opcional)</div>
+        <button class="ob-photo-remove" onclick="obRemovePhoto(event)" data-t="onboarding.photoRemove">Quitar foto</button>
       </div>
 
       <div class="ob-field">
-        <label class="ob-label">¿Cómo te llamas?<span class="ob-req">*</span></label>
-        <input class="finput" id="ob-name" placeholder="Tu nombre" maxlength="30" required>
+        <label class="ob-label"><span data-t="onboarding.nameLabel">¿Cómo te llamas?</span><span class="ob-req">*</span></label>
+        <input class="finput" id="ob-name" placeholder="Tu nombre" data-t-placeholder="onboarding.namePlaceholder" maxlength="30" required>
       </div>
 
       <div class="ob-field">
-        <label class="ob-label">Moneda preferida</label>
+        <label class="ob-label" data-t="onboarding.currencyLabel">Moneda preferida</label>
         <div class="cur-btns">
           <button class="cur-btn on" data-cur="£" onclick="obSelectCur(this)">£ GBP</button>
           <button class="cur-btn" data-cur="€" onclick="obSelectCur(this)">€ EUR</button>
@@ -2292,10 +2332,10 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
       </div>
 
       <div class="ob-actions">
-        <button class="btn-back" onclick="obPrevStep()">← Atrás</button>
-        <button class="btn-start" onclick="finishOnboarding()">Empezar mi viaje →</button>
+        <button class="btn-back" onclick="obPrevStep()" data-t="onboarding.back">← Atrás</button>
+        <button class="btn-start" onclick="finishOnboarding()" data-t="onboarding.finish">Empezar mi viaje →</button>
       </div>
-      <span class="ob-badge">🔒 Beta v0.1 · Tus datos son locales y privados</span>
+      <span class="ob-badge" data-t="onboarding.welcomeBadge">🔒 Beta v0.1 · Tus datos son locales y privados</span>
     </div>
 
   </div>
@@ -2312,7 +2352,7 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
           <img class="hdr-logo-img" src="data:image/jpeg;base64,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" alt="Polaris" aria-hidden="true">
           <span class="hdr-logo-text">Polaris</span>
         </div>
-        <button class="period-display" onclick="openPeriodEdit()" title="Editar período">
+        <button class="period-display" onclick="openPeriodEdit()" data-t-title="header.editPeriod" title="Editar período">
           <span id="periodLbl">—</span>
           <span class="pencil">✏️</span>
         </button>
@@ -2357,20 +2397,20 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
 
   <!-- TABS -->
   <div class="tabs">
-    <div class="tab on" data-tab="ingresos" onclick="switchTab('ingresos')">💳 Ingresos</div>
-    <div class="tab" data-tab="gastos" onclick="switchTab('gastos')">📤 Gastos</div>
-    <div class="tab" data-tab="ahorro" onclick="switchTab('ahorro')">🏦 Ahorro</div>
-    <div class="tab" data-tab="inversion" onclick="switchTab('inversion')">📈 Inversión</div>
-    <div class="tab" data-tab="deudas" onclick="switchTab('deudas')">💳 Deudas</div>
-    <div class="tab" data-tab="diario" onclick="switchTab('diario')">📔 Diario</div>
-    <div class="tab" data-tab="overview" onclick="switchTab('overview')">🗓 Overview</div>
+    <div class="tab on" data-tab="ingresos" onclick="switchTab('ingresos')" data-t="nav.ingresos">💳 Ingresos</div>
+    <div class="tab" data-tab="gastos" onclick="switchTab('gastos')" data-t="nav.gastos">📤 Gastos</div>
+    <div class="tab" data-tab="ahorro" onclick="switchTab('ahorro')" data-t="nav.ahorro">🏦 Ahorro</div>
+    <div class="tab" data-tab="inversion" onclick="switchTab('inversion')" data-t="nav.inversion">📈 Inversión</div>
+    <div class="tab" data-tab="deudas" onclick="switchTab('deudas')" data-t="nav.deudas">💳 Deudas</div>
+    <div class="tab" data-tab="diario" onclick="switchTab('diario')" data-t="nav.diario">📔 Diario</div>
+    <div class="tab" data-tab="overview" onclick="switchTab('overview')" data-t="nav.overview">🗓 Overview</div>
   </div>
 
   <!-- MOBILE TAB NAV -->
   <div class="tab-nav" id="tabNav">
-    <button class="tab-nav-btn" id="tabPrev" onclick="navTab(-1)">‹ Anterior</button>
+    <button class="tab-nav-btn" id="tabPrev" onclick="navTab(-1)" data-t="nav.prev">‹ Anterior</button>
     <span class="tab-nav-lbl" id="tabNavLbl">Ingresos</span>
-    <button class="tab-nav-btn" id="tabNext" onclick="navTab(1)">Siguiente ›</button>
+    <button class="tab-nav-btn" id="tabNext" onclick="navTab(1)" data-t="nav.next">Siguiente ›</button>
   </div>
 
   <!-- CONTENT -->
@@ -2391,6 +2431,319 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
 const MONTHS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const MONTHS_S=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 const DAYS_S=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+
+// ═══════════════════════════════════
+// I18N DICTIONARY
+// ═══════════════════════════════════
+// Polaris i18n system (Sesión 1 of 5: arquitectura).
+// Structure: T[lang][namespace][key]. Use t('namespace.key') to read.
+// Empty string '' = pending translation; t() falls back to 'es' automatically.
+// Add new keys to BOTH 'es' and 'en' — keep them in sync.
+const T = {
+  es: {
+    // ─── Common UI primitives (botones, acciones) ───
+    common: {
+      save: 'Guardar',
+      saveChanges: 'Guardar cambios',
+      cancel: 'Cancelar',
+      close: 'Cerrar',
+      delete: 'Eliminar',
+      edit: 'Editar',
+      back: 'Atrás',
+      continue: 'Continuar',
+      add: 'Agregar',
+      remove: 'Quitar',
+      confirm: 'Confirmar',
+      yes: 'Sí',
+      no: 'No',
+      optional: '(opcional)',
+      required: '*',
+    },
+
+    // ─── Onboarding ───
+    onboarding: {
+      // Step 1 — welcome
+      welcomeTagline1: 'Tu dinero cuenta una historia.',
+      welcomeTagline2: 'Polaris te ayuda a escucharla.',
+      welcomeManifesto: 'Tu dinero cuenta una historia.<br><strong>Polaris te ayuda a escucharla.</strong>',
+      welcomeStart: 'Comenzar →',
+      welcomeBadge: '🔒 Beta v0.1 · Tus datos son locales y privados',
+      // Step 2 — setup
+      setupTitle: 'Cuéntame algo sobre ti',
+      setupSubtitle: 'Solo lo esencial para empezar.',
+      photoHint: 'Una foto tuya (opcional)',
+      photoRemove: 'Quitar foto',
+      nameLabel: '¿Cómo te llamas?',
+      namePlaceholder: 'Tu nombre',
+      currencyLabel: 'Moneda preferida',
+      finish: 'Empezar mi viaje →',
+      back: '← Atrás',
+      // Language toggle (in onboarding header)
+      langToggleAria: 'Cambiar idioma',
+    },
+
+    // ─── Header / navigation ───
+    header: {
+      editPeriod: 'Editar período',
+      themeLight: '☀️',
+      themeDark: '🌙',
+      profileAria: 'Mi perfil',
+    },
+
+    // ─── Bottom navigation tabs ───
+    // Labels include emoji prefix. Read via tabLabel(key) helper.
+    nav: {
+      ingresos: '💳 Ingresos',
+      gastos: '📤 Gastos',
+      ahorro: '🏦 Ahorro',
+      inversion: '📈 Inversión',
+      deudas: '💳 Deudas',
+      diario: '📔 Diario',
+      overview: '🗓 Overview',
+      prev: '‹ Anterior',
+      next: 'Siguiente ›',
+    },
+
+    // ─── Profile / Settings modal ───
+    profile: {
+      title: '👤 Mi perfil',
+      changePhoto: 'Cambiar foto',
+      namePlaceholder: 'Tu nombre',
+      currencyLabel: 'Moneda',
+      periodLabel: 'Período del mes',
+      periodHint: 'Escribe las fechas de inicio y fin de tu período. Por ejemplo:',
+      periodExample: '21 Feb - 20 Mar',
+      themeLabel: 'Modo de visualización',
+      themeLight: '☀️ Claro',
+      themeDark: '🌙 Oscuro',
+      langLabel: 'Idioma / Language',
+      langEs: 'Español',
+      langEn: 'English',
+      saveBtn: 'Guardar cambios',
+      showWelcome: '👋 Ver pantalla de bienvenida',
+      resetData: '⚠️ Resetear mis datos',
+    },
+
+    // ─── Period edit modal ───
+    period: {
+      title: '📅 Período del mes',
+      hint1: 'Define el período que cubre este mes. Por ejemplo:',
+      example1: '21 Feb – 20 Mar',
+      or: 'o',
+      example2: '1 Mar – 31 Mar',
+      applyBtn: 'Aplicar',
+    },
+
+    // ─── Reset data modal ───
+    reset: {
+      title: '⚠️ Resetear mis datos',
+      intro: 'Elige qué quieres borrar. Esta acción <strong style="color:var(--red)">no se puede deshacer</strong>.',
+      // Option cards
+      profileTitle: 'Solo mi perfil',
+      profileDesc: 'Borra tu nombre, foto, moneda y período. Tus entradas se mantienen intactas.',
+      dataTitle: 'Solo mis entradas',
+      dataDesc: 'Borra todo lo registrado en Ingresos, Gastos, Ahorro, Inversión, Deudas y Diario. Tu perfil se mantiene.',
+      allTitle: 'Todo',
+      allDesc: 'Borra perfil y entradas. La app vuelve al estado inicial como si fuera la primera vez.',
+      // Confirmation step
+      confirmTitle: '⚠️ ¿Seguro?',
+      confirmProfileTitle: 'Borrar solo mi perfil',
+      confirmProfileDesc: 'Se borrará tu nombre, foto, moneda y período. Tus entradas (Ingresos, Gastos, Ahorro, Inversión, Deudas y Diario) se mantienen intactas.',
+      confirmDataTitle: 'Borrar solo mis entradas',
+      confirmDataDesc: 'Se borrará todo lo registrado en Ingresos, Gastos, Ahorro, Inversión, Deudas y Diario. Tu perfil se mantiene.',
+      confirmAllTitle: 'Borrar todo',
+      confirmAllDesc: 'Se borrará tu perfil y todas tus entradas. La app volverá al estado inicial como si fuera la primera vez.',
+      confirmWarn: 'Esta acción <strong>no se puede deshacer</strong>.',
+      confirmBack: '← Atrás',
+      confirmYes: 'Sí, borrar',
+    },
+  },
+
+  en: {
+    // ─── Common UI primitives ───
+    common: {
+      save: '',
+      saveChanges: '',
+      cancel: '',
+      close: '',
+      delete: '',
+      edit: '',
+      back: '',
+      continue: '',
+      add: '',
+      remove: '',
+      confirm: '',
+      yes: '',
+      no: '',
+      optional: '',
+      required: '*',
+    },
+
+    // ─── Onboarding ───
+    onboarding: {
+      welcomeTagline1: '',
+      welcomeTagline2: '',
+      welcomeManifesto: '',
+      welcomeStart: '',
+      welcomeBadge: '',
+      setupTitle: '',
+      setupSubtitle: '',
+      photoHint: '',
+      photoRemove: '',
+      nameLabel: '',
+      namePlaceholder: '',
+      currencyLabel: '',
+      finish: '',
+      back: '',
+      langToggleAria: '',
+    },
+
+    // ─── Header ───
+    header: {
+      editPeriod: '',
+      themeLight: '☀️',
+      themeDark: '🌙',
+      profileAria: '',
+    },
+
+    // ─── Bottom navigation ───
+    nav: {
+      ingresos: '',
+      gastos: '',
+      ahorro: '',
+      inversion: '',
+      deudas: '',
+      diario: '',
+      overview: '',
+      prev: '',
+      next: '',
+    },
+
+    // ─── Profile / Settings ───
+    profile: {
+      title: '',
+      changePhoto: '',
+      namePlaceholder: '',
+      currencyLabel: '',
+      periodLabel: '',
+      periodHint: '',
+      periodExample: '',
+      themeLabel: '',
+      themeLight: '',
+      themeDark: '',
+      langLabel: 'Idioma / Language',
+      langEs: '',
+      langEn: '',
+      saveBtn: '',
+      showWelcome: '',
+      resetData: '',
+    },
+
+    // ─── Period edit ───
+    period: {
+      title: '',
+      hint1: '',
+      example1: '',
+      or: '',
+      example2: '',
+      applyBtn: '',
+    },
+
+    // ─── Reset data ───
+    reset: {
+      title: '',
+      intro: '',
+      profileTitle: '',
+      profileDesc: '',
+      dataTitle: '',
+      dataDesc: '',
+      allTitle: '',
+      allDesc: '',
+      confirmTitle: '',
+      confirmProfileTitle: '',
+      confirmProfileDesc: '',
+      confirmDataTitle: '',
+      confirmDataDesc: '',
+      confirmAllTitle: '',
+      confirmAllDesc: '',
+      confirmWarn: '',
+      confirmBack: '',
+      confirmYes: '',
+    },
+  },
+};
+
+// ─── i18n state + helpers ───
+// LANG persists in localStorage under 'lang' (default 'es').
+// Keep in sync with <html lang="..."> for accessibility/SEO.
+let LANG = (function(){
+  try { return localStorage.getItem('lang') || 'es'; }
+  catch(_) { return 'es'; }
+})();
+
+// t(key, fallback?) — read a translation by dot-notation path.
+// Resolution order: T[LANG][...path] → if empty/missing → T['es'][...path] → fallback → key.
+// Designed to be safe to call before T fully populates (e.g. during early bootstrap).
+function t(key, fallback){
+  if(!key) return fallback || '';
+  const parts = String(key).split('.');
+  const read = lang => {
+    let cur = T && T[lang];
+    for(const p of parts){
+      if(cur == null) return undefined;
+      cur = cur[p];
+    }
+    return cur;
+  };
+  let v = read(LANG);
+  if(v == null || v === '') v = read('es');
+  if(v == null) v = (fallback != null ? fallback : key);
+  return v;
+}
+
+// setLang(lang) — persist + update <html lang> + re-render the app.
+// Safe to call at any point: re-applies static UI translations and re-renders
+// the currently-active tab so dynamic content reflects the new language.
+function setLang(lang){
+  if(lang !== 'es' && lang !== 'en') return;
+  LANG = lang;
+  try { localStorage.setItem('lang', lang); } catch(_){}
+  try { document.documentElement.setAttribute('lang', lang); } catch(_){}
+  if(typeof applyStaticTranslations === 'function') applyStaticTranslations();
+  if(typeof updateTabNav === 'function') updateTabNav();
+  if(typeof render === 'function') render();
+}
+
+// applyStaticTranslations() — refresh all elements with [data-t] attributes.
+// Used for static HTML strings (onboarding, header, modals) that don't
+// re-render on every state change. Dynamic content uses t() inline.
+function applyStaticTranslations(){
+  document.querySelectorAll('[data-t]').forEach(el => {
+    const key = el.getAttribute('data-t');
+    if(!key) return;
+    el.textContent = t(key);
+  });
+  document.querySelectorAll('[data-t-html]').forEach(el => {
+    const key = el.getAttribute('data-t-html');
+    if(!key) return;
+    el.innerHTML = t(key);
+  });
+  document.querySelectorAll('[data-t-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-t-placeholder');
+    if(!key) return;
+    el.setAttribute('placeholder', t(key));
+  });
+  document.querySelectorAll('[data-t-aria]').forEach(el => {
+    const key = el.getAttribute('data-t-aria');
+    if(!key) return;
+    el.setAttribute('aria-label', t(key));
+  });
+  document.querySelectorAll('[data-t-title]').forEach(el => {
+    const key = el.getAttribute('data-t-title');
+    if(!key) return;
+    el.setAttribute('title', t(key));
+  });
+}
 
 const MOODS=[
   {emoji:'😰',label:'Ansioso',color:'#e8b4b4'},
@@ -7891,12 +8244,14 @@ function ovCandDebtBurden(p){
 }
 
 // 11. "Hormiga" — micro-spend categories (cafés, delivery, streaming...)
+// Categorías "hormiga" — usadas tanto por el insight de Gasto hormiga como por Eco.
+// Mantener sincronizadas para que ambos insights hablen del mismo fenómeno.
+const ANT_LEAK_CATS=['☕ Cafés','🍕 Delivery','🎵 Música','📺 Streaming','🎮 Videojuegos','☁️ Suscripciones digitales','🍷 Alcohol y bebidas'];
+
 function ovCandAntSpending(p){
   const byCat=ovSpendByCat(p.from,p.to,p.year);
-  // Heuristic list of "small-leak" categories
-  const leakCats=['☕ Cafés','🍕 Delivery','🎵 Música','📺 Streaming','🎮 Videojuegos','☁️ Suscripciones digitales','🍷 Alcohol y bebidas'];
   let total=0,biggest=null,biggestAmt=0;
-  leakCats.forEach(c=>{
+  ANT_LEAK_CATS.forEach(c=>{
     const v=byCat[c]||0;if(v<=0)return;
     total+=v;
     if(v>biggestAmt){biggest=c;biggestAmt=v;}
@@ -7921,14 +8276,163 @@ function ovCandBestMonth(p){
   const positive=entries.filter(x=>x.v>0).length;
   const best=entries.reduce((a,b)=>b.v>a.v?b:a);
   if(best.v<=0)return null;
+  // Breakdown of how the income that month was deployed into ahorro / inversión.
+  // % is over income (most stable base, aligns with rest of app).
+  const t=totals(best.m,p.year);
+  let breakdownHTML='';
+  if(t.ing>0&&(t.aho>0||t.inv>0)){
+    const ahoPct=Math.round((t.aho/t.ing)*100);
+    const invPct=Math.round((t.inv/t.ing)*100);
+    const parts=[];
+    if(t.aho>0)parts.push(`<strong>${ahoPct}%</strong> a ahorro (${fmt(t.aho)})`);
+    if(t.inv>0)parts.push(`<strong>${invPct}%</strong> a inversión (${fmt(t.inv)})`);
+    breakdownHTML=`<br><span style="opacity:.75;font-size:.94em">De los cuales ${parts.join(' y ')}.</span>`;
+  }
   return{
     id:'best-month',category:'balance',tone:'pos',icon:'⭐',
     title:'Mejor mes',
-    body:`<strong>${MONTHS[best.m]}</strong> cerró con <span class="ov-ins-num">${fmt(best.v)}</span> de margen tras gastos.`,
+    body:`<strong>${MONTHS[best.m]}</strong> cerró con <span class="ov-ins-num">${fmt(best.v)}</span> de margen tras gastos.${breakdownHTML}`,
     foot:`${positive} de ${entries.length} meses en positivo.`,
     severity:40,recency:60
   };
 }
+
+// 13. Eco — espejo entre Diario y datos financieros (Capa 3, versión 1)
+//
+// Filosofía: espejo, no juez. Describe coincidencias entre el estado cualitativo
+// reportado en una semana y los gastos hormiga de esa misma semana ISO. Prioriza
+// reflejar lo bueno (semanas alineadas con bajo gasto, o con bajo gasto a pesar
+// del estado) antes de mostrar tendencias. Solo aparece cuando hay contraste
+// claro vs el promedio semanal del período. Nunca causal, nunca acusatorio.
+//
+// Threshold: necesita ≥1 semana con diary respondido + datos financieros
+// y un contraste de ≥40% (bajo) o ≥50% (alto) sobre el promedio del período.
+function ovCandEco(p){
+  if(!DB._diary)return null;
+
+  // Step 1: collect candidate weeks — those with diary state computed AND that fall in the period
+  const periodWeeks=[]; // [{weekKey, mon, sun, area, state}]
+  Object.keys(DB._diary).forEach(wk=>{
+    const entry=DB._diary[wk];
+    if(!entry||!entry.areaId)return;
+    const parsed=isoWeekFromKey(wk);if(!parsed)return;
+    const area=DIARY_AREAS.find(a=>a.id===entry.areaId);if(!area)return;
+    const state=computeWeekState(entry,area);if(!state)return;
+    const mon=mondayOfIsoWeek(parsed.year,parsed.week);
+    const sun=new Date(mon);sun.setDate(mon.getDate()+6);
+    sun.setHours(23,59,59,999);
+    // Only include weeks whose Monday OR Sunday falls within the period months
+    const inPeriod=(d=>{
+      const m=d.getMonth(),y=d.getFullYear();
+      return y===p.year&&m>=p.from&&m<=p.to;
+    });
+    if(!inPeriod(mon)&&!inPeriod(sun))return;
+    periodWeeks.push({weekKey:wk,mon,sun,area,state});
+  });
+  if(periodWeeks.length===0)return null;
+
+  // Step 2: helper — sum hormiga spend for a single ISO week from raw gastos with date
+  const hormigaForWeek=(mon,sun)=>{
+    let total=0;
+    const monMs=mon.getTime(),sunMs=sun.getTime();
+    // Iterate months that could contain this week (week may straddle month boundary)
+    for(let m=p.from;m<=p.to;m++){
+      const k=mKey(m,p.year);if(!DB[k])continue;
+      DB[k].gastos.forEach(g=>{
+        if(!g||!g.date)return;
+        if(g.date<monMs||g.date>sunMs)return;
+        if(!ANT_LEAK_CATS.includes(g.cat))return;
+        total+=(+g.amt||0);
+      });
+    }
+    return total;
+  };
+
+  // Step 3: compute hormiga for each candidate week + period weekly average
+  periodWeeks.forEach(w=>{w.hormiga=hormigaForWeek(w.mon,w.sun);});
+  const allWeekly=periodWeeks.map(w=>w.hormiga);
+  const avgWeekly=allWeekly.reduce((a,b)=>a+b,0)/allWeekly.length;
+
+  // We need a non-trivial baseline to talk about contrast. If the period has
+  // virtually no hormiga at all, there's nothing to reflect.
+  if(avgWeekly<5&&periodWeeks.every(w=>w.hormiga<5))return null;
+
+  // Step 4: classify each week's state polarity
+  // Areas where state semantics differ: in 'valores' / 'paciencia' / 'carga',
+  // 'alineado'/'intencional' are positive; in others, they are neutral-positive.
+  // For our purposes, treat alineado+intencional as "calmed" and reactivo+fragil
+  // as "stirred". Both are descriptive, not value judgments.
+  const calmedStates=['alineado','intencional'];
+  const stirredStates=['reactivo','fragil'];
+
+  // Step 5: search for echoes — prioritize positive ones first
+  // Positive echo A: calmed state + low hormiga (≤60% of avg)
+  // Positive echo B: stirred state + low hormiga (the user "held the line" despite turbulence)
+  // Tendency echo: stirred state + high hormiga (≥150% of avg) — shown only if no positive echo found
+  let positive=null,tendency=null;
+  periodWeeks.forEach(w=>{
+    const ratio=avgWeekly>0?(w.hormiga/avgWeekly):1;
+    const isCalmed=calmedStates.includes(w.state);
+    const isStirred=stirredStates.includes(w.state);
+    // Positive A: calmed + low spend
+    if(isCalmed&&w.hormiga>0&&ratio<=0.6){
+      const score=(0.6-ratio)+0.5; // prefer larger contrast
+      if(!positive||score>positive._score){
+        positive={kind:'calmed-low',w,ratio,_score:score};
+      }
+    }
+    // Positive B: stirred + low spend (held the line)
+    if(isStirred&&w.hormiga>0&&ratio<=0.6){
+      const score=(0.6-ratio)+0.3;
+      if(!positive||score>positive._score){
+        positive={kind:'stirred-low',w,ratio,_score:score};
+      }
+    }
+    // Tendency: stirred + high spend
+    if(isStirred&&ratio>=1.5&&w.hormiga>=20){
+      const score=ratio-1.5;
+      if(!tendency||score>tendency._score){
+        tendency={kind:'stirred-high',w,ratio,_score:score};
+      }
+    }
+  });
+
+  // No echo to surface → silent. Better honest silence than forced observation.
+  if(!positive&&!tendency)return null;
+
+  // Step 6: build the body. Always prefer positive over tendency.
+  const chosen=positive||tendency;
+  const w=chosen.w;
+  const wp=isoWeekFromKey(w.weekKey);
+  const range=weekLabel(wp.year,wp.week);
+  const areaTitle=w.area.title.toLowerCase();
+  const stateLabels={reactivo:'Reactivo',fragil:'Frágil',intencional:'Intencional',alineado:'Alineado'};
+  const stateLbl=stateLabels[w.state]||w.state;
+  const hormigaFmt=fmt(w.hormiga);
+
+  let body='',foot='';
+  if(chosen.kind==='calmed-low'){
+    // Positive A — alignment-confirming echo
+    body=`En la semana del <strong>${range}</strong> reflexionaste sobre <strong>${areaTitle}</strong> y reportaste estado <strong>${stateLbl}</strong>. Esa misma semana, gastaste solo <span class="ov-ins-num">${hormigaFmt}</span> en pequeños placeres.`;
+    foot=`Las semanas con cabeza clara también dejan huella en el bolsillo.`;
+  } else if(chosen.kind==='stirred-low'){
+    // Positive B — resilience echo
+    body=`En la semana del <strong>${range}</strong> reflexionaste sobre <strong>${areaTitle}</strong> y el estado fue <strong>${stateLbl}</strong>. Aun así, los pequeños placeres de esa semana sumaron solo <span class="ov-ins-num">${hormigaFmt}</span>.`;
+    foot=`Sostener el rumbo en semanas movidas también es disciplina.`;
+  } else if(chosen.kind==='stirred-high'){
+    // Tendency echo — descriptive, never causal
+    body=`En la semana del <strong>${range}</strong> reflexionaste sobre <strong>${areaTitle}</strong> y reportaste estado <strong>${stateLbl}</strong>. Esa misma semana, los pequeños placeres sumaron <span class="ov-ins-num">${hormigaFmt}</span>.`;
+    foot=`Algo a observar — sin sacar conclusiones todavía.`;
+  }
+
+  return{
+    id:'eco-'+w.weekKey,category:'eco',tone:positive?'pos':'ctx',icon:'🪞',
+    title:'Eco',
+    body,foot,
+    severity:positive?55:45,recency:55
+  };
+}
+
 
 // ---- Priority engine ----
 function ovBuildInsights(p){
@@ -7944,7 +8448,8 @@ function ovBuildInsights(p){
     ovCandTopSpendCategory,
     ovCandDebtBurden,
     ovCandAntSpending,
-    ovCandBestMonth
+    ovCandBestMonth,
+    ovCandEco
   ];
   const candidates=[];
   builders.forEach(fn=>{try{const c=fn(p);if(c)candidates.push(c);}catch(e){console.warn('insight failed',fn.name,e);}});
@@ -9582,54 +10087,68 @@ function ovRenderCompareSelector(q){
 }
 
 // Mini-chart — 1 bar per month in the active period
+// Hides itself if fewer than 2 months have data (chart needs comparison to add value).
+// Uses a single grid for bars + labels with explicit column count to keep them aligned.
 function ovRenderMiniChart(series,p,tone,highlightIdx){
-  const valid=series.filter(v=>v!=null);
-  const max=valid.length?Math.max(...valid):0;
+  const valid=series.filter(v=>v!=null&&v>0);
+  if(valid.length<2)return '';
+  const max=Math.max(...valid);
   if(max<=0)return '';
+  const n=series.length;
   const bars=series.map((v,i)=>{
     const m=p.from+i;
-    const lbl=MONTHS_S[m];
-    if(v==null){
-      // No data that month
-      return `<div class="ov-ask-chart-bar empty" style="height:2px" title="${MONTHS[m]} · sin datos">
-        <span class="ov-ask-chart-lbl">${lbl}</span>
-      </div>`;
+    const hasData=(v!=null&&v>0);
+    if(!hasData){
+      return `<div class="ov-ask-chart-bar empty"></div>`;
     }
-    const pct=max>0?Math.max(2,Math.round((v/max)*100)):2;
+    const pct=Math.max(4,Math.round((v/max)*100));
     const isHi=(highlightIdx!=null&&i===highlightIdx);
     const barCls=`ov-ask-chart-bar tone-${tone}${isHi?' highlight':''}`;
-    const hiStyle=isHi?'outline:2px solid var(--gold);outline-offset:1px;':'';
-    return `<div class="${barCls}" style="height:${pct}%;${hiStyle}">
+    return `<div class="${barCls}" style="height:${pct}%">
       <span class="ov-ask-chart-tip">${MONTHS_S[m]} · ${fmt(v)}</span>
-      <span class="ov-ask-chart-lbl">${lbl}</span>
     </div>`;
   }).join('');
-  return `<div class="ov-ask-chart">${bars}</div>`;
+  const labels=series.map((_,i)=>{
+    const m=p.from+i;
+    return `<div class="ov-ask-chart-label">${MONTHS_S[m]}</div>`;
+  }).join('');
+  return `<div class="ov-ask-chart" style="--cols:${n}">
+    <div class="ov-ask-chart-bars">${bars}</div>
+    <div class="ov-ask-chart-labels">${labels}</div>
+  </div>`;
 }
 
 // Dual mini-chart — two columns of bars for A vs B comparison
+// Hides itself if combined valid data points <3 across both series.
 function ovRenderDualChart(dc,p){
   // Common max across both series so bars are comparable
-  const allVals=[...dc.aSeries,...dc.bSeries].filter(v=>v!=null);
-  const max=allVals.length?Math.max(...allVals):0;
+  const allValid=[...dc.aSeries,...dc.bSeries].filter(v=>v!=null&&v>0);
+  // Need at least 3 valid points combined for a meaningful comparison
+  if(allValid.length<3)return '';
+  const max=Math.max(...allValid);
+  if(max<=0)return '';
 
   const renderSide=(series,tone)=>{
-    if(max<=0)return '<div class="ov-ask-chart" style="height:40px"></div>';
+    const n=series.length;
     const bars=series.map((v,i)=>{
       const m=p.from+i;
-      const lbl=MONTHS_S[m];
-      if(v==null){
-        return `<div class="ov-ask-chart-bar empty" style="height:2px">
-          <span class="ov-ask-chart-lbl">${lbl}</span>
-        </div>`;
+      const hasData=(v!=null&&v>0);
+      if(!hasData){
+        return `<div class="ov-ask-chart-bar empty"></div>`;
       }
-      const pct=max>0?Math.max(2,Math.round((v/max)*100)):2;
+      const pct=Math.max(4,Math.round((v/max)*100));
       return `<div class="ov-ask-chart-bar tone-${tone}" style="height:${pct}%">
         <span class="ov-ask-chart-tip">${MONTHS_S[m]} · ${fmt(v)}</span>
-        <span class="ov-ask-chart-lbl">${lbl}</span>
       </div>`;
     }).join('');
-    return `<div class="ov-ask-chart">${bars}</div>`;
+    const labels=series.map((_,i)=>{
+      const m=p.from+i;
+      return `<div class="ov-ask-chart-label">${MONTHS_S[m]}</div>`;
+    }).join('');
+    return `<div class="ov-ask-chart" style="--cols:${n}">
+      <div class="ov-ask-chart-bars">${bars}</div>
+      <div class="ov-ask-chart-labels">${labels}</div>
+    </div>`;
   };
 
   // Tones default to neg/blu for backward compatibility but respect real types when provided
@@ -10735,15 +11254,15 @@ function delGasGroup(gi){
 // ═══════════════════════════════════
 function openProfile(){
   const isDark=document.documentElement.getAttribute('data-theme')==='dark';
-  openModal(`<div class="modal-title">👤 Mi perfil<button class="modal-close" onclick="closeModal()">✕</button></div>
+  openModal(`<div class="modal-title">${t('profile.title')}<button class="modal-close" onclick="closeModal()">✕</button></div>
     <div style="text-align:center;margin-bottom:16px">
       <div onclick="document.getElementById('photoInput').click()" style="width:72px;height:72px;border-radius:50%;background:var(--cream3);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:32px;cursor:pointer;margin:0 auto 8px;overflow:hidden">
         ${CONFIG.photo?`<img src="${CONFIG.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:'👤'}</div>
-      <div onclick="document.getElementById('photoInput').click()" style="font-size:11px;color:var(--gold);font-weight:600;cursor:pointer">Cambiar foto</div>
+      <div onclick="document.getElementById('photoInput').click()" style="font-size:11px;color:var(--gold);font-weight:600;cursor:pointer">${t('profile.changePhoto')}</div>
     </div>
-    <div class="form-row"><input id="p-name" class="finput" placeholder="Tu nombre" value="${CONFIG.name||''}"></div>
+    <div class="form-row"><input id="p-name" class="finput" placeholder="${t('profile.namePlaceholder')}" value="${CONFIG.name||''}"></div>
     <div style="margin-bottom:12px">
-      <label class="ob-label" style="display:block;margin-bottom:6px;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4)">Moneda</label>
+      <label class="ob-label" style="display:block;margin-bottom:6px;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4)">${t('profile.currencyLabel')}</label>
       <div class="cur-btns">
         <button class="cur-btn${CONFIG.currency==='£'?' on':''}" data-cur="£" onclick="profSelectCur(this)">£ GBP</button>
         <button class="cur-btn${CONFIG.currency==='€'?' on':''}" data-cur="€" onclick="profSelectCur(this)">€ EUR</button>
@@ -10751,25 +11270,40 @@ function openProfile(){
       </div>
     </div>
     <div style="margin-bottom:16px">
-      <label class="ob-label" style="display:block;margin-bottom:6px;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4)">Período del mes</label>
-      <div style="font-size:11px;color:var(--ink4);margin-bottom:8px">Escribe las fechas de inicio y fin de tu período. Por ejemplo: <em>21 Feb - 20 Mar</em></div>
-      <input class="finput" id="p-period-custom" placeholder="21 Feb - 20 Mar" value="${CONFIG.periodLabel||''}">
+      <label class="ob-label" style="display:block;margin-bottom:6px;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4)">${t('profile.periodLabel')}</label>
+      <div style="font-size:11px;color:var(--ink4);margin-bottom:8px">${t('profile.periodHint')} <em>${t('profile.periodExample')}</em></div>
+      <input class="finput" id="p-period-custom" placeholder="${t('profile.periodExample')}" value="${CONFIG.periodLabel||''}">
     </div>
     <div style="margin-bottom:16px;padding:12px;background:var(--cream2);border-radius:10px;border:1px solid var(--border)">
-      <label class="ob-label" style="display:block;margin-bottom:8px;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4)">Modo de visualización</label>
+      <label class="ob-label" style="display:block;margin-bottom:8px;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4)">${t('profile.langLabel')}</label>
       <div style="display:flex;gap:8px">
-        <button onclick="setTheme('light')" style="flex:1;padding:9px;border-radius:9px;border:1.5px solid var(--border);background:${!isDark?'rgba(184,134,11,.1)':'var(--cream)'};font-size:14px;cursor:pointer;font-weight:700;color:${!isDark?'var(--gold)':'var(--ink3)'};font-family:'Inter',sans-serif;transition:all .18s" id="prof-light-btn">☀️ Claro</button>
-        <button onclick="setTheme('dark')" style="flex:1;padding:9px;border-radius:9px;border:1.5px solid ${isDark?'var(--gold)':'var(--border)'};background:${isDark?'rgba(184,134,11,.1)':'var(--cream)'};font-size:14px;cursor:pointer;font-weight:700;color:${isDark?'var(--gold)':'var(--ink3)'};font-family:'Inter',sans-serif;transition:all .18s" id="prof-dark-btn">🌙 Oscuro</button>
+        <button onclick="profSetLang('es')" style="flex:1;padding:9px;border-radius:9px;border:1.5px solid ${LANG==='es'?'var(--gold)':'var(--border)'};background:${LANG==='es'?'rgba(184,134,11,.1)':'var(--cream)'};font-size:14px;cursor:pointer;font-weight:700;color:${LANG==='es'?'var(--gold)':'var(--ink3)'};font-family:'Inter',sans-serif;transition:all .18s">🇪🇸 ${t('profile.langEs')}</button>
+        <button onclick="profSetLang('en')" style="flex:1;padding:9px;border-radius:9px;border:1.5px solid ${LANG==='en'?'var(--gold)':'var(--border)'};background:${LANG==='en'?'rgba(184,134,11,.1)':'var(--cream)'};font-size:14px;cursor:pointer;font-weight:700;color:${LANG==='en'?'var(--gold)':'var(--ink3)'};font-family:'Inter',sans-serif;transition:all .18s">🇬🇧 ${t('profile.langEn')}</button>
       </div>
     </div>
-    <button class="btn-save" onclick="saveProfile()">Guardar cambios</button>
+    <div style="margin-bottom:16px;padding:12px;background:var(--cream2);border-radius:10px;border:1px solid var(--border)">
+      <label class="ob-label" style="display:block;margin-bottom:8px;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4)">${t('profile.themeLabel')}</label>
+      <div style="display:flex;gap:8px">
+        <button onclick="setTheme('light')" style="flex:1;padding:9px;border-radius:9px;border:1.5px solid var(--border);background:${!isDark?'rgba(184,134,11,.1)':'var(--cream)'};font-size:14px;cursor:pointer;font-weight:700;color:${!isDark?'var(--gold)':'var(--ink3)'};font-family:'Inter',sans-serif;transition:all .18s" id="prof-light-btn">${t('profile.themeLight')}</button>
+        <button onclick="setTheme('dark')" style="flex:1;padding:9px;border-radius:9px;border:1.5px solid ${isDark?'var(--gold)':'var(--border)'};background:${isDark?'rgba(184,134,11,.1)':'var(--cream)'};font-size:14px;cursor:pointer;font-weight:700;color:${isDark?'var(--gold)':'var(--ink3)'};font-family:'Inter',sans-serif;transition:all .18s" id="prof-dark-btn">${t('profile.themeDark')}</button>
+      </div>
+    </div>
+    <button class="btn-save" onclick="saveProfile()">${t('profile.saveBtn')}</button>
     <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:10px;align-items:center">
-      <button onclick="showOnboardingAgain()" style="background:none;border:none;color:var(--ink3);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600">👋 Ver pantalla de bienvenida</button>
-      <button onclick="openResetModal()" style="background:none;border:none;color:var(--red);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600">⚠️ Resetear mis datos</button>
+      <button onclick="showOnboardingAgain()" style="background:none;border:none;color:var(--ink3);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600">${t('profile.showWelcome')}</button>
+      <button onclick="openResetModal()" style="background:none;border:none;color:var(--red);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600">${t('profile.resetData')}</button>
     </div>`);
 }
 
 function profSelectCur(btn){document.querySelectorAll('#modalBox .cur-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');CONFIG.currency=btn.dataset.cur;}
+// Switch app language from inside the profile modal. setLang() persists,
+// updates <html lang>, and re-renders. We then re-open the profile modal so
+// its own copy reflects the new language immediately.
+function profSetLang(lang){
+  if(lang===LANG)return;
+  setLang(lang);
+  if(document.querySelector('#modalBox'))openProfile();
+}
 function profSelectPeriod(btn){
   document.querySelectorAll('#modalBox .period-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
   CONFIG.period=btn.dataset.period;
@@ -10823,12 +11357,12 @@ function updatePeriodLabel(){
   el.textContent=`${fmtD(d1)} – ${fmtD(d2)}`;
 }
 function openPeriodEdit(){
-  openModal(`<div class="modal-title">📅 Período del mes<button class="modal-close" onclick="closeModal()">✕</button></div>
-    <div style="font-size:13px;color:var(--ink3);line-height:1.6;margin-bottom:16px">Define el período que cubre este mes. Por ejemplo:<br><strong>21 Feb – 20 Mar</strong> o <strong>1 Mar – 31 Mar</strong></div>
+  openModal(`<div class="modal-title">${t('period.title')}<button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div style="font-size:13px;color:var(--ink3);line-height:1.6;margin-bottom:16px">${t('period.hint1')}<br><strong>${t('period.example1')}</strong> ${t('period.or')} <strong>${t('period.example2')}</strong></div>
     <div class="form-row">
-      <input class="finput" id="pe-label" placeholder="21 Feb – 20 Mar" value="${CONFIG.periodLabel||''}">
+      <input class="finput" id="pe-label" placeholder="${t('period.example1')}" value="${CONFIG.periodLabel||''}">
     </div>
-    <button class="btn-save" onclick="savePeriodEdit()">Aplicar</button>`);
+    <button class="btn-save" onclick="savePeriodEdit()">${t('period.applyBtn')}</button>`);
   setTimeout(()=>document.getElementById('pe-label')?.focus(),100);
 }
 function savePeriodEdit(){
@@ -10844,29 +11378,29 @@ function savePeriodEdit(){
 //   'data'    → solo DB (ingresos, gastos, ahorro, inversión, deudas, diario) → md_db6
 //   'all'     → ambos
 function openResetModal(){
-  openModal(`<div class="modal-title">⚠️ Resetear mis datos<button class="modal-close" onclick="closeModal()">✕</button></div>
+  openModal(`<div class="modal-title">${t('reset.title')}<button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="reset-body">
-      <div class="reset-intro">Elige qué quieres borrar. Esta acción <strong style="color:var(--red)">no se puede deshacer</strong>.</div>
+      <div class="reset-intro">${t('reset.intro')}</div>
       <div class="reset-opts">
         <div class="reset-opt" role="button" tabindex="0" onclick="confirmReset('profile')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();confirmReset('profile');}">
           <div class="reset-opt-icon">👤</div>
           <div class="reset-opt-body">
-            <div class="reset-opt-title">Solo mi perfil</div>
-            <div class="reset-opt-desc">Borra tu nombre, foto, moneda y período. Tus entradas se mantienen intactas.</div>
+            <div class="reset-opt-title">${t('reset.profileTitle')}</div>
+            <div class="reset-opt-desc">${t('reset.profileDesc')}</div>
           </div>
         </div>
         <div class="reset-opt" role="button" tabindex="0" onclick="confirmReset('data')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();confirmReset('data');}">
           <div class="reset-opt-icon">📊</div>
           <div class="reset-opt-body">
-            <div class="reset-opt-title">Solo mis entradas</div>
-            <div class="reset-opt-desc">Borra todo lo registrado en Ingresos, Gastos, Ahorro, Inversión, Deudas y Diario. Tu perfil se mantiene.</div>
+            <div class="reset-opt-title">${t('reset.dataTitle')}</div>
+            <div class="reset-opt-desc">${t('reset.dataDesc')}</div>
           </div>
         </div>
         <div class="reset-opt reset-opt-danger" role="button" tabindex="0" onclick="confirmReset('all')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();confirmReset('all');}">
           <div class="reset-opt-icon">🗑️</div>
           <div class="reset-opt-body">
-            <div class="reset-opt-title">Todo</div>
-            <div class="reset-opt-desc">Borra perfil y entradas. La app vuelve al estado inicial como si fuera la primera vez.</div>
+            <div class="reset-opt-title">${t('reset.allTitle')}</div>
+            <div class="reset-opt-desc">${t('reset.allDesc')}</div>
           </div>
         </div>
       </div>
@@ -10874,34 +11408,22 @@ function openResetModal(){
 }
 function confirmReset(scope){
   const details={
-    profile:{
-      title:'Borrar solo mi perfil',
-      icon:'👤',
-      desc:'Se borrará tu nombre, foto, moneda y período. Tus entradas (Ingresos, Gastos, Ahorro, Inversión, Deudas y Diario) se mantienen intactas.'
-    },
-    data:{
-      title:'Borrar solo mis entradas',
-      icon:'📊',
-      desc:'Se borrará todo lo registrado en Ingresos, Gastos, Ahorro, Inversión, Deudas y Diario. Tu perfil se mantiene.'
-    },
-    all:{
-      title:'Borrar todo',
-      icon:'🗑️',
-      desc:'Se borrará tu perfil y todas tus entradas. La app volverá al estado inicial como si fuera la primera vez.'
-    }
+    profile:{title:t('reset.confirmProfileTitle'),icon:'👤',desc:t('reset.confirmProfileDesc')},
+    data:{title:t('reset.confirmDataTitle'),icon:'📊',desc:t('reset.confirmDataDesc')},
+    all:{title:t('reset.confirmAllTitle'),icon:'🗑️',desc:t('reset.confirmAllDesc')}
   };
   const d=details[scope];
-  openModal(`<div class="modal-title">⚠️ ¿Seguro?<button class="modal-close" onclick="closeModal()">✕</button></div>
+  openModal(`<div class="modal-title">${t('reset.confirmTitle')}<button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="reset-body">
       <div class="reset-confirm-card">
         <div class="reset-confirm-icon">${d.icon}</div>
         <div class="reset-confirm-title">${d.title}</div>
         <div class="reset-confirm-desc">${d.desc}</div>
       </div>
-      <div class="reset-confirm-warn">Esta acción <strong>no se puede deshacer</strong>.</div>
+      <div class="reset-confirm-warn">${t('reset.confirmWarn')}</div>
       <div class="reset-confirm-actions">
-        <button class="btn-cancel-reset" onclick="openResetModal()">← Atrás</button>
-        <button class="btn-confirm-reset" onclick="executeReset('${scope}')">Sí, borrar</button>
+        <button class="btn-cancel-reset" onclick="openResetModal()">${t('reset.confirmBack')}</button>
+        <button class="btn-confirm-reset" onclick="executeReset('${scope}')">${t('reset.confirmYes')}</button>
       </div>
     </div>`);
 }
@@ -11032,7 +11554,8 @@ function exportGSheets(){
 // MOBILE TAB NAVIGATION
 // ═══════════════════════════════════
 const TAB_ORDER=['ingresos','gastos','ahorro','inversion','deudas','diario','overview'];
-const TAB_LABELS={'ingresos':'💳 Ingresos','gastos':'📤 Gastos','ahorro':'🏦 Ahorro','inversion':'📈 Inversión','deudas':'💳 Deudas','diario':'📔 Diario','overview':'🗓 Overview'};
+// TAB_LABELS reads from i18n dictionary. Use tabLabel(key) to get current label.
+function tabLabel(key){return t('nav.'+key);}
 
 function navTab(dir){
   const idx=TAB_ORDER.indexOf(activeTab);
@@ -11046,7 +11569,7 @@ function updateTabNav(){
   const lbl=document.getElementById('tabNavLbl');
   const prev=document.getElementById('tabPrev');
   const next=document.getElementById('tabNext');
-  if(lbl)lbl.textContent=TAB_LABELS[activeTab]||activeTab;
+  if(lbl)lbl.textContent=tabLabel(activeTab)||activeTab;
   if(prev)prev.disabled=idx===0;
   if(next)next.disabled=idx===TAB_ORDER.length-1;
 }
@@ -11100,6 +11623,20 @@ function obGoToStep(n){
 }
 function obNextStep(){obGoToStep(2);}
 function obPrevStep(){obGoToStep(1);}
+
+// Language toggle inside the onboarding (top-right of ob-box).
+// Persists via setLang() and updates the visual on/off state of both buttons.
+function obSetLang(lang){
+  if(lang===LANG)return;
+  setLang(lang);
+  obSyncLangToggle();
+}
+function obSyncLangToggle(){
+  const es=document.getElementById('ob-lang-es');
+  const en=document.getElementById('ob-lang-en');
+  if(es)es.classList.toggle('on',LANG==='es');
+  if(en)en.classList.toggle('on',LANG==='en');
+}
 
 // Photo upload (uses same base64 storage as the profile system)
 // Photos are resized to max 400x400 and re-encoded as JPEG (quality 0.82)
@@ -11189,6 +11726,11 @@ function finishOnboarding(){
 // ═══════════════════════════════════
 hydrate();
 migrateGroupsToGlobal();
+// i18n bootstrap: sync <html lang>, apply static translations, sync onboarding
+// language toggle state. LANG was already loaded at module top via localStorage.
+try { document.documentElement.setAttribute('lang', LANG); } catch(_){}
+applyStaticTranslations();
+obSyncLangToggle();
 if(CONFIG.theme){document.documentElement.setAttribute('data-theme',CONFIG.theme);document.getElementById('themeBtn').textContent=CONFIG.theme==='dark'?'☀️':'🌙';}
 // Show onboarding for new users (!onboarded) and for existing users whose
 // stored onboarding version is older than the current one. Data is preserved.
