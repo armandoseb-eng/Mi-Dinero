@@ -2386,7 +2386,7 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
 
   <!-- EXPORT BAR -->
   <div class="export-bar">
-    <span class="export-bar-lbl">Exportar</span>
+    <span class="export-bar-lbl" data-t="common.export">Exportar</span>
     <button class="export-bar-btn" onclick="exportPDF()"><span class="icon">📄</span> PDF</button>
     <button class="export-bar-btn" onclick="exportExcel()"><span class="icon">📊</span> Excel</button>
     <button class="export-bar-btn" onclick="exportGSheets()"><span class="icon">🔗</span> Google Sheets</button>
@@ -2397,10 +2397,10 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
 
   <!-- SUMMARY BAR -->
   <div class="sumbar">
-    <div class="scard"><div class="scard-lbl">Ingresos</div><div class="scard-val pos" id="s-ing">—</div></div>
-    <div class="scard"><div class="scard-lbl">Gastos</div><div class="scard-val neg" id="s-gas">—</div></div>
-    <div class="scard"><div class="scard-lbl">Ahorro+Inv</div><div class="scard-val blu" id="s-aho">—</div></div>
-    <div class="scard"><div class="scard-lbl">Disponible</div><div class="scard-val amb" id="s-dis">—</div></div>
+    <div class="scard"><div class="scard-lbl" data-t="common.summaryIngresos">Ingresos</div><div class="scard-val pos" id="s-ing">—</div></div>
+    <div class="scard"><div class="scard-lbl" data-t="common.summaryGastos">Gastos</div><div class="scard-val neg" id="s-gas">—</div></div>
+    <div class="scard"><div class="scard-lbl" data-t="common.summaryAhorroInv">Ahorro+Inv</div><div class="scard-val blu" id="s-aho">—</div></div>
+    <div class="scard"><div class="scard-lbl" data-t="common.summaryDisponible">Disponible</div><div class="scard-val amb" id="s-dis">—</div></div>
   </div>
 
   <!-- TABS -->
@@ -2438,7 +2438,12 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
 // ═══════════════════════════════════
 const MONTHS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const MONTHS_S=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const MONTHS_EN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MONTHS_S_EN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const DAYS_S=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+// Locale-aware month helpers — always use these in render functions.
+function tMonths(){ return (typeof LANG!=='undefined'&&LANG==='en')?MONTHS_EN:MONTHS; }
+function tMonthsS(){ return (typeof LANG!=='undefined'&&LANG==='en')?MONTHS_S_EN:MONTHS_S; }
 
 // ═══════════════════════════════════
 // I18N DICTIONARY
@@ -2466,6 +2471,11 @@ const T = {
       no: 'No',
       optional: '(opcional)',
       required: '*',
+      export: 'Exportar',
+      summaryIngresos: 'Ingresos',
+      summaryGastos: 'Gastos',
+      summaryAhorroInv: 'Ahorro+Inv',
+      summaryDisponible: 'Disponible',
     },
 
     // ─── Onboarding ───
@@ -3174,6 +3184,11 @@ const T = {
       no: 'No',
       optional: '(optional)',
       required: '*',
+      export: 'Export',
+      summaryIngresos: 'Income',
+      summaryGastos: 'Expenses',
+      summaryAhorroInv: 'Savings+Inv',
+      summaryDisponible: 'Available',
     },
 
     // ─── Onboarding ───
@@ -3827,6 +3842,7 @@ function setLang(lang){
   try { document.documentElement.setAttribute('lang', lang); } catch(_){}
   if(typeof applyStaticTranslations === 'function') applyStaticTranslations();
   if(typeof updateTabNav === 'function') updateTabNav();
+  if(typeof initMonths === 'function') initMonths();
   if(typeof render === 'function') render();
 }
 
@@ -4673,8 +4689,8 @@ function weekLabel(year,week){
   const mon=mondayOfIsoWeek(year,week);
   const sun=new Date(mon);sun.setDate(mon.getDate()+6);
   const sameMonth=mon.getMonth()===sun.getMonth();
-  if(sameMonth)return `${mon.getDate()} – ${sun.getDate()} ${MONTHS_S[mon.getMonth()]} ${sun.getFullYear()}`;
-  return `${mon.getDate()} ${MONTHS_S[mon.getMonth()]} – ${sun.getDate()} ${MONTHS_S[sun.getMonth()]} ${sun.getFullYear()}`;
+  if(sameMonth)return `${mon.getDate()} – ${sun.getDate()} ${tMonthsS()[mon.getMonth()]} ${sun.getFullYear()}`;
+  return `${mon.getDate()} ${tMonthsS()[mon.getMonth()]} – ${sun.getDate()} ${tMonthsS()[sun.getMonth()]} ${sun.getFullYear()}`;
 }
 
 // Map a week (by absolute count since epoch) to the area rotating 1..8.
@@ -4931,7 +4947,7 @@ function resolveOvPeriod(){
       from=Number.isInteger(ovPeriod.customFrom)?ovPeriod.customFrom:0;
       to=Number.isInteger(ovPeriod.customTo)?ovPeriod.customTo:11;
       if(from>to)[from,to]=[to,from];
-      label=from===to?`${MONTHS[from]} ${year}`:`${MONTHS_S[from]} – ${MONTHS_S[to]} ${year}`;
+      label=from===to?`${tMonths()[from]} ${year}`:`${tMonthsS()[from]} – ${tMonthsS()[to]} ${year}`;
       break;
     default:label=`${t('overview.periodYear')} ${year}`;
   }
@@ -5086,7 +5102,7 @@ function renderIngresos(){
     <div class="hero-top">
       <div><div class="hero-lbl">${t('ingresos.heroLabel')}</div>
       <div class="hero-amt green">${fmt(total)}</div>
-      <div class="hero-sub">${MONTHS[cM]} ${cY} · ${CONFIG.name||''}</div></div>
+      <div class="hero-sub">${tMonths()[cM]} ${cY} · ${CONFIG.name||''}</div></div>
       <div class="hero-badge green">${t('ingresos.heroBadge')}</div>
     </div>
   </div>
@@ -5935,7 +5951,7 @@ function renderGastos(){
     <div class="hero-top">
       <div><div class="hero-lbl">${t('gastos.heroLabel')}</div>
       <div class="hero-amt red">${fmt(tot.totalGas)}</div>
-      <div class="hero-sub">${MONTHS[cM]} ${cY} · ${CONFIG.name||''}</div></div>
+      <div class="hero-sub">${tMonths()[cM]} ${cY} · ${CONFIG.name||''}</div></div>
       <div class="hero-badge red">${t('gastos.heroBadge')}</div>
     </div>
   </div>
@@ -6504,7 +6520,7 @@ function renderAhorro(){
     <div class="hero-top">
       <div><div class="hero-lbl">${t('ahorro.heroLabel')}</div>
       <div class="hero-amt green">${fmt(tot.aho)}</div>
-      <div class="hero-sub">${MONTHS[cM]} ${cY} · ${CONFIG.name||''}</div></div>
+      <div class="hero-sub">${tMonths()[cM]} ${cY} · ${CONFIG.name||''}</div></div>
       <div class="hero-badge green">${t('ahorro.heroBadge')}</div>
     </div>
   </div>
@@ -7633,7 +7649,7 @@ function renderDeudas(){
     <div class="hero-top">
       <div><div class="hero-lbl">${t('deudas.heroLabel')}</div>
       <div class="hero-amt red">${fmt(tot.deu)}</div>
-      <div class="hero-sub">${MONTHS[cM]} ${cY} · ${CONFIG.name||''}</div></div>
+      <div class="hero-sub">${tMonths()[cM]} ${cY} · ${CONFIG.name||''}</div></div>
       <div class="hero-badge red">${t('deudas.heroBadge')}</div>
     </div>
   </div>
@@ -8045,7 +8061,7 @@ function wlFmtPrice(item){
 function wlFmtHistDate(item){
   const ts=item.decidedAt||item.updatedAt||item.createdAt;
   const d=new Date(ts);
-  const m=MONTHS_S[d.getMonth()];
+  const m=tMonthsS()[d.getMonth()];
   return `${m} ${d.getFullYear()}`;
 }
 
@@ -8595,7 +8611,7 @@ function renderWeekStrip(keys,currentKey){
       <button class="${cls.join(' ')}" onclick="setDiaryWeek('${k}')" title="${weekLabel(year,week)} · ${area.title}">
         <span class="dw-week-dot">${complete?'●':(isFuture?'·':'○')}</span>
         <span class="dw-week-range">${mon.getDate()}–${sun.getDate()}</span>
-        <span class="dw-week-mth">${MONTHS_S[mon.getMonth()]}</span>
+        <span class="dw-week-mth">${tMonthsS()[mon.getMonth()]}</span>
       </button>`;
   }).join('');
   return `
@@ -9326,7 +9342,7 @@ function ovPrevPeriod(p){
 function ovPeriodLabel(pp){
   const span=pp.to-pp.from+1;
   // Single month → "Abril 2026"
-  if(span===1)return `${MONTHS[pp.from]} ${pp.year}`;
+  if(span===1)return `${tMonths()[pp.from]} ${pp.year}`;
   // Full year → "Full year 2025"
   if(pp.from===0&&pp.to===11)return `${t('overview.periodYear')} ${pp.year}`;
   // Semesters
@@ -9338,7 +9354,7 @@ function ovPeriodLabel(pp){
   if(pp.from===6&&pp.to===8)return `Q3 ${pp.year}`;
   if(pp.from===9&&pp.to===11)return `Q4 ${pp.year}`;
   // Generic range → "Ene–Abr 2025"
-  return `${MONTHS_S[pp.from]}–${MONTHS_S[pp.to]} ${pp.year}`;
+  return `${tMonthsS()[pp.from]}–${tMonthsS()[pp.to]} ${pp.year}`;
 }
 
 // Budget consumption per category in period
@@ -9698,7 +9714,7 @@ function ovCandBestMonth(p){
   return{
     id:'best-month',category:'balance',tone:'pos',icon:'⭐',
     title:t('overview.insBestMonthTitle'),
-    body:t('overview.insBestMonthBody').replace('{month}',MONTHS[best.m]).replace('{balance}',fmt(best.v)).replace('{breakdown}',breakdownHTML),
+    body:t('overview.insBestMonthBody').replace('{month}',tMonths()[best.m]).replace('{balance}',fmt(best.v)).replace('{breakdown}',breakdownHTML),
     foot:t('overview.insBestMonthFoot').replace('{positive}',positive).replace('{total}',entries.length),
     severity:40,recency:60
   };
@@ -10377,7 +10393,7 @@ function ovQueryBiggestTx(p){
   const compareOpts=ovBuildCompareOptions(p,periodExtractor,monthExtractor);
   const picked=ovResolveCompare(compareOpts);
   // For tx-level figures we skip the variation metric in the card — use "peso en período" instead
-  const list=top.map((t,i)=>`${i+1}. <strong>${t.desc}</strong> · ${t.cat} — ${fmt(t.amt)} <span style="color:var(--ink4)">(${MONTHS_S[t.month]})</span>`).join('<br>');
+  const list=top.map((t,i)=>`${i+1}. <strong>${t.desc}</strong> · ${t.cat} — ${fmt(t.amt)} <span style="color:var(--ink4)">(${tMonthsS()[t.month]})</span>`).join('<br>');
   return{
     id:'biggest-tx',
     title:t('overview.queryBiggestTxTitle').replace('{period}',p.label),
@@ -10423,8 +10439,8 @@ function ovQueryMonth(p){
   });
   if(samples.length>=2)avg=samples.reduce((a,b)=>a+b,0)/samples.length;
   const compareOpts=[
-    {value:'prev',label:prevMonth!=null?`vs ${MONTHS[prevMonth]} ${p.year}`:'Mes anterior',available:prev!=null,figure:prev},
-    {value:'yoy',label:`vs ${MONTHS[targetM]} ${p.year-1}`,available:yoy!=null,figure:yoy},
+    {value:'prev',label:prevMonth!=null?`vs ${tMonths()[prevMonth]} ${p.year}`:'Mes anterior',available:prev!=null,figure:prev},
+    {value:'yoy',label:`vs ${tMonths()[targetM]} ${p.year-1}`,available:yoy!=null,figure:yoy},
     {value:'avg',label:'vs Promedio histórico',available:avg!=null,figure:avg},
     {value:'none',label:'Sin comparar',available:true,figure:null}
   ];
@@ -10444,7 +10460,7 @@ function ovQueryMonth(p){
   };
   return{
     id:'month-'+targetM,
-    title:t('overview.queryMonthTitle').replace('{month}',MONTHS[targetM]).replace('{year}',p.year),
+    title:t('overview.queryMonthTitle').replace('{month}',tMonths()[targetM]).replace('{year}',p.year),
     figure,
     figureTone:'neg',
     sub:t('overview.queryMonthSub').replace('{gas}',fmt(t.gas)).replace('{deu}',fmt(t.deu)),
@@ -10847,7 +10863,7 @@ function ovAskSuggest(raw,p){
   // Month suggestion
   const mIdx=ovAskFindMonth(norm);
   if(mIdx!=null){
-    out.push({label:t('overview.suggestMonthLabel').replace('{month}',MONTHS[mIdx]),kind:t('overview.suggestMonthKind'),action:{chipId:'month',month:mIdx}});
+    out.push({label:t('overview.suggestMonthLabel').replace('{month}',tMonths()[mIdx]),kind:t('overview.suggestMonthKind'),action:{chipId:'month',month:mIdx}});
   }
 
   // Dedupe by label and cap at 4
@@ -11510,12 +11526,12 @@ function ovRenderMiniChart(series,p,tone,highlightIdx){
     const isHi=(highlightIdx!=null&&i===highlightIdx);
     const barCls=`ov-ask-chart-bar tone-${tone}${isHi?' highlight':''}`;
     return `<div class="${barCls}" style="height:${pct}%">
-      <span class="ov-ask-chart-tip">${MONTHS_S[m]} · ${fmt(v)}</span>
+      <span class="ov-ask-chart-tip">${tMonthsS()[m]} · ${fmt(v)}</span>
     </div>`;
   }).join('');
   const labels=series.map((_,i)=>{
     const m=p.from+i;
-    return `<div class="ov-ask-chart-label">${MONTHS_S[m]}</div>`;
+    return `<div class="ov-ask-chart-label">${tMonthsS()[m]}</div>`;
   }).join('');
   return `<div class="ov-ask-chart" style="--cols:${n}">
     <div class="ov-ask-chart-bars">${bars}</div>
@@ -11543,12 +11559,12 @@ function ovRenderDualChart(dc,p){
       }
       const pct=Math.max(4,Math.round((v/max)*100));
       return `<div class="ov-ask-chart-bar tone-${tone}" style="height:${pct}%">
-        <span class="ov-ask-chart-tip">${MONTHS_S[m]} · ${fmt(v)}</span>
+        <span class="ov-ask-chart-tip">${tMonthsS()[m]} · ${fmt(v)}</span>
       </div>`;
     }).join('');
     const labels=series.map((_,i)=>{
       const m=p.from+i;
-      return `<div class="ov-ask-chart-label">${MONTHS_S[m]}</div>`;
+      return `<div class="ov-ask-chart-label">${tMonthsS()[m]}</div>`;
     }).join('');
     return `<div class="ov-ask-chart" style="--cols:${n}">
       <div class="ov-ask-chart-bars">${bars}</div>
@@ -11652,8 +11668,8 @@ function buildPeriodBar(p){
     </div>`:'';
 
   const coverage=p.from===p.to
-    ?(DB[mKey(p.from,p.year)]?t('overview.coverageWithData').replace('{month}',MONTHS[p.from]):t('overview.coverageNoData').replace('{month}',MONTHS[p.from]))
-    :t('overview.coverageRange').replace('{from}',MONTHS_S[p.from]).replace('{to}',MONTHS_S[p.to]).replace('{n}',accumTotals(p.from,p.to,p.year).monthsWithData).replace('{total}',p.to-p.from+1);
+    ?(DB[mKey(p.from,p.year)]?t('overview.coverageWithData').replace('{month}',tMonths()[p.from]):t('overview.coverageNoData').replace('{month}',tMonths()[p.from]))
+    :t('overview.coverageRange').replace('{from}',tMonthsS()[p.from]).replace('{to}',tMonthsS()[p.to]).replace('{n}',accumTotals(p.from,p.to,p.year).monthsWithData).replace('{total}',p.to-p.from+1);
 
   return `<div class="ov-period-bar">
     <span class="ov-period-lbl">${t('overview.periodLabel')}</span>
@@ -11997,7 +12013,7 @@ function drawChartIngVsGas(p,C,baseFont){
 
   const labels=[],ings=[],gas=[];
   for(let m=p.from;m<=p.to;m++){
-    labels.push(MONTHS_S[m]);
+    labels.push(tMonthsS()[m]);
     if(DB[mKey(m,p.year)]){
       const t=totals(m,p.year);
       ings.push(t.ing);
@@ -12072,7 +12088,7 @@ function drawChartBalance(p,C,baseFont){
 
   const labels=[],values=[],colors=[],borders=[];
   for(let m=p.from;m<=p.to;m++){
-    labels.push(MONTHS_S[m]);
+    labels.push(tMonthsS()[m]);
     if(DB[mKey(m,p.year)]){
       const t=totals(m,p.year);
       values.push(t.disp);
@@ -12149,7 +12165,7 @@ function drawChartAhoInv(p,C,baseFont){
 
   const labels=[],ahoData=[],invData=[];
   for(let m=p.from;m<=p.to;m++){
-    labels.push(MONTHS_S[m]);
+    labels.push(tMonthsS()[m]);
     if(DB[mKey(m,p.year)]){
       const t=totals(m,p.year);
       if(t.ing>0){
@@ -12239,7 +12255,7 @@ function drawChartDeuda(p,C,baseFont){
 
   const labels=[],values=[];
   for(let m=p.from;m<=p.to;m++){
-    labels.push(MONTHS_S[m]);
+    labels.push(tMonthsS()[m]);
     if(DB[mKey(m,p.year)]){
       const t=totals(m,p.year);
       if(t.ing>0){
@@ -12758,7 +12774,7 @@ function updatePeriodLabel(){
   // Default: show current month range
   const today=new Date();
   const d1=new Date(cY,cM,1);const d2=new Date(cY,cM+1,0);
-  const fmtD=d=>`${d.getDate()} ${MONTHS_S[d.getMonth()]}`;
+  const fmtD=d=>`${d.getDate()} ${tMonthsS()[d.getMonth()]}`;
   el.textContent=`${fmtD(d1)} – ${fmtD(d2)}`;
 }
 function openPeriodEdit(){
@@ -12898,7 +12914,7 @@ function exportPDF(){
   @media print{body{padding:16px}}</style>
   </head><body>
   <h1>Polaris</h1>
-  <div class="sub">Resumen de ${MONTHS[cM]} ${cY} · ${CONFIG.name||''}</div>
+  <div class="sub">Resumen de ${tMonths()[cM]} ${cY} · ${CONFIG.name||''}</div>
   <div class="grid">
     <div class="card"><div class="card-lbl">Ingresos</div><div class="card-val pos">${cur}${t.ing.toLocaleString()}</div></div>
     <div class="card"><div class="card-lbl">Gastos</div><div class="card-val neg">${cur}${t.totalGas.toLocaleString()}</div></div>
@@ -12937,7 +12953,7 @@ function exportExcel(){
   const csv=rows.map(r=>r.map(c=>typeof c==='string'&&c.includes(',')?`"${c}"`:c).join(',')).join('\n');
   const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download=`MiDinero_${MONTHS[cM]}_${cY}.csv`;a.click();
+  a.download=`MiDinero_${tMonths()[cM]}_${cY}.csv`;a.click();
 }
 
 function exportGSheets(){
@@ -12992,7 +13008,7 @@ function closeModal(){document.getElementById('modalOverlay').classList.remove('
 // ═══════════════════════════════════
 function initMonths(){
   const el=document.getElementById('monthRow');el.innerHTML='';
-  MONTHS.forEach((m,i)=>{
+  tMonths().forEach((m,i)=>{
     const b=document.createElement('button');
     b.className='mbtn'+(i===cM?' on':'');b.textContent=m;
     b.onclick=()=>{cM=i;document.querySelectorAll('.mbtn').forEach((x,j)=>x.className='mbtn'+(j===i?' on':''));render();};
