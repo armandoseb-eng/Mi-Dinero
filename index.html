@@ -1352,72 +1352,6 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
    OVERVIEW — ASK YOUR DATA (BLOQUE 3/5)
 ═══════════════════════════════════════════ */
 .ov-ask-wrap{margin-bottom:26px;}
-.ov-ask-input-wrap{position:relative;margin-bottom:10px;}
-.ov-ask-input{
-  width:100%;box-sizing:border-box;
-  background:var(--paper);
-  border:1px solid var(--card-border);
-  border-radius:10px;
-  padding:12px 36px 12px 38px;
-  font-size:13.5px;font-family:inherit;color:var(--ink);
-  transition:border-color .15s ease, box-shadow .15s ease;
-}
-.ov-ask-input:focus{
-  outline:none;border-color:var(--gold);
-  box-shadow:0 0 0 3px rgba(184,134,11,.12);
-}
-.ov-ask-input::placeholder{color:var(--ink4);font-style:italic;}
-.ov-ask-input-icon{
-  position:absolute;left:13px;top:50%;transform:translateY(-50%);
-  font-size:14px;color:var(--ink4);pointer-events:none;
-}
-.ov-ask-input-clear{
-  position:absolute;right:8px;top:50%;transform:translateY(-50%);
-  background:transparent;border:none;cursor:pointer;
-  width:24px;height:24px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  color:var(--ink4);font-size:16px;line-height:1;
-  padding:0;transition:all .15s ease;
-}
-.ov-ask-input-clear:hover{background:var(--cream2);color:var(--ink2);}
-
-/* Autocomplete suggestions dropdown */
-.ov-ask-suggest{
-  position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:20;
-  background:var(--paper);
-  border:1px solid var(--card-border);
-  border-radius:10px;
-  box-shadow:0 6px 22px var(--shadow);
-  overflow:hidden;
-  animation:ovAskIn .15s ease;
-}
-.ov-ask-suggest-item{
-  display:flex;align-items:center;gap:10px;
-  padding:9px 14px;
-  font-size:12.5px;color:var(--ink2);
-  cursor:pointer;
-  border-bottom:1px solid var(--card-border);
-  transition:background .12s ease;
-}
-.ov-ask-suggest-item:last-child{border-bottom:none;}
-.ov-ask-suggest-item:hover,
-.ov-ask-suggest-item.hi{background:var(--cream2);color:var(--ink);}
-.ov-ask-suggest-item .hit{background:rgba(184,134,11,.22);color:var(--ink);font-weight:700;border-radius:2px;padding:0 1px;}
-.ov-ask-suggest-kind{
-  font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--ink4);margin-left:auto;white-space:nowrap;
-}
-.ov-ask-suggest-empty{
-  padding:12px 14px;font-size:12px;color:var(--ink4);font-style:italic;
-}
-
-/* Freeform answer (for typed queries) — same as card but with a tiny "from your question" label */
-.ov-ask-from{
-  font-size:10.5px;color:var(--ink4);font-style:italic;
-  margin-bottom:10px;padding:6px 10px;
-  background:var(--cream2);border-left:2px solid var(--gold);
-  border-radius:4px;
-}
 .ov-ask-chips{
   display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;
 }
@@ -1824,7 +1758,6 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
 
 /* Mobile adjustments for Ask */
 @media(max-width:540px){
-  .ov-ask-input{padding:10px 34px 10px 34px;font-size:13px;}
   .ov-ask-figure{font-size:30px;}
   .ov-ask-card{padding:14px 15px 16px;}
   .ov-ask-metrics{grid-template-columns:1fr;gap:10px;padding-top:12px;}
@@ -2020,6 +1953,7 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
   background:var(--card-bg);overflow:hidden;
   box-shadow:0 4px 20px rgba(0,0,0,.08);
 }
+.cat-picker-wrap{position:relative;margin-bottom:14px;}
 .inc-cat-search-wrap{
   display:flex;align-items:center;gap:8px;
   padding:8px 12px;border-bottom:1px solid var(--border);
@@ -2730,6 +2664,9 @@ const T = {
       dateLabel: '📅 Fecha',
       metaMonthlyPlaceholder: 'Meta mensual (opcional)',
       metaAnnualPlaceholder: 'Meta anual (opcional)',
+      metaAnnualLabel: 'Meta anual',
+      metaMonthlyLabel: 'Meta mensual',
+      metaOf: 'de',
       categoryLabel: 'Categoría',
       categoryPlaceholder: 'Seleccionar categoría…',
       categorySearchPlaceholder: 'Buscar categoría…',
@@ -2790,6 +2727,9 @@ const T = {
       dateLabel: '📅 Fecha',
       metaMonthlyPlaceholder: 'Meta mensual (opcional)',
       metaAnnualPlaceholder: 'Meta anual (opcional)',
+      metaAnnualLabel: 'Meta anual',
+      metaMonthlyLabel: 'Meta mensual',
+      metaOf: 'de',
       categoryLabel: 'Categoría',
       categoryPlaceholder: 'Seleccionar categoría…',
       categorySearchPlaceholder: 'Buscar…',
@@ -3162,6 +3102,11 @@ const T = {
       queryCategoryVsTypeHint: ' <span class="muted">({typeA} vs {typeB})</span>',
       queryCategoryVsTieSub: 'Misma cifra en ambas categorías — empate perfecto.',
       queryCategoryVsLeadSub: 'La diferencia equivale a {ratio}× la categoría menor.',
+      alertLowAvail: '⚠️ Disponible muy bajo: {amt}',
+      alertOverspent: '🔴 ¡Gastos superan ingresos este mes! {amt}',
+      alertLowSavings: '⚠️ Ahorro + Inversión bajo el 10% del ingreso',
+      alertOverBudget: '⚠️ {cat}: {spent} de {budget} presupuestado',
+      alertBudgetInconsistency: '⚠️ Inconsistencia en {cat}: subcategorías suman {sum} vs límite {budget}',
     },
     },
   },
@@ -3415,6 +3360,9 @@ const T = {
       dateLabel: '📅 Date',
       metaMonthlyPlaceholder: 'Monthly goal (optional)',
       metaAnnualPlaceholder: 'Annual goal (optional)',
+      metaAnnualLabel: 'Annual goal',
+      metaMonthlyLabel: 'Monthly goal',
+      metaOf: 'of',
       categoryLabel: 'Category',
       categoryPlaceholder: 'Select a category…',
       categorySearchPlaceholder: 'Search category…',
@@ -3467,6 +3415,9 @@ const T = {
       dateLabel: '📅 Date',
       metaMonthlyPlaceholder: 'Monthly goal (optional)',
       metaAnnualPlaceholder: 'Annual goal (optional)',
+      metaAnnualLabel: 'Annual goal',
+      metaMonthlyLabel: 'Monthly goal',
+      metaOf: 'of',
       categoryLabel: 'Category',
       categoryPlaceholder: 'Select a category…',
       categorySearchPlaceholder: 'Search…',
@@ -3800,6 +3751,11 @@ const T = {
       queryCategoryVsTypeHint: ' <span class="muted">({typeA} vs {typeB})</span>',
       queryCategoryVsTieSub: 'Same figure in both categories — a perfect tie.',
       queryCategoryVsLeadSub: 'The difference equals {ratio}× the smaller category.',
+      alertLowAvail: '⚠️ Available balance very low: {amt}',
+      alertOverspent: '🔴 Expenses exceed income this month! {amt}',
+      alertLowSavings: '⚠️ Savings + Investment below 10% of income',
+      alertOverBudget: '⚠️ {cat}: {spent} of {budget} budgeted',
+      alertBudgetInconsistency: '⚠️ Inconsistency in {cat}: subcategories add up to {sum} vs limit {budget}',
     },
   },
 };
@@ -4989,7 +4945,7 @@ function toggleTheme(){
 // ALERTS
 // ═══════════════════════════════════
 function checkAlerts(){
-  const d=getMonth();const t=totals();const bar=document.getElementById('alertBar');
+  const d=getMonth();const tots=totals();const bar=document.getElementById('alertBar');
   const alerts=[];
   // Over budget alerts
   if(d.budgets){
@@ -5003,20 +4959,20 @@ function checkAlerts(){
       const grp=groups.find(gr=>gr.g===cat);
       if(grp){
         const grpSpent=grp.subs.reduce((a,s)=>a+(catTotals[s]||0),0);
-        if(grpSpent>budget)alerts.push(`⚠️ ${cat}: ${fmt(grpSpent)} de ${fmt(budget)} presupuestado`);
+        if(grpSpent>budget)alerts.push(t('overview.alertOverBudget').replace('{cat}',cat).replace('{spent}',fmt(grpSpent)).replace('{budget}',fmt(budget)));
         // Inconsistency check
         const subSum=grp.subs.reduce((a,s)=>a+(d.budgets[s]||0),0);
-        if(subSum>budget)alerts.push(`⚠️ Inconsistencia en ${cat}: subcategorías suman ${fmt(subSum)} vs límite ${fmt(budget)}`);
+        if(subSum>budget)alerts.push(t('overview.alertBudgetInconsistency').replace('{cat}',cat).replace('{sum}',fmt(subSum)).replace('{budget}',fmt(budget)));
       } else {
-        if(catTotals[cat]>budget)alerts.push(`⚠️ ${cat}: ${fmt(catTotals[cat])} de ${fmt(budget)} presupuestado`);
+        if(catTotals[cat]>budget)alerts.push(t('overview.alertOverBudget').replace('{cat}',cat).replace('{spent}',fmt(catTotals[cat])).replace('{budget}',fmt(budget)));
       }
     });
   }
   // Low available
-  if(t.ing>0&&t.disp<t.ing*0.05&&t.disp>=0)alerts.push(`⚠️ Disponible muy bajo: ${fmt(t.disp)}`);
-  if(t.disp<0)alerts.push(`🔴 ¡Gastos superan ingresos este mes! ${fmt(t.disp)}`);
+  if(tots.ing>0&&tots.disp<tots.ing*0.05&&tots.disp>=0)alerts.push(t('overview.alertLowAvail').replace('{amt}',fmt(tots.disp)));
+  if(tots.disp<0)alerts.push(t('overview.alertOverspent').replace('{amt}',fmt(tots.disp)));
   // Low savings rate
-  if(t.ing>0&&(t.totalAho/t.ing)<0.1)alerts.push(`⚠️ Ahorro + Inversión bajo el 10% del ingreso`);
+  if(tots.ing>0&&(tots.totalAho/tots.ing)<0.1)alerts.push(t('overview.alertLowSavings'));
 
   if(alerts.length>0){
     bar.innerHTML=alerts.map(a=>`<div class="alert-item">${a}</div>`).join('');
@@ -5621,7 +5577,7 @@ function openAddInc(){
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px;font-family:'Inter',sans-serif">${t('ingresos.dateLabel')}</div>
       <input id="f-date" class="finput" type="date" value="${defaultDateForNavMonth()}" min="${firstDayOfNavMonth()}" max="${lastDayOfNavMonth()}">
     </div>
-    <div style="margin-bottom:14px">
+    <div class="cat-picker-wrap">
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;font-family:'Inter',sans-serif">${t('ingresos.categoryLabel')}</div>
       <div class="inc-cat-selected" id="inc-cat-selected" onclick="toggleIncCatPicker()">
         <span id="inc-cat-selected-txt" style="color:var(--ink4)">${t('ingresos.categoryPlaceholder')}</span>
@@ -5640,11 +5596,24 @@ function openAddInc(){
     <button class="btn-save" onclick="saveInc()">${t('ingresos.saveBtn')}</button>`);
 }
 
+// Scroll the modal so the picker is visible after opening
+function _scrollPickerIntoView(pickerId){
+  setTimeout(()=>{
+    const picker=document.getElementById(pickerId);
+    const modal=document.querySelector('.modal-box');
+    if(!picker||!modal)return;
+    const pickerBottom=picker.getBoundingClientRect().bottom;
+    const modalBottom=modal.getBoundingClientRect().bottom;
+    if(pickerBottom>modalBottom){
+      modal.scrollBy({top:pickerBottom-modalBottom+16,behavior:'smooth'});
+    }
+  },80);
+}
 function toggleIncCatPicker(){
   const picker=document.getElementById('inc-cat-picker');
   const isOpen=picker.style.display!=='none';
   picker.style.display=isOpen?'none':'block';
-  if(!isOpen)setTimeout(()=>document.getElementById('inc-cat-q')?.focus(),60);
+  if(!isOpen){setTimeout(()=>document.getElementById('inc-cat-q')?.focus(),60);_scrollPickerIntoView('inc-cat-picker');}
 }
 
 function toggleIncCatGroup(gi){
@@ -5829,7 +5798,7 @@ function editInc(id){
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px;font-family:'Inter',sans-serif">${t('ingresos.dateLabel')}</div>
       <input id="e-date" class="finput" type="date" value="${msToDateStr(e.date)||defaultDateForNavMonth()}" min="${firstDayOfNavMonth()}" max="${lastDayOfNavMonth()}">
     </div>
-    <div style="margin-bottom:14px">
+    <div class="cat-picker-wrap">
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;font-family:'Inter',sans-serif">${t('ingresos.categoryLabel')}</div>
       <div class="inc-cat-selected" id="edit-cat-selected" onclick="toggleEditIncCatPicker()">
         <span id="edit-cat-selected-txt">
@@ -6087,7 +6056,7 @@ function editGasto(id){
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px;font-family:'Inter',sans-serif">${t('gastos.dateLabel')}</div>
       <input id="e-date" class="finput" type="date" value="${msToDateStr(e.date)||defaultDateForNavMonth()}" min="${firstDayOfNavMonth()}" max="${lastDayOfNavMonth()}">
     </div>
-    <div style="margin-bottom:14px">
+    <div class="cat-picker-wrap">
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;font-family:'Inter',sans-serif">${t('gastos.categoryLabel')}</div>
       <div class="inc-cat-selected" id="edit-gas-cat-selected" onclick="toggleEditGasCatPicker()">
         <span id="edit-gas-cat-selected-txt">
@@ -6123,7 +6092,7 @@ function toggleEditGasCatPicker(){
   const picker=document.getElementById('edit-gas-cat-picker');
   const isOpen=picker.style.display!=='none';
   picker.style.display=isOpen?'none':'block';
-  if(!isOpen)setTimeout(()=>document.getElementById('edit-gas-cat-q')?.focus(),60);
+  if(!isOpen){setTimeout(()=>document.getElementById('edit-gas-cat-q')?.focus(),60);_scrollPickerIntoView('edit-gas-cat-picker');}
 }
 
 function toggleEditGasCatGroup(gi){
@@ -6307,7 +6276,7 @@ function openAddGasto(){
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px;font-family:'Inter',sans-serif">${t('gastos.dateLabel')}</div>
       <input id="f-date" class="finput" type="date" value="${defaultDateForNavMonth()}" min="${firstDayOfNavMonth()}" max="${lastDayOfNavMonth()}">
     </div>
-    <div style="margin-bottom:14px">
+    <div class="cat-picker-wrap">
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;font-family:'Inter',sans-serif">${t('gastos.categoryLabel')}</div>
       <div class="inc-cat-selected" id="gas-cat-selected" onclick="toggleGasCatPicker()">
         <span id="gas-cat-selected-txt" style="color:var(--ink4)">${t('gastos.categoryPlaceholder')}</span>
@@ -6330,7 +6299,7 @@ function toggleGasCatPicker(){
   const picker=document.getElementById('gas-cat-picker');
   const isOpen=picker.style.display!=='none';
   picker.style.display=isOpen?'none':'block';
-  if(!isOpen)setTimeout(()=>document.getElementById('gas-cat-q')?.focus(),60);
+  if(!isOpen){setTimeout(()=>document.getElementById('gas-cat-q')?.focus(),60);_scrollPickerIntoView('gas-cat-picker');}
 }
 
 function toggleGasCatGroup(gi){
@@ -6462,15 +6431,16 @@ function delGasto(id){
 //     (mensual→anual = ×12; anual→mensual = ÷12). The `converted` flag
 //     is true in that case so the UI can label it honestly.
 //   - Returns {value:0,...} when neither meta is set.
-function resolveMeta(e, viewMode){
+function resolveMeta(e, viewMode, tab){
+  const ns=tab||'ahorro';
   const mensual=+e.meta||0;
   const anual=+e.metaAnnual||0;
   if(viewMode==='anual'){
-    if(anual>0)return {value:anual, mode:'anual', label:'Meta anual', converted:false};
-    if(mensual>0)return {value:mensual*12, mode:'anual', label:'Meta anual', converted:true};
+    if(anual>0)return {value:anual, mode:'anual', label:t(ns+'.metaAnnualLabel'), converted:false};
+    if(mensual>0)return {value:mensual*12, mode:'anual', label:t(ns+'.metaAnnualLabel'), converted:true};
   } else {
-    if(mensual>0)return {value:mensual, mode:'mensual', label:'Meta mensual', converted:false};
-    if(anual>0)return {value:anual/12, mode:'mensual', label:'Meta mensual', converted:true};
+    if(mensual>0)return {value:mensual, mode:'mensual', label:t(ns+'.metaMonthlyLabel'), converted:false};
+    if(anual>0)return {value:anual/12, mode:'mensual', label:t(ns+'.metaMonthlyLabel'), converted:true};
   }
   return {value:0, mode:viewMode, label:'', converted:false};
 }
@@ -6482,8 +6452,8 @@ function resolveMeta(e, viewMode){
 // The "current month" is driven by global cM/cY (the month the user is viewing).
 // This matches the Housel-style philosophy: goals track behavior across a category,
 // not individual transactions.
-function computeCatMetaProgress(cat, type, viewMode){
-  if(!cat)return 0;
+function computeDescMetaProgress(desc, type, viewMode){
+  if(!desc)return 0;
   const listKey=type==='inversion'?'inversion':'ahorro';
   let total=0;
   if(viewMode==='anual'){
@@ -6491,14 +6461,14 @@ function computeCatMetaProgress(cat, type, viewMode){
     for(let m=0;m<=cM;m++){
       const k=mKey(m,cY);if(!DB[k])continue;
       (DB[k][listKey]||[]).forEach(x=>{
-        if((x.cat||'')===cat)total+=(+x.amt||0);
+        if((x.desc||'')===desc)total+=(+x.amt||0);
       });
     }
   } else {
     // Only the current month
     const k=mKey(cM,cY);if(!DB[k])return 0;
     (DB[k][listKey]||[]).forEach(x=>{
-      if((x.cat||'')===cat)total+=(+x.amt||0);
+      if((x.desc||'')===desc)total+=(+x.amt||0);
     });
   }
   return total;
@@ -6573,17 +6543,17 @@ function renderAhorro(){
       </div>`;
 
       html+=`<div id="${groupId}" style="max-height:0;overflow:hidden;transition:max-height .38s cubic-bezier(.4,0,.2,1);">`;
-      const seenCats=new Set(); // show the progress bar only once per category within this bucket
+      const seenDescs=new Set(); // show the progress bar only once per product (desc) within this bucket
       bucket.entries.forEach(e=>{
         const pct=Math.round(((+e.amt||0)/totalIng)*100);
-        const resolvedMeta=resolveMeta(e, viewModeAho);
+        const resolvedMeta=resolveMeta(e, viewModeAho, 'ahorro');
         const metaVal=resolvedMeta.value;
-        const isFirstInCat=!seenCats.has(e.cat);
-        if(isFirstInCat)seenCats.add(e.cat);
-        // Accumulated contribution for the category across the relevant window
-        const catContrib=metaVal>0?computeCatMetaProgress(e.cat,'ahorro',viewModeAho):0;
+        const isFirstInDesc=!seenDescs.has(e.desc);
+        if(isFirstInDesc)seenDescs.add(e.desc);
+        // Accumulated contribution for this specific product across the relevant window
+        const catContrib=metaVal>0?computeDescMetaProgress(e.desc,'ahorro',viewModeAho):0;
         const metaPct=metaVal>0?Math.min(100,Math.round((catContrib/metaVal)*100)):0;
-        const showBar=metaVal>0&&isFirstInCat;
+        const showBar=metaVal>0&&isFirstInDesc;
         const convertedNote=resolvedMeta.converted?t('ahorro.convertedNote'):'';
         html+=`<div class="entry" style="margin-left:16px;margin-bottom:3px;border-style:dashed;opacity:.92;cursor:pointer;flex-direction:column;align-items:stretch" onclick="editAho('${e.id}')">
           <div style="display:flex;align-items:center;gap:9px">
@@ -6600,7 +6570,7 @@ function renderAhorro(){
           </div>
           ${showBar?`<div class="prog-wrap" style="padding-left:37px">
             <div class="prog-track"><div class="prog-fill green" style="width:${metaPct}%"></div></div>
-            <div class="prog-labels"><span>${fmt(catContrib)} de ${fmt(metaVal)} · ${metaPct}%</span><span>${resolvedMeta.label}${convertedNote}</span></div>
+            <div class="prog-labels"><span>${fmt(catContrib)} ${t('ahorro.metaOf')} ${fmt(metaVal)} · ${metaPct}%</span><span>${resolvedMeta.label}${convertedNote}</span></div>
           </div>`:''}
         </div>`;
       });
@@ -6665,7 +6635,7 @@ function openAddAho(){
       <input id="f-meta-annual" class="finput" type="number" inputmode="decimal"
         placeholder="${t('ahorro.metaAnnualPlaceholder')}" style="flex:1">
     </div>
-    <div style="margin-bottom:14px">
+    <div class="cat-picker-wrap">
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;font-family:'Inter',sans-serif">${t('ahorro.categoryLabel')}</div>
       <div class="inc-cat-selected" id="aho-cat-selected" onclick="toggleAhoCatPicker()">
         <span id="aho-cat-selected-txt" style="color:var(--ink4)">${t('ahorro.categoryPlaceholder')}</span>
@@ -6688,7 +6658,7 @@ function toggleAhoCatPicker(){
   const picker=document.getElementById('aho-cat-picker');
   const isOpen=picker.style.display!=='none';
   picker.style.display=isOpen?'none':'block';
-  if(!isOpen)setTimeout(()=>document.getElementById('aho-cat-q')?.focus(),60);
+  if(!isOpen){setTimeout(()=>document.getElementById('aho-cat-q')?.focus(),60);_scrollPickerIntoView('aho-cat-picker');}
 }
 
 function toggleAhoCatGroup(gi){
@@ -6846,7 +6816,7 @@ function editAho(id){
       <input id="e-meta-annual" class="finput" type="number" inputmode="decimal"
         value="${e.metaAnnual||''}" placeholder="${t('ahorro.metaAnnualPlaceholder')}" style="flex:1">
     </div>
-    <div style="margin-bottom:14px">
+    <div class="cat-picker-wrap">
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;font-family:'Inter',sans-serif">${t('ahorro.categoryLabel')}</div>
       <div class="inc-cat-selected" id="edit-aho-cat-selected" onclick="toggleEditAhoCatPicker()">
         <span id="edit-aho-cat-selected-txt">
@@ -6882,7 +6852,7 @@ function toggleEditAhoCatPicker(){
   const picker=document.getElementById('edit-aho-cat-picker');
   const isOpen=picker.style.display!=='none';
   picker.style.display=isOpen?'none':'block';
-  if(!isOpen)setTimeout(()=>document.getElementById('edit-aho-cat-q')?.focus(),60);
+  if(!isOpen){setTimeout(()=>document.getElementById('edit-aho-cat-q')?.focus(),60);_scrollPickerIntoView('edit-aho-cat-picker');}
 }
 
 function toggleEditAhoCatGroup(gi){
@@ -7339,16 +7309,16 @@ function renderInversion(){
         </div>
       </div>`;
       html+=`<div id="${groupId}" style="max-height:0;overflow:hidden;transition:max-height .38s cubic-bezier(.4,0,.2,1);">`;
-      const seenCats=new Set();
+      const seenDescs=new Set();
       bucket.entries.forEach(e=>{
         const pct=Math.round(((+e.amt||0)/totalIng)*100);
-        const resolvedMeta=resolveMeta(e, viewModeInv);
+        const resolvedMeta=resolveMeta(e, viewModeInv, 'inversion');
         const metaVal=resolvedMeta.value;
-        const isFirstInCat=!seenCats.has(e.cat);
-        if(isFirstInCat)seenCats.add(e.cat);
-        const catContrib=metaVal>0?computeCatMetaProgress(e.cat,'inversion',viewModeInv):0;
+        const isFirstInDesc=!seenDescs.has(e.desc);
+        if(isFirstInDesc)seenDescs.add(e.desc);
+        const catContrib=metaVal>0?computeDescMetaProgress(e.desc,'inversion',viewModeInv):0;
         const metaPct=metaVal>0?Math.min(100,Math.round((catContrib/metaVal)*100)):0;
-        const showBar=metaVal>0&&isFirstInCat;
+        const showBar=metaVal>0&&isFirstInDesc;
         const convertedNote=resolvedMeta.converted?t('inversion.convertedNote'):'';
         html+=`<div class="entry" style="margin-left:16px;margin-bottom:3px;border-style:dashed;opacity:.92;cursor:pointer;flex-direction:column;align-items:stretch" onclick="editInv('${e.id}')">
           <div style="display:flex;align-items:center;gap:9px">
@@ -7365,7 +7335,7 @@ function renderInversion(){
           </div>
           ${showBar?`<div class="prog-wrap" style="padding-left:37px">
             <div class="prog-track"><div class="prog-fill blue" style="width:${metaPct}%"></div></div>
-            <div class="prog-labels"><span>${fmt(catContrib)} de ${fmt(metaVal)} · ${metaPct}%</span><span>${resolvedMeta.label}${convertedNote}</span></div>
+            <div class="prog-labels"><span>${fmt(catContrib)} ${t('inversion.metaOf')} ${fmt(metaVal)} · ${metaPct}%</span><span>${resolvedMeta.label}${convertedNote}</span></div>
           </div>`:''}
         </div>`;
       });
@@ -7408,7 +7378,7 @@ function openAddInv(){
       <input id="f-meta" class="finput" type="number" inputmode="decimal" placeholder="${t('inversion.metaMonthlyPlaceholder')}" style="flex:1">
       <input id="f-meta-annual" class="finput" type="number" inputmode="decimal" placeholder="${t('inversion.metaAnnualPlaceholder')}" style="flex:1">
     </div>
-    <div style="margin-bottom:14px">
+    <div class="cat-picker-wrap">
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;font-family:'Inter',sans-serif">${t('inversion.categoryLabel')}</div>
       <div class="inc-cat-selected" id="inv-cat-selected" onclick="toggleInvCatPicker()"><span id="inv-cat-selected-txt" style="color:var(--ink4)">${t('inversion.categoryPlaceholder')}</span><span style="color:var(--ink4);font-size:12px">▾</span></div>
       <input type="hidden" id="f-cat" value="">
@@ -7420,7 +7390,7 @@ function openAddInv(){
     <button class="btn-save" onclick="saveInv()">${t('inversion.saveBtn')}</button>`);
 }
 
-function toggleInvCatPicker(){const p=document.getElementById('inv-cat-picker');const o=p.style.display!=='none';p.style.display=o?'none':'block';if(!o)setTimeout(()=>document.getElementById('inv-cat-q')?.focus(),60);}
+function toggleInvCatPicker(){const p=document.getElementById('inv-cat-picker');const o=p.style.display!=='none';p.style.display=o?'none':'block';if(!o){setTimeout(()=>document.getElementById('inv-cat-q')?.focus(),60);_scrollPickerIntoView('inv-cat-picker');}}
 function toggleInvCatGroup(gi){const s=document.getElementById(`ivcgs-${gi}`);const t=document.getElementById(`ivcgt-${gi}`);const h=s?.previousElementSibling;if(!s)return;const o=s.style.display!=='none';s.style.display=o?'none':'block';if(t)t.style.transform=o?'':'rotate(90deg)';if(h)h.classList.toggle('open',!o);}
 function selectInvCat(el,cat){document.getElementById('f-cat').value=cat;const icon=cat.split(' ')[0];const name=cat.split(' ').slice(1).join(' ');document.getElementById('inv-cat-selected-txt').innerHTML=`<span style="font-size:15px;margin-right:6px">${icon}</span><span style="color:var(--ink);font-weight:600">${name}</span>`;document.getElementById('inv-cat-picker').style.display='none';document.querySelectorAll('#inv-cat-list .inc-cat-opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');}
 function filterInvCats(q){const term=q.toLowerCase().trim();const groups=getInvGroups();const list=document.getElementById('inv-cat-list');if(!list)return;if(!term){list.innerHTML=groups.map((grp,gi)=>`<div class="inc-cat-group" id="ivcg-${gi}"><div class="inc-cat-group-hdr" onclick="toggleInvCatGroup(${gi})"><span>${grp.g}</span><span class="inc-cat-toggle" id="ivcgt-${gi}">›</span></div><div class="inc-cat-subs" id="ivcgs-${gi}" style="display:none">${grp.subs.map(sub=>`<div class="inc-cat-opt" onclick="selectInvCat(this,'${sub.replace(/'/g,"\\'")}')"><span style="font-size:14px">${sub.split(' ')[0]}</span><span class="inc-cat-opt-name">${sub.split(' ').slice(1).join(' ')}</span></div>`).join('')}</div></div>`).join('');return;}const all=[];groups.forEach(grp=>grp.subs.forEach(sub=>{if(sub.toLowerCase().includes(term))all.push(sub);}));if(!all.length){list.innerHTML=`<div style="padding:12px;text-align:center;font-size:12px;color:var(--ink4)">${t('inversion.noResults')}</div>`;return;}const hi=txt=>txt.replace(new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi'),m=>`<mark style="background:rgba(184,134,11,.25);border-radius:2px;padding:0 1px">${m}</mark>`);list.innerHTML=all.map(sub=>`<div class="inc-cat-opt" onclick="selectInvCat(this,'${sub.replace(/'/g,"\\'")}')"><span style="font-size:14px">${sub.split(' ')[0]}</span><span class="inc-cat-opt-name">${hi(sub.split(' ').slice(1).join(' '))}</span></div>`).join('');}
@@ -7464,7 +7434,7 @@ function editInv(id){
       <input id="e-meta" class="finput" type="number" inputmode="decimal" value="${e.meta||''}" placeholder="${t('inversion.metaMonthlyPlaceholder')}" style="flex:1">
       <input id="e-meta-annual" class="finput" type="number" inputmode="decimal" value="${e.metaAnnual||''}" placeholder="${t('inversion.metaAnnualPlaceholder')}" style="flex:1">
     </div>
-    <div style="margin-bottom:14px">
+    <div class="cat-picker-wrap">
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;font-family:'Inter',sans-serif">${t('inversion.categoryLabel')}</div>
       <div class="inc-cat-selected" id="edit-inv-cat-selected" onclick="toggleEditInvCatPicker()"><span id="edit-inv-cat-selected-txt"><span style="font-size:15px;margin-right:6px">${e.cat.split(' ')[0]}</span><span style="color:var(--ink);font-weight:600">${e.cat.split(' ').slice(1).join(' ')}</span></span><span style="color:var(--ink4);font-size:12px">▾</span></div>
       <input type="hidden" id="e-cat" value="${e.cat}">
@@ -7477,7 +7447,7 @@ function editInv(id){
   if(curGroupIdx>=0)setTimeout(()=>{const tog=document.getElementById(`eivcgt-${curGroupIdx}`);if(tog)tog.style.transform='rotate(90deg)';const hdr=document.querySelector(`#eivcg-${curGroupIdx} .inc-cat-group-hdr`);if(hdr)hdr.classList.add('open');},30);
 }
 
-function toggleEditInvCatPicker(){const p=document.getElementById('edit-inv-cat-picker');const o=p.style.display!=='none';p.style.display=o?'none':'block';if(!o)setTimeout(()=>document.getElementById('edit-inv-cat-q')?.focus(),60);}
+function toggleEditInvCatPicker(){const p=document.getElementById('edit-inv-cat-picker');const o=p.style.display!=='none';p.style.display=o?'none':'block';if(!o){setTimeout(()=>document.getElementById('edit-inv-cat-q')?.focus(),60);_scrollPickerIntoView('edit-inv-cat-picker');}}
 function toggleEditInvCatGroup(gi){const s=document.getElementById(`eivcgs-${gi}`);const t=document.getElementById(`eivcgt-${gi}`);const h=s?.previousElementSibling;if(!s)return;const o=s.style.display!=='none';s.style.display=o?'none':'block';if(t)t.style.transform=o?'':'rotate(90deg)';if(h)h.classList.toggle('open',!o);}
 function selectEditInvCat(el,cat){document.getElementById('e-cat').value=cat;const icon=cat.split(' ')[0];const name=cat.split(' ').slice(1).join(' ');document.getElementById('edit-inv-cat-selected-txt').innerHTML=`<span style="font-size:15px;margin-right:6px">${icon}</span><span style="color:var(--ink);font-weight:600">${name}</span>`;document.getElementById('edit-inv-cat-picker').style.display='none';document.querySelectorAll('#edit-inv-cat-list .inc-cat-opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');}
 function filterEditInvCats(q){const term=q.toLowerCase().trim();const groups=getInvGroups();const list=document.getElementById('edit-inv-cat-list');if(!list)return;if(!term){list.innerHTML=groups.map((grp,gi)=>`<div class="inc-cat-group" id="eivcg-${gi}"><div class="inc-cat-group-hdr" onclick="toggleEditInvCatGroup(${gi})"><span>${grp.g}</span><span class="inc-cat-toggle" id="eivcgt-${gi}">›</span></div><div class="inc-cat-subs" id="eivcgs-${gi}" style="display:none">${grp.subs.map(sub=>`<div class="inc-cat-opt" onclick="selectEditInvCat(this,'${sub.replace(/'/g,"\\'")}')"><span style="font-size:14px">${sub.split(' ')[0]}</span><span class="inc-cat-opt-name">${sub.split(' ').slice(1).join(' ')}</span></div>`).join('')}</div></div>`).join('');return;}const all=[];groups.forEach(g=>g.subs.forEach(s=>{if(s.toLowerCase().includes(term))all.push(s);}));if(!all.length){list.innerHTML=`<div style="padding:12px;text-align:center;font-size:12px;color:var(--ink4)">${t('inversion.noResults')}</div>`;return;}const hi=txt=>txt.replace(new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi'),m=>`<mark style="background:rgba(184,134,11,.25);border-radius:2px;padding:0 1px">${m}</mark>`);list.innerHTML=all.map(sub=>`<div class="inc-cat-opt" onclick="selectEditInvCat(this,'${sub.replace(/'/g,"\\'")}')"><span style="font-size:14px">${sub.split(' ')[0]}</span><span class="inc-cat-opt-name">${hi(sub.split(' ').slice(1).join(' '))}</span></div>`).join('');}
@@ -7740,7 +7710,7 @@ function openAddDeu(){
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px;font-family:'Inter',sans-serif">${t('deudas.dateLabel')}</div>
       <input id="f-date" class="finput" type="date" value="${defaultDateForNavMonth()}" min="${firstDayOfNavMonth()}" max="${lastDayOfNavMonth()}">
     </div>
-    <div style="margin-bottom:14px">
+    <div class="cat-picker-wrap">
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;font-family:'Inter',sans-serif">${t('deudas.categoryLabel')}</div>
       <div class="inc-cat-selected" id="deu-cat-selected" onclick="toggleDeuCatPicker()"><span id="deu-cat-selected-txt" style="color:var(--ink4)">${t('deudas.categoryPlaceholder')}</span><span style="color:var(--ink4);font-size:12px">▾</span></div>
       <input type="hidden" id="f-cat" value="">
@@ -7752,7 +7722,7 @@ function openAddDeu(){
     <button class="btn-save" onclick="saveDeu()">${t('deudas.saveBtn')}</button>`);
 }
 
-function toggleDeuCatPicker(){const p=document.getElementById('deu-cat-picker');const o=p.style.display!=='none';p.style.display=o?'none':'block';if(!o)setTimeout(()=>document.getElementById('deu-cat-q')?.focus(),60);}
+function toggleDeuCatPicker(){const p=document.getElementById('deu-cat-picker');const o=p.style.display!=='none';p.style.display=o?'none':'block';if(!o){setTimeout(()=>document.getElementById('deu-cat-q')?.focus(),60);_scrollPickerIntoView('deu-cat-picker');}}
 function toggleDeuCatGroup(gi){const s=document.getElementById(`ducgs-${gi}`);const t=document.getElementById(`ducgt-${gi}`);const h=s?.previousElementSibling;if(!s)return;const o=s.style.display!=='none';s.style.display=o?'none':'block';if(t)t.style.transform=o?'':'rotate(90deg)';if(h)h.classList.toggle('open',!o);}
 function selectDeuCat(el,cat){document.getElementById('f-cat').value=cat;const icon=cat.split(' ')[0];const name=cat.split(' ').slice(1).join(' ');document.getElementById('deu-cat-selected-txt').innerHTML=`<span style="font-size:15px;margin-right:6px">${icon}</span><span style="color:var(--ink);font-weight:600">${name}</span>`;document.getElementById('deu-cat-picker').style.display='none';document.querySelectorAll('#deu-cat-list .inc-cat-opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');}
 function filterDeuCats(q){const term=q.toLowerCase().trim();const groups=getDeuGroups();const list=document.getElementById('deu-cat-list');if(!list)return;if(!term){list.innerHTML=groups.map((grp,gi)=>`<div class="inc-cat-group" id="ducg-${gi}"><div class="inc-cat-group-hdr" onclick="toggleDeuCatGroup(${gi})"><span>${grp.g}</span><span class="inc-cat-toggle" id="ducgt-${gi}">›</span></div><div class="inc-cat-subs" id="ducgs-${gi}" style="display:none">${grp.subs.map(sub=>`<div class="inc-cat-opt" onclick="selectDeuCat(this,'${sub.replace(/'/g,"\\'")}')"><span style="font-size:14px">${sub.split(' ')[0]}</span><span class="inc-cat-opt-name">${sub.split(' ').slice(1).join(' ')}</span></div>`).join('')}</div></div>`).join('');return;}const all=[];groups.forEach(grp=>grp.subs.forEach(sub=>{if(sub.toLowerCase().includes(term))all.push(sub);}));if(!all.length){list.innerHTML=`<div style="padding:12px;text-align:center;font-size:12px;color:var(--ink4)">${t('deudas.noResults')}</div>`;return;}const hi=txt=>txt.replace(new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi'),m=>`<mark style="background:rgba(184,134,11,.25);border-radius:2px;padding:0 1px">${m}</mark>`);list.innerHTML=all.map(sub=>`<div class="inc-cat-opt" onclick="selectDeuCat(this,'${sub.replace(/'/g,"\\'")}')"><span style="font-size:14px">${sub.split(' ')[0]}</span><span class="inc-cat-opt-name">${hi(sub.split(' ').slice(1).join(' '))}</span></div>`).join('');}
@@ -7791,7 +7761,7 @@ function editDeu(id){
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px;font-family:'Inter',sans-serif">${t('deudas.dateLabel')}</div>
       <input id="e-date" class="finput" type="date" value="${msToDateStr(e.date)||defaultDateForNavMonth()}" min="${firstDayOfNavMonth()}" max="${lastDayOfNavMonth()}">
     </div>
-    <div style="margin-bottom:14px">
+    <div class="cat-picker-wrap">
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;font-family:'Inter',sans-serif">${t('deudas.categoryLabel')}</div>
       <div class="inc-cat-selected" id="edit-deu-cat-selected" onclick="toggleEditDeuCatPicker()"><span id="edit-deu-cat-selected-txt"><span style="font-size:15px;margin-right:6px">${e.cat.split(' ')[0]}</span><span style="color:var(--ink);font-weight:600">${e.cat.split(' ').slice(1).join(' ')}</span></span><span style="color:var(--ink4);font-size:12px">▾</span></div>
       <input type="hidden" id="e-cat" value="${e.cat}">
@@ -7804,7 +7774,7 @@ function editDeu(id){
   if(curGroupIdx>=0)setTimeout(()=>{const tog=document.getElementById(`educgt-${curGroupIdx}`);if(tog)tog.style.transform='rotate(90deg)';const hdr=document.querySelector(`#educg-${curGroupIdx} .inc-cat-group-hdr`);if(hdr)hdr.classList.add('open');},30);
 }
 
-function toggleEditDeuCatPicker(){const p=document.getElementById('edit-deu-cat-picker');const o=p.style.display!=='none';p.style.display=o?'none':'block';if(!o)setTimeout(()=>document.getElementById('edit-deu-cat-q')?.focus(),60);}
+function toggleEditDeuCatPicker(){const p=document.getElementById('edit-deu-cat-picker');const o=p.style.display!=='none';p.style.display=o?'none':'block';if(!o){setTimeout(()=>document.getElementById('edit-deu-cat-q')?.focus(),60);_scrollPickerIntoView('edit-deu-cat-picker');}}
 function toggleEditDeuCatGroup(gi){const s=document.getElementById(`educgs-${gi}`);const t=document.getElementById(`educgt-${gi}`);const h=s?.previousElementSibling;if(!s)return;const o=s.style.display!=='none';s.style.display=o?'none':'block';if(t)t.style.transform=o?'':'rotate(90deg)';if(h)h.classList.toggle('open',!o);}
 function selectEditDeuCat(el,cat){document.getElementById('e-cat').value=cat;const icon=cat.split(' ')[0];const name=cat.split(' ').slice(1).join(' ');document.getElementById('edit-deu-cat-selected-txt').innerHTML=`<span style="font-size:15px;margin-right:6px">${icon}</span><span style="color:var(--ink);font-weight:600">${name}</span>`;document.getElementById('edit-deu-cat-picker').style.display='none';document.querySelectorAll('#edit-deu-cat-list .inc-cat-opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');}
 function filterEditDeuCats(q){const term=q.toLowerCase().trim();const groups=getDeuGroups();const list=document.getElementById('edit-deu-cat-list');if(!list)return;if(!term){list.innerHTML=groups.map((grp,gi)=>`<div class="inc-cat-group" id="educg-${gi}"><div class="inc-cat-group-hdr" onclick="toggleEditDeuCatGroup(${gi})"><span>${grp.g}</span><span class="inc-cat-toggle" id="educgt-${gi}">›</span></div><div class="inc-cat-subs" id="educgs-${gi}" style="display:none">${grp.subs.map(sub=>`<div class="inc-cat-opt" onclick="selectEditDeuCat(this,'${sub.replace(/'/g,"\\'")}')"><span style="font-size:14px">${sub.split(' ')[0]}</span><span class="inc-cat-opt-name">${sub.split(' ').slice(1).join(' ')}</span></div>`).join('')}</div></div>`).join('');return;}const all=[];groups.forEach(g=>g.subs.forEach(s=>{if(s.toLowerCase().includes(term))all.push(s);}));if(!all.length){list.innerHTML=`<div style="padding:12px;text-align:center;font-size:12px;color:var(--ink4)">${t('deudas.noResults')}</div>`;return;}const hi=txt=>txt.replace(new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi'),m=>`<mark style="background:rgba(184,134,11,.25);border-radius:2px;padding:0 1px">${m}</mark>`);list.innerHTML=all.map(sub=>`<div class="inc-cat-opt" onclick="selectEditDeuCat(this,'${sub.replace(/'/g,"\\'")}')"><span style="font-size:14px">${sub.split(' ')[0]}</span><span class="inc-cat-opt-name">${hi(sub.split(' ').slice(1).join(' '))}</span></div>`).join('');}
@@ -8343,7 +8313,7 @@ function wlOpenAdd(editId){
     <div class="form-row">
       <input id="wl-f-price" class="finput" type="number" inputmode="decimal" placeholder="${cur} Precio (opcional)" value="${vPrice}" autocomplete="off">
     </div>
-    <div style="margin-bottom:14px">
+    <div class="cat-picker-wrap">
       <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px;font-family:'Inter',sans-serif">${t('diario.wlCatLabel')}</div>
       <div class="inc-cat-selected" id="wl-cat-selected" onclick="wlToggleCatPicker()">
         <span id="wl-cat-selected-txt">${catSelHtml}</span>
@@ -8398,7 +8368,7 @@ function wlToggleCatPicker(){
   if(!picker)return;
   const isOpen=picker.style.display!=='none';
   picker.style.display=isOpen?'none':'block';
-  if(!isOpen)setTimeout(()=>document.getElementById('wl-cat-q')?.focus(),60);
+  if(!isOpen){setTimeout(()=>document.getElementById('wl-cat-q')?.focus(),60);_scrollPickerIntoView('wl-cat-picker');}
 }
 
 function wlToggleCatGroup(gi){
@@ -8741,23 +8711,106 @@ function renderDiaryLayer2Card(){
   </div>`;
 }
 
+// ─── Layer 3: honest monthly emotional summary (no money correlation) ───
+// Groups diary weeks by calendar month of their Monday, counts states,
+// and produces a neutral narrative per month.
+function computeDiaryMonthlySummary(){
+  ensureDiaryStore();
+  // Collect ALL weeks that have any answer recorded (not just computable state)
+  const allWeeks=Object.keys(DB._diary||{}).filter(wk=>/^\d{4}-W\d{2}$/.test(wk));
+  if(!allWeeks.length)return[];
+
+  // Determine total possible weeks per month (weeks whose Monday falls in that month)
+  // We'll compute for each recorded week which month it belongs to
+  const monthMap={}; // "YYYY-MM" → {recorded:[], possible: Set of weekKeys}
+  allWeeks.forEach(wk=>{
+    const {year,week}=isoWeekFromKey(wk);
+    const mon=mondayOfIsoWeek(year,week);
+    const key=`${mon.getFullYear()}-${String(mon.getMonth()+1).padStart(2,'0')}`;
+    if(!monthMap[key])monthMap[key]={monthDate:new Date(mon.getFullYear(),mon.getMonth(),1),weeks:[]};
+    const entry=DB._diary[wk]||{};
+    const areaObj=entry.areaId?getDiaryAreas().find(a=>a.id===entry.areaId):null;
+    const state=areaObj?computeWeekState(entry,areaObj):null;
+    monthMap[key].weeks.push({wk,state,hasAnswer:!!(entry.answers&&(entry.answers.closed!=null&&entry.answers.closed!==''))});
+  });
+
+  // For each month compute how many weeks in that calendar month exist in total
+  // (we count only the weeks we saw — we don't know the "total possible" without
+  //  scanning the whole calendar, so we report recorded vs those with a state)
+  const months=Object.keys(monthMap).sort();
+  return months.map(key=>{
+    const {monthDate,weeks}=monthMap[key];
+    const recorded=weeks.filter(w=>w.hasAnswer).length;
+    const total=weeks.length;
+    // State counts — only weeks with computable state
+    const stateCounts={reactivo:0,fragil:0,intencional:0,alineado:0};
+    weeks.forEach(w=>{if(w.state&&stateCounts[w.state]!==undefined)stateCounts[w.state]++;});
+    // Dominant state = highest count (ties → more positive wins)
+    const order=['alineado','intencional','fragil','reactivo'];
+    let dominant=null,dominantCount=0;
+    order.forEach(s=>{if(stateCounts[s]>dominantCount){dominant=s;dominantCount=stateCounts[s];}});
+    return{key,monthDate,recorded,total,stateCounts,dominant,dominantCount};
+  }).filter(m=>m.recorded>0); // only months with at least one answered week
+}
+
 function renderDiaryLayer3Card(){
-  const obs=computeDiaryLayer3();
-  if(!obs.length)return ''; // silence when no crossed data yet
-  // Reuse Layer 2's CSS for observation rows — only the kicker color differs
-  const items=obs.map(o=>`
-    <div class="dw-layer2-obs">
-      <div class="dw-layer2-obs-emoji">${o.emoji}</div>
-      <div class="dw-layer2-obs-body">
-        <div class="dw-layer2-obs-title">${o.title}</div>
-        <div class="dw-layer2-obs-text">${o.body}</div>
-      </div>
-    </div>`).join('');
-  return `
+  const months=computeDiaryMonthlySummary();
+  if(!months.length)return'';
+
+  const states=getDiaryStates();
+  const isEn=LANG==='en';
+
+  // Closing phrases per dominant state — honest, no money mention
+  const closingPhrases={
+    en:{
+      reactivo:'Awareness is the first move.',
+      fragil:'Balance is a direction, not a destination.',
+      intencional:'You\'re building a pattern.',
+      alineado:'This is rhythm, not luck.'
+    },
+    es:{
+      reactivo:'La conciencia es el primer movimiento.',
+      fragil:'El equilibrio es una dirección, no un destino.',
+      intencional:'Estás construyendo un patrón.',
+      alineado:'Esto es ritmo, no suerte.'
+    }
+  };
+  const phrases=isEn?closingPhrases.en:closingPhrases.es;
+
+  // i18n labels
+  const lblWeeksRecorded=isEn?'week recorded':'semana registrada';
+  const lblWeeksRecordedPlural=isEn?'weeks recorded':'semanas registradas';
+  const lblOf=isEn?'of':'de';
+  const lblPredominant=isEn?'Predominant state':'Estado predominante';
+  const lblNoState=isEn?'Not enough data yet.':'Aún no hay suficientes datos.';
+  const kicker=isEn?'Monthly overview · Journal':'Resumen mensual · Diario';
+  const sub=isEn?'Your emotional pattern, week by week.':'Tu patrón emocional, semana a semana.';
+
+  const monthNames=tMonths(); // uses current LANG
+
+  const rows=months.slice().reverse().slice(0,6).map(m=>{ // latest 6 months, newest first
+    const mName=monthNames[m.monthDate.getMonth()]+' '+m.monthDate.getFullYear();
+    const wLbl=m.recorded===1?lblWeeksRecorded:lblWeeksRecordedPlural;
+    const stateInfo=m.dominant&&states[m.dominant];
+    const stateHTML=stateInfo
+      ?`<span style="font-weight:700;color:var(--ink)">${stateInfo.emoji} ${stateInfo.label}</span>
+        <span style="color:var(--ink4)"> · ${m.dominantCount} ${m.dominantCount===1?lblWeeksRecorded:lblWeeksRecordedPlural}</span>`
+      :`<span style="color:var(--ink4)">${lblNoState}</span>`;
+    const closing=m.dominant?`<div style="font-size:11px;color:var(--ink4);margin-top:5px;font-style:italic">${phrases[m.dominant]}</div>`:'';
+
+    return`<div style="padding:12px 0;border-bottom:1px dashed var(--border);">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px">${mName}</div>
+      <div style="font-size:12px;color:var(--ink3);margin-bottom:4px">${m.recorded} ${wLbl}</div>
+      <div style="font-size:13px;margin-bottom:2px"><span style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink4)">${lblPredominant}: </span>${stateHTML}</div>
+      ${closing}
+    </div>`;
+  }).join('');
+
+  return`
   <div class="dw-card dw-layer3">
-    <div class="dw-layer3-kicker">${t('diario.layer3Kicker')}</div>
-    <div class="dw-layer2-sub">${t('diario.layer3Sub')}</div>
-    ${items}
+    <div class="dw-layer3-kicker">${kicker}</div>
+    <div class="dw-layer2-sub">${sub}</div>
+    ${rows}
   </div>`;
 }
 
@@ -10018,12 +10071,18 @@ function ovCatSeries(cat,from,to,year){
 // Type map: key → {label, listKey, groupsKey, defGroups, tone}
 // listKey is the name of the array inside a month's data where entries live.
 // For income, entries live under d.income.entries (handled specially below).
+function _stripNavEmoji(s){
+  // Nav labels are always "emoji text" — drop the first word (emoji) and return the rest.
+  if(!s)return s;
+  const parts=s.trim().split(' ');
+  return parts.length>1?parts.slice(1).join(' '):s;
+}
 const OV_ASK_TYPES=[
-  {key:'gastos',   label:'Gastos',     listKey:'gastos',   groupsKey:'gasGroups', tone:'neg'},
-  {key:'ingresos', label:'Ingresos',   listKey:'_income',  groupsKey:'incGroups', tone:'pos'},
-  {key:'ahorro',   label:'Ahorro',     listKey:'ahorro',   groupsKey:'ahoGroups', tone:'pos'},
-  {key:'inversion',label:'Inversión',  listKey:'inversion',groupsKey:'invGroups', tone:'blu'},
-  {key:'deudas',   label:'Deudas',     listKey:'deudas',   groupsKey:'deuGroups', tone:'amb'}
+  {key:'gastos',   get label(){return _stripNavEmoji(t('nav.gastos'))||'Gastos';},     listKey:'gastos',   groupsKey:'gasGroups', tone:'neg'},
+  {key:'ingresos', get label(){return _stripNavEmoji(t('nav.ingresos'))||'Ingresos';}, listKey:'_income',  groupsKey:'incGroups', tone:'pos'},
+  {key:'ahorro',   get label(){return _stripNavEmoji(t('nav.ahorro'))||'Ahorro';},     listKey:'ahorro',   groupsKey:'ahoGroups', tone:'pos'},
+  {key:'inversion',get label(){return _stripNavEmoji(t('nav.inversion'))||'Inversión';},listKey:'inversion',groupsKey:'invGroups', tone:'blu'},
+  {key:'deudas',   get label(){return _stripNavEmoji(t('nav.deudas'))||'Deudas';},     listKey:'deudas',   groupsKey:'deuGroups', tone:'amb'}
 ];
 
 // Extract entries of a given type from a month's data object
@@ -11050,19 +11109,11 @@ function ovRenderAsk(p){
   }).join('');
 
   let cardHTML='';
-  if(ovAskActive==='no-match'){
-    cardHTML=`<div class="ov-ask-empty">
-      ${t('overview.askNoMatchEmpty').replace('{raw}',(ovAskTyped&&ovAskTyped.raw)||'')}
-    </div>`;
-  } else if(ovAskActive){
+  if(ovAskActive){
     const chip=OV_ASK_CHIPS.find(c=>c.id===ovAskActive);
     const q=chip?chip.resolver(p):null;
     if(q){
-      // If the user typed it, prepend a small "from your question" note
-      const fromHTML=ovAskTyped&&ovAskTyped.raw
-        ?`<div class="ov-ask-from">De tu pregunta: <em>"${ovAskTyped.raw}"</em></div>`
-        :'';
-      cardHTML=fromHTML+ovRenderAskCard(q,p);
+      cardHTML=ovRenderAskCard(q,p);
     } else {
       cardHTML=`<div class="ov-ask-empty">
         ${t('overview.askNoDataEmpty').replace('{period}',p.label)}
@@ -11070,31 +11121,8 @@ function ovRenderAsk(p){
     }
   }
 
-  // Autocomplete suggestions (only when input has text)
-  const sugs=ovAskInputText.trim()?ovAskSuggest(ovAskInputText,p):[];
-  const suggestHTML=sugs.length>0
-    ?`<div class="ov-ask-suggest" id="ovAskSuggestWrap">${ovRenderSuggestList(sugs,ovAskInputText)}</div>`
-    :`<div id="ovAskSuggestWrap"></div>`;
-
-  const clearBtn=ovAskInputText
-    ?`<button class="ov-ask-input-clear" onclick="ovAskClearInput()" title="${t('overview.askClearTitle')}">×</button>`
-    :'';
-
-  // Escape the current input text for safe interpolation into the value attribute
-  const inputVal=(ovAskInputText||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-
   return `<div class="ov-kicker">${t('overview.askKicker')} <span class="ov-kicker-badge">${t('overview.askKickerBadge')}</span></div>
   <div class="ov-ask-wrap">
-    <div class="ov-ask-input-wrap">
-      <span class="ov-ask-input-icon">💬</span>
-      <input id="ovAskInput" class="ov-ask-input" autocomplete="off"
-        placeholder="${t('overview.askInputPlaceholder')}"
-        value="${inputVal}"
-        oninput="ovAskInputChanged(this.value)"
-        onkeydown="ovAskKeydown(event)">
-      ${clearBtn}
-      ${suggestHTML}
-    </div>
     <div class="ov-ask-chips">${chips}</div>
     ${cardHTML}
   </div>`;
@@ -11349,7 +11377,7 @@ function ovAskRenderOnePicker(slot,q,excludeId){
     }
   });
   if(!listHTML){
-    listHTML=`<div class="ov-ask-catpicker-empty">Sin resultados para "${ovAskEscAttr(search)}"</div>`;
+    listHTML=`<div class="ov-ask-catpicker-empty">${t('gastos.noResults')}: "${ovAskEscAttr(search)}"</div>`;
   }
 
   return `<div class="ov-ask-catpicker${open?' open':''}" data-slot="${slot}" onclick="event.stopPropagation();">
@@ -11359,7 +11387,7 @@ function ovAskRenderOnePicker(slot,q,excludeId){
     </button>
     <div class="ov-ask-catpicker-panel">
       <div class="ov-ask-catpicker-search">
-        <input type="text" placeholder="Buscar categoría…"
+        <input type="text" placeholder="${t('gastos.categorySearchPlaceholder')}"
           value="${ovAskEscAttr(ovAskPickerSearch[slot]||'')}"
           oninput="ovAskPickerSearchInput('${slot}',this.value)"
           onclick="event.stopPropagation();"
@@ -11453,7 +11481,7 @@ function ovAskPickerSearchInput(slot,val){
     }
   });
   if(!listHTML){
-    listHTML=`<div class="ov-ask-catpicker-empty">Sin resultados para "${ovAskEscAttr(search)}"</div>`;
+    listHTML=`<div class="ov-ask-catpicker-empty">${t('gastos.noResults')}: "${ovAskEscAttr(search)}"</div>`;
   }
   listEl.innerHTML=listHTML;
 }
