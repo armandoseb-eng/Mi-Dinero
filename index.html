@@ -8972,17 +8972,23 @@ function _detectStreak(history){
   }
   if(n<3)return null;
   const stateCfg=getDiaryStates()[last.state];
-  const phrasings={
-    reactivo:`Llevas <strong>${n} semanas</strong> en <strong>${stateCfg.label}</strong>. Es información, no un juicio — algo está pidiendo atención.`,
-    fragil:`<strong>${n} semanas</strong> en <strong>${stateCfg.label}</strong>. La balanza sigue moviéndose. Observa qué inclina más.`,
-    intencional:`<strong>${n} semanas</strong> seguidas en <strong>${stateCfg.label}</strong>. Estás construyendo algo.`,
-    alineado:`<strong>${n} semanas</strong> en <strong>${stateCfg.label}</strong>. Esto es ritmo, no suerte.`
+  const wk=LANG==='en'?(n===1?'week':'weeks'):(n===1?'semana':'semanas');
+  const phrasings=LANG==='en'?{
+    reactivo:`You've had <strong>${n} ${wk}</strong> in <strong>${stateCfg.label}</strong>. This is information, not a judgement — something is asking for attention.`,
+    fragil:`<strong>${n} ${wk}</strong> in <strong>${stateCfg.label}</strong>. The balance keeps shifting. Observe what tips it.`,
+    intencional:`<strong>${n}</strong> consecutive <strong>${wk}</strong> in <strong>${stateCfg.label}</strong>. You're building something.`,
+    alineado:`<strong>${n} ${wk}</strong> in <strong>${stateCfg.label}</strong>. This is rhythm, not luck.`
+  }:{
+    reactivo:`Llevas <strong>${n} ${wk}</strong> en <strong>${stateCfg.label}</strong>. Es información, no un juicio — algo está pidiendo atención.`,
+    fragil:`<strong>${n} ${wk}</strong> en <strong>${stateCfg.label}</strong>. La balanza sigue moviéndose. Observa qué inclina más.`,
+    intencional:`<strong>${n} ${wk}</strong> seguidas en <strong>${stateCfg.label}</strong>. Estás construyendo algo.`,
+    alineado:`<strong>${n} ${wk}</strong> en <strong>${stateCfg.label}</strong>. Esto es ritmo, no suerte.`
   };
   return {
     type:'streak',
     priority:last.state==='reactivo'?100:(last.state==='alineado'?90:70),
     emoji:stateCfg.emoji,
-    title:'Patrón de constancia',
+    title:LANG==='en'?'Consistency pattern':'Patrón de constancia',
     body:phrasings[last.state],
     tone:stateCfg.tone
   };
@@ -9019,7 +9025,12 @@ function _detectDominance(history){
   });
   if(!best)return null;
   const stateCfg=getDiaryStates()[best.state];
-  const phrasings={
+  const phrasings=LANG==='en'?{
+    reactivo:`In <strong>${best.area.title}</strong> you've been <strong>${stateCfg.label}</strong> ${best.count} out of ${best.total} visits. Worth observing what triggers that.`,
+    fragil:`In <strong>${best.area.title}</strong>, <strong>${stateCfg.label}</strong> shows up often (${best.count} of ${best.total}). A zone still in motion.`,
+    intencional:`In <strong>${best.area.title}</strong> you sustain <strong>${stateCfg.label}</strong> ${best.count} of ${best.total} times. There's clarity there.`,
+    alineado:`In <strong>${best.area.title}</strong> you appear <strong>${stateCfg.label}</strong> ${best.count} of ${best.total} times. You've already rooted there.`
+  }:{
     reactivo:`En <strong>${best.area.title}</strong> has estado en <strong>${stateCfg.label}</strong> ${best.count} de ${best.total} visitas. Vale la pena observar qué dispara eso.`,
     fragil:`En <strong>${best.area.title}</strong> aparece <strong>${stateCfg.label}</strong> con frecuencia (${best.count} de ${best.total}). Una zona aún en movimiento.`,
     intencional:`En <strong>${best.area.title}</strong> sostienes <strong>${stateCfg.label}</strong> ${best.count} de ${best.total} veces. Hay claridad ahí.`,
@@ -9029,7 +9040,7 @@ function _detectDominance(history){
     type:'dominance',
     priority:best.state==='reactivo'?95:75,
     emoji:best.area.emoji,
-    title:'Patrón por dimensión',
+    title:LANG==='en'?'Pattern by dimension':'Patrón por dimensión',
     body:phrasings[best.state],
     tone:stateCfg.tone
   };
@@ -9069,17 +9080,23 @@ function _detectRecurringChip(history){
   const isPos=positiveChips.includes(top.chip);
   let body;
   if(isNeg){
-    body=`<strong>${top.chip}</strong> aparece en ${top.weekCount} de tus últimas ${top.total} semanas. Está pidiendo atención — sin urgencia, sin culpa.`;
+    body=LANG==='en'
+      ?`<strong>${top.chip}</strong> appears in ${top.weekCount} of your last ${top.total} weeks. It's asking for attention — no rush, no guilt.`
+      :`<strong>${top.chip}</strong> aparece en ${top.weekCount} de tus últimas ${top.total} semanas. Está pidiendo atención — sin urgencia, sin culpa.`;
   } else if(isPos){
-    body=`<strong>${top.chip}</strong> se repite en ${top.weekCount} de tus últimas ${top.total} semanas. Algo está sosteniéndote ahí.`;
+    body=LANG==='en'
+      ?`<strong>${top.chip}</strong> repeats in ${top.weekCount} of your last ${top.total} weeks. Something is sustaining you there.`
+      :`<strong>${top.chip}</strong> se repite en ${top.weekCount} de tus últimas ${top.total} semanas. Algo está sosteniéndote ahí.`;
   } else {
-    body=`<strong>${top.chip}</strong> aparece ${top.weekCount} veces en tus últimas ${top.total} semanas. Es un compañero recurrente — vale la pena mirarlo.`;
+    body=LANG==='en'
+      ?`<strong>${top.chip}</strong> shows up ${top.weekCount} times in your last ${top.total} weeks. A recurring companion — worth a look.`
+      :`<strong>${top.chip}</strong> aparece ${top.weekCount} veces en tus últimas ${top.total} semanas. Es un compañero recurrente — vale la pena mirarlo.`;
   }
   return {
     type:'chip',
     priority:isNeg?85:(isPos?60:50),
     emoji:isNeg?'🌊':(isPos?'🌱':'👁'),
-    title:'Patrón emocional',
+    title:LANG==='en'?'Emotional pattern':'Patrón emocional',
     body,
     tone:isNeg?'amb':(isPos?'pos':'blu')
   };
