@@ -13112,9 +13112,24 @@ function showOnboardingAgain(){
 // EXPORT
 // ═══════════════════════════════════
 function exportPDF(){
-  const d=getMonth();const t=totals();
+  const d=getMonth();const tot=totals();
   const win=window.open('','_blank');
   const cur=CONFIG.currency;
+  const isEn=LANG==='en';
+  const lbl={
+    summary:   isEn?'Summary':'Resumen',
+    of:        isEn?'of':'de',
+    ing:       t('common.summaryIngresos'),
+    gas:       t('common.summaryGastos'),
+    aho:       t('common.summaryAhorroInv'),
+    dis:       t('common.summaryDisponible'),
+    gastos:    isEn?'Expenses':'Gastos',
+    ahorro:    isEn?'Savings':'Ahorro',
+    inv:       isEn?'Investments':'Inversiones',
+    desc:      isEn?'Description':'Descripción',
+    cat:       isEn?'Category':'Categoría',
+    amount:    isEn?'Amount':'Importe',
+  };
   win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
   <style>body{font-family:Inter,sans-serif;padding:32px;color:#1c1a17;max-width:800px;margin:0 auto}
   h1{font-size:28px;font-weight:800;margin-bottom:4px}
@@ -13131,23 +13146,23 @@ function exportPDF(){
   @media print{body{padding:16px}}</style>
   </head><body>
   <h1>Polaris</h1>
-  <div class="sub">Resumen de ${tMonths()[cM]} ${cY} · ${CONFIG.name||''}</div>
+  <div class="sub">${lbl.summary} ${lbl.of} ${tMonths()[cM]} ${cY} · ${CONFIG.name||''}</div>
   <div class="grid">
-    <div class="card"><div class="card-lbl">Ingresos</div><div class="card-val pos">${cur}${t.ing.toLocaleString()}</div></div>
-    <div class="card"><div class="card-lbl">Gastos</div><div class="card-val neg">${cur}${t.totalGas.toLocaleString()}</div></div>
-    <div class="card"><div class="card-lbl">Ahorro+Inv</div><div class="card-val blu">${cur}${t.totalAho.toLocaleString()}</div></div>
-    <div class="card"><div class="card-lbl">Disponible</div><div class="card-val ${t.disp>=0?'amb':'neg'}">${cur}${t.disp.toLocaleString()}</div></div>
+    <div class="card"><div class="card-lbl">${lbl.ing}</div><div class="card-val pos">${cur}${tot.ing.toLocaleString()}</div></div>
+    <div class="card"><div class="card-lbl">${lbl.gas}</div><div class="card-val neg">${cur}${tot.totalGas.toLocaleString()}</div></div>
+    <div class="card"><div class="card-lbl">${lbl.aho}</div><div class="card-val blu">${cur}${tot.totalAho.toLocaleString()}</div></div>
+    <div class="card"><div class="card-lbl">${lbl.dis}</div><div class="card-val ${tot.disp>=0?'amb':'neg'}">${cur}${tot.disp.toLocaleString()}</div></div>
   </div>
-  <h2>Gastos</h2>
-  <table><tr><th>Descripción</th><th>Categoría</th><th style="text-align:right">Importe</th></tr>
+  <h2>${lbl.gastos}</h2>
+  <table><tr><th>${lbl.desc}</th><th>${lbl.cat}</th><th style="text-align:right">${lbl.amount}</th></tr>
   ${d.gastos.map(g=>`<tr><td>${g.desc}</td><td>${g.cat}</td><td style="text-align:right">${cur}${(+g.amt).toLocaleString()}</td></tr>`).join('')}
   </table>
-  <h2>Ahorro</h2>
-  <table><tr><th>Descripción</th><th>Categoría</th><th style="text-align:right">Importe</th></tr>
+  <h2>${lbl.ahorro}</h2>
+  <table><tr><th>${lbl.desc}</th><th>${lbl.cat}</th><th style="text-align:right">${lbl.amount}</th></tr>
   ${d.ahorro.map(a=>`<tr><td>${a.desc}</td><td>${a.cat}</td><td style="text-align:right">${cur}${(+a.amt).toLocaleString()}</td></tr>`).join('')}
   </table>
-  <h2>Inversiones</h2>
-  <table><tr><th>Descripción</th><th>Categoría</th><th style="text-align:right">Importe</th></tr>
+  <h2>${lbl.inv}</h2>
+  <table><tr><th>${lbl.desc}</th><th>${lbl.cat}</th><th style="text-align:right">${lbl.amount}</th></tr>
   ${d.inversion.map(i=>`<tr><td>${i.desc}</td><td>${i.cat}</td><td style="text-align:right">${cur}${(+i.amt).toLocaleString()}</td></tr>`).join('')}
   </table>
   <script>window.onload=()=>window.print()<\/script>
@@ -13156,35 +13171,63 @@ function exportPDF(){
 }
 
 function exportExcel(){
-  const d=getMonth();const t=totals();const cur=CONFIG.currency;
+  const d=getMonth();const tot=totals();const cur=CONFIG.currency;
+  const isEn=LANG==='en';
+  const lbl={
+    summary: isEn?'SUMMARY':'RESUMEN',
+    ing:     t('common.summaryIngresos'),
+    gas:     t('common.summaryGastos'),
+    aho:     t('common.summaryAhorroInv'),
+    dis:     t('common.summaryDisponible'),
+    gastos:  isEn?'EXPENSES':'GASTOS',
+    ahorro:  isEn?'SAVINGS':'AHORRO',
+    inv:     isEn?'INVESTMENTS':'INVERSIONES',
+    desc:    isEn?'Description':'Descripción',
+    cat:     isEn?'Category':'Categoría',
+    amount:  isEn?'Amount':'Importe',
+  };
   const rows=[
-    ['RESUMEN','',''],
-    ['Ingresos',t.ing,''],['Gastos',t.totalGas,''],['Ahorro+Inv',t.totalAho,''],['Disponible',t.disp,''],
-    ['','',''],['GASTOS','',''],['Descripción','Categoría','Importe'],
+    [lbl.summary,'',''],
+    [lbl.ing,tot.ing,''],[lbl.gas,tot.totalGas,''],[lbl.aho,tot.totalAho,''],[lbl.dis,tot.disp,''],
+    ['','',''],['',lbl.gastos,''],['',lbl.desc,lbl.cat,lbl.amount],
     ...d.gastos.map(g=>[g.desc,g.cat,+g.amt]),
-    ['','',''],['AHORRO','',''],['Descripción','Categoría','Importe'],
+    ['','',''],['',lbl.ahorro,''],['',lbl.desc,lbl.cat,lbl.amount],
     ...d.ahorro.map(a=>[a.desc,a.cat,+a.amt]),
-    ['','',''],['INVERSIONES','',''],['Descripción','Categoría','Importe'],
+    ['','',''],['',lbl.inv,''],['',lbl.desc,lbl.cat,lbl.amount],
     ...d.inversion.map(i=>[i.desc,i.cat,+i.amt])
   ];
   const csv=rows.map(r=>r.map(c=>typeof c==='string'&&c.includes(',')?`"${c}"`:c).join(',')).join('\n');
   const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download=`MiDinero_${tMonths()[cM]}_${cY}.csv`;a.click();
+  a.download=`Polaris_${tMonths()[cM]}_${cY}.csv`;a.click();
 }
 
 function exportGSheets(){
-  const d=getMonth();const t=totals();
+  const d=getMonth();const tot=totals();
+  const isEn=LANG==='en';
+  const lbl={
+    summary:  isEn?'Summary':'Resumen',
+    ing:      t('common.summaryIngresos'),
+    gas:      t('common.summaryGastos'),
+    aho:      t('common.summaryAhorroInv'),
+    dis:      t('common.summaryDisponible'),
+    gastos:   isEn?'Expenses detail':'Gastos detalle',
+    desc:     isEn?'Desc':'Desc',
+    cat:      isEn?'Category':'Cat',
+    amount:   isEn?'Amount':'Importe',
+    copied:   isEn?'✅ Data copied to clipboard.\n\nOpen Google Sheets and paste with Cmd+V in cell A1.':'✅ Datos copiados al portapapeles.\n\nAbre Google Sheets y pega con Cmd+V en la celda A1.',
+    fallback: isEn?'To export to Google Sheets:\n1. Use "Export Excel" to download CSV\n2. Import the CSV in Google Sheets':'Para exportar a Google Sheets:\n1. Usa "Exportar Excel" para descargar CSV\n2. Importa el CSV en Google Sheets',
+  };
   const data=[
-    ['Resumen','',''],['Ingresos',t.ing,''],['Gastos',t.totalGas,''],['Ahorro',t.totalAho,''],['Disponible',t.disp,''],
-    ['','',''],['Gastos detalle','',''],['Desc','Cat','Importe'],
+    [lbl.summary,'',''],[lbl.ing,tot.ing,''],[lbl.gas,tot.totalGas,''],[lbl.aho,tot.totalAho,''],[lbl.dis,tot.disp,''],
+    ['','',''],['',lbl.gastos,''],['',lbl.desc,lbl.cat,lbl.amount],
     ...d.gastos.map(g=>[g.desc,g.cat,g.amt])
   ];
   const tsv=data.map(r=>r.join('\t')).join('\n');
   navigator.clipboard.writeText(tsv).then(()=>{
-    alert('✅ Datos copiados al portapapeles.\n\nAbre Google Sheets y pega con Cmd+V en la celda A1.');
+    alert(lbl.copied);
   }).catch(()=>{
-    alert('Para exportar a Google Sheets:\n1. Usa "Exportar Excel" para descargar CSV\n2. Importa el CSV en Google Sheets');
+    alert(lbl.fallback);
   });
 }
 
