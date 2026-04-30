@@ -1543,11 +1543,11 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
   font-size:11.5px;color:var(--ink3);font-variant-numeric:tabular-nums;flex-shrink:0;
 }
 .ov-ask-catpicker-panel{
-  display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:20;
+  display:none;flex-direction:column;
+  position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:20;
   background:var(--paper);border:1px solid var(--card-border);
   border-radius:10px;box-shadow:0 8px 28px -8px rgba(0,0,0,.18);
   max-height:340px;overflow:hidden;
-  display:none;flex-direction:column;
   animation:ovAskIn .15s ease;
 }
 .ov-ask-catpicker.open .ov-ask-catpicker-panel{display:flex;}
@@ -1618,31 +1618,25 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
 /* Mini-chart (bars per month) */
 .ov-ask-chart{
   margin:12px 0 4px;
-  display:grid;
-  grid-template-rows:48px auto;
+  display:flex;
+  flex-direction:column;
   gap:6px;
   padding:0 2px;
-  position:relative;
-}
-/* Baseline line at the foot of the bars row */
-.ov-ask-chart::before{
-  content:"";position:absolute;
-  left:2px;right:2px;top:48px;
-  height:1px;background:var(--border2);
-  opacity:.6;pointer-events:none;
 }
 .ov-ask-chart-bars{
-  display:grid;
-  grid-template-columns:repeat(var(--cols,12),1fr);
-  align-items:end;
+  display:flex;
+  align-items:flex-end;
   gap:3px;
-  height:48px;
+  height:72px;
+  border-bottom:1px solid var(--border2);
+  overflow:visible;
 }
+.ov-ask-chart-bars > *{flex:1;min-width:0;}
 .ov-ask-chart-labels{
-  display:grid;
-  grid-template-columns:repeat(var(--cols,12),1fr);
+  display:flex;
   gap:3px;
 }
+.ov-ask-chart-labels > *{flex:1;min-width:0;}
 .ov-ask-chart-label{
   font-size:9px;color:var(--ink4);font-weight:600;
   text-transform:uppercase;letter-spacing:.04em;
@@ -1656,29 +1650,22 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
   border-radius:3px 3px 0 0;
   position:relative;
   transition:background .15s ease;
-  align-self:end;
 }
 .ov-ask-chart-bar.tone-neg{background:var(--red);}
 .ov-ask-chart-bar.tone-pos{background:var(--green);}
 .ov-ask-chart-bar.tone-blu{background:var(--blue);}
 .ov-ask-chart-bar.tone-amb{background:var(--amber);}
-/* Empty months: no visible bar, label still claims its grid column */
+/* Empty months: invisible but holds its column */
 .ov-ask-chart-bar.empty{
   background:transparent;
-  height:0;
   pointer-events:none;
+  visibility:hidden;
 }
 .ov-ask-chart-bar:hover{filter:brightness(1.15);}
 .ov-ask-chart-bar .ov-ask-chart-tip{
-  position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);
-  background:var(--ink);color:var(--cream);
-  font-size:10px;font-weight:600;white-space:nowrap;
-  padding:3px 7px;border-radius:4px;
-  opacity:0;pointer-events:none;transition:opacity .12s ease;
-  font-variant-numeric:tabular-nums;
-  z-index:2;
+  display:none;
 }
-.ov-ask-chart-bar:hover .ov-ask-chart-tip{opacity:1;}
+.ov-ask-chart-bar:hover .ov-ask-chart-tip{display:none;}
 
 /* Dual chart for A vs B compare */
 .ov-ask-chart-dual{
@@ -1759,7 +1746,10 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
 /* Mobile adjustments for Ask */
 @media(max-width:540px){
   .ov-ask-figure{font-size:30px;}
-  .ov-ask-card{padding:14px 15px 16px;}
+  .ov-ask-card{padding:10px 15px 16px;}
+  .ov-ask-head{margin-bottom:2px;}
+  .ov-ask-figure{font-size:30px;}
+  .ov-ask-sub{margin-bottom:8px;}
   .ov-ask-metrics{grid-template-columns:1fr;gap:10px;padding-top:12px;}
   /* Single-category metrics keep the compact 2-col inline layout */
   .ov-ask-metrics:not(.vs) .ov-ask-metric{
@@ -1770,10 +1760,14 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
   .ov-ask-metrics.vs{grid-template-columns:1fr;gap:12px;}
   .ov-ask-metrics.vs .ov-ask-metric{display:flex;flex-direction:column;}
   .ov-ask-metric-val{font-size:14px;}
-  .ov-ask-head{flex-direction:column;gap:8px;align-items:stretch;}
+  .ov-ask-head{flex-direction:column;gap:4px;align-items:stretch;margin-bottom:2px;}
   .ov-ask-compare{align-self:flex-end;}
+  /* Single picker on mobile: head only has question (already moved compare out) — hide it */
+  .ov-ask-head.has-picker{display:none;}
   /* Compact catpanel for A/B on mobile: stack slots, keep label inline with each picker */
   .ov-ask-catpanel{flex-direction:column;align-items:stretch;gap:4px;padding:10px 12px;}
+  .ov-ask-catpanel:not(.two){background:transparent;border:none;padding:0;margin-bottom:0;}
+  .ov-ask-catpanel:not(.two) .ov-ask-catpicker{width:100%;}
   .ov-ask-catpanel.two{gap:6px;}
   .ov-ask-catpanel-slot{
     flex:0 0 auto;gap:8px;align-items:center;
@@ -1796,7 +1790,7 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
   }
   .ov-ask-vs::before{left:6%;}
   .ov-ask-vs::after{right:6%;}
-  .ov-ask-chart-bars{height:40px;}
+  .ov-ask-chart-bars{height:48px;}
   /* Stack A/B mini-charts vertically so month labels breathe */
   .ov-ask-chart-dual{grid-template-columns:1fr;gap:14px;}
   .ov-ask-chart-dual .ov-ask-chart-bars{height:52px;}
@@ -2219,6 +2213,7 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
     <div class="ob-steps">
       <div class="ob-step-dot active" id="ob-dot-1"></div>
       <div class="ob-step-dot" id="ob-dot-2"></div>
+      <div class="ob-step-dot" id="ob-dot-3"></div>
     </div>
 
     <!-- ════════════════════════════════
@@ -2275,8 +2270,25 @@ input.finput[type="date"]::-webkit-calendar-picker-indicator{opacity:.5;cursor:p
 
       <div class="ob-actions">
         <button class="btn-back" onclick="obPrevStep()" data-t="onboarding.back">← Atrás</button>
-        <button class="btn-start" onclick="finishOnboarding()" data-t="onboarding.finish">Empezar mi viaje →</button>
+        <button class="btn-start" onclick="obGoToStep3()" data-t="onboarding.next">Siguiente →</button>
       </div>
+      <span class="ob-badge" data-t="onboarding.welcomeBadge">🔒 Beta v0.1 · Tus datos son locales y privados</span>
+    </div>
+
+    <!-- ════════════════════════════════
+         STEP 3 — SAMPLE DATA
+    ════════════════════════════════ -->
+    <div class="ob-step" id="ob-step-3">
+      <div class="ob-welcome" style="margin-bottom:8px">
+        <div style="font-size:2.4rem;margin-bottom:10px">🧭</div>
+        <div class="ob-title" style="font-size:1.25rem" id="ob-s3-title" data-t="onboarding.sampleTitle">¿Empezar con datos de ejemplo?</div>
+        <div class="ob-manifesto" style="font-size:0.88rem;margin-top:8px" id="ob-s3-sub" data-t-html="onboarding.sampleSub">Cargamos 3 meses de entradas ficticias — ingresos, gastos, ahorro, inversión, deudas y diario — para que puedas explorar la app antes de ingresar los tuyos.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:18px">
+        <button class="btn-start" style="background:var(--gold);color:var(--paper)" onclick="obLoadSampleAndFinish()" id="ob-s3-yes" data-t="onboarding.sampleYes">✨ Sí, muéstrame cómo funciona</button>
+        <button class="btn-start" style="background:transparent;border:1.5px solid var(--gold);color:var(--gold);box-shadow:none" onclick="finishOnboarding()" id="ob-s3-no" data-t="onboarding.sampleNo">Empezar en blanco →</button>
+      </div>
+      <button class="btn-back" style="margin-top:14px" onclick="obGoToStep(2)" data-t="onboarding.back">← Atrás</button>
       <span class="ob-badge" data-t="onboarding.welcomeBadge">🔒 Beta v0.1 · Tus datos son locales y privados</span>
     </div>
 
@@ -2429,6 +2441,11 @@ const T = {
       namePlaceholder: 'Tu nombre',
       currencyLabel: 'Moneda preferida',
       finish: 'Empezar mi viaje →',
+      next: 'Siguiente →',
+      sampleTitle: '¿Empezar con datos de ejemplo?',
+      sampleSub: 'Cargamos 3 meses de entradas ficticias — ingresos, gastos, ahorro, inversión, deudas y diario — para que puedas explorar la app antes de ingresar los tuyos.<br><br><span style="opacity:0.6;font-size:0.82rem">Puedes eliminarlos en cualquier momento desde tu perfil.</span>',
+      sampleYes: '✨ Sí, muéstrame cómo funciona',
+      sampleNo: 'Empezar en blanco →',
       back: '← Atrás',
       // Language toggle (in onboarding header)
       langToggleAria: 'Cambiar idioma',
@@ -2905,6 +2922,7 @@ const T = {
     overview: {
       // Page title kicker
       kicker: 'Overview {year}',
+      categoryLabel: 'Categoría',
       // Section kickers
       insightsKicker: 'Insights del período',
       chartsKicker: 'Visión anual',
@@ -3151,6 +3169,11 @@ const T = {
       namePlaceholder: 'Your name',
       currencyLabel: 'Preferred currency',
       finish: 'Start my journey →',
+      next: 'Next →',
+      sampleTitle: 'Start with sample data?',
+      sampleSub: 'We\'ll load 3 months of fictional entries — income, expenses, savings, investments, debts and a diary — so you can explore the app before entering your own data.<br><br><span style="opacity:0.6;font-size:0.82rem">You can delete them anytime from your profile.</span>',
+      sampleYes: '✨ Yes, show me how it works',
+      sampleNo: 'Start empty →',
       back: '← Back',
       langToggleAria: 'Change language',
     },
@@ -3565,6 +3588,7 @@ const T = {
     // ─── Overview ───
     overview: {
       kicker: 'Overview {year}',
+      categoryLabel: 'Category',
       insightsKicker: 'Period insights',
       chartsKicker: 'Annual view',
       periodLabel: 'Period',
@@ -3793,13 +3817,97 @@ function t(key, fallback){
 // the currently-active tab so dynamic content reflects the new language.
 function setLang(lang){
   if(lang !== 'es' && lang !== 'en') return;
+  const prevLang = LANG;
   LANG = lang;
   try { localStorage.setItem('lang', lang); } catch(_){}
   try { document.documentElement.setAttribute('lang', lang); } catch(_){}
+  retranslateCategoriesIfDefault(prevLang, lang);
   if(typeof applyStaticTranslations === 'function') applyStaticTranslations();
   if(typeof updateTabNav === 'function') updateTabNav();
   if(typeof initMonths === 'function') initMonths();
   if(typeof render === 'function') render();
+}
+
+// retranslateCategoriesIfDefault(prevLang, newLang)
+// Compares each category group in DB._groups against the defaults for prevLang.
+// If a group is still intact (no user edits), replaces it with the newLang default.
+// If the user customised it (added, removed, or renamed anything), leaves it alone.
+// Also migrates d.budgets keys so budget assignments survive the rename.
+function retranslateCategoriesIfDefault(prevLang, newLang){
+  if(!DB._groups) return;
+  if(prevLang === newLang) return;
+
+  // Temporarily swap LANG to get defaults for each language
+  LANG = prevLang;
+  const prevDefaults = {
+    inc: getDefaultIncGroups(),
+    gas: getDefaultGasGroups(),
+    aho: getDefaultAhoGroups(),
+    inv: getDefaultInvGroups(),
+    deu: getDefaultDeuGroups()
+  };
+  LANG = newLang;
+  const newDefaults = {
+    inc: getDefaultIncGroups(),
+    gas: getDefaultGasGroups(),
+    aho: getDefaultAhoGroups(),
+    inv: getDefaultInvGroups(),
+    deu: getDefaultDeuGroups()
+  };
+
+  // Check if two group arrays are identical (same groups, same subs, same order)
+  function groupsMatch(a, b){
+    if(!a || !b || a.length !== b.length) return false;
+    return a.every((grp, i) => {
+      if(grp.g !== b[i].g) return false;
+      if(grp.subs.length !== b[i].subs.length) return false;
+      return grp.subs.every((s, j) => s === b[i].subs[j]);
+    });
+  }
+
+  // Build a flat rename map: oldName -> newName for budget key migration
+  function buildRenameMap(prevDef, newDef){
+    const map = {};
+    prevDef.forEach((grp, i) => {
+      if(!newDef[i]) return;
+      if(grp.g !== newDef[i].g) map[grp.g] = newDef[i].g;
+      grp.subs.forEach((sub, j) => {
+        if(newDef[i].subs[j] && sub !== newDef[i].subs[j]) map[sub] = newDef[i].subs[j];
+      });
+    });
+    return map;
+  }
+
+  const allRenameKeys = {};
+
+  ['inc','gas','aho','inv','deu'].forEach(type => {
+    const current = DB._groups[type];
+    const prevDef  = prevDefaults[type];
+    const newDef   = newDefaults[type];
+    if(!current || !prevDef || !newDef) return;
+
+    if(groupsMatch(current, prevDef)){
+      // Still default — safe to replace with new language defaults
+      DB._groups[type] = newDef.map(g => ({g: g.g, subs: [...g.subs]}));
+      const renameMap = buildRenameMap(prevDef, newDef);
+      Object.assign(allRenameKeys, renameMap);
+    }
+    // User customised this section — leave it untouched
+  });
+
+  // Migrate d.budgets across all months so keys match the new category names
+  if(Object.keys(allRenameKeys).length > 0 && DB.months){
+    Object.values(DB.months).forEach(month => {
+      if(!month.budgets) return;
+      const newBudgets = {};
+      Object.entries(month.budgets).forEach(([key, val]) => {
+        newBudgets[allRenameKeys[key] || key] = val;
+      });
+      month.budgets = newBudgets;
+    });
+  }
+
+  try { persist(); } catch(_){}
 }
 
 // applyStaticTranslations() — refresh all elements with [data-t] attributes.
@@ -11235,8 +11343,7 @@ function ovRenderAskCard(q,p){
 
   const extraHTML=q.extra?`<div style="font-size:12px;color:var(--ink2);line-height:1.7;margin-top:-4px;margin-bottom:12px">${q.extra}</div>`:'';
 
-  return `<div class="ov-ask-card">
-    ${catPickerHTML}
+  return `${catPickerHTML}<div class="ov-ask-card">
     <div class="ov-ask-head">
       <div class="ov-ask-question">${q.title}</div>
       ${compareSelectorHTML}
@@ -11421,8 +11528,7 @@ function ovRenderCatPicker(q){
     return '';
   }
   if(!q.needsTwoCategoryPicker){
-    return `<div class="ov-ask-catpanel">
-      <span class="ov-ask-catpanel-lbl">Categoría</span>
+    return `<div class="ov-ask-card" style="margin-bottom:10px;">
       ${ovAskRenderOnePicker('A',q,null)}
     </div>`;
   }
@@ -11444,17 +11550,62 @@ function ovRenderCatPicker(q){
 
 // Handlers for the new picker
 function ovAskTogglePicker(slot){
-  ovAskPickerOpen = (ovAskPickerOpen===slot) ? null : slot;
-  // Clear search when opening fresh
-  if(ovAskPickerOpen===slot)ovAskPickerSearch[slot]='';
-  renderTab();
-  // Focus the search input after render
-  setTimeout(()=>{
-    if(ovAskPickerOpen===slot){
-      const el=document.querySelector(`.ov-ask-catpicker[data-slot="${slot}"] .ov-ask-catpicker-search input`);
-      if(el)el.focus();
+  const wasOpen = ovAskPickerOpen===slot;
+  ovAskPickerOpen = wasOpen ? null : slot;
+
+  // Surgically toggle open class on all pickers — no full re-render, no scroll jump
+  document.querySelectorAll('.ov-ask-catpicker').forEach(el=>{
+    const s=el.dataset.slot;
+    if(s===slot){
+      el.classList.toggle('open',!wasOpen);
+    } else {
+      el.classList.remove('open');
     }
-  },0);
+  });
+
+  // Clear search and rebuild list when opening fresh
+  if(!wasOpen){
+    ovAskPickerSearch[slot]='';
+    const picker=document.querySelector(`.ov-ask-catpicker[data-slot="${slot}"]`);
+    if(picker){
+      const searchInput=picker.querySelector('.ov-ask-catpicker-search input');
+      if(searchInput)searchInput.value='';
+      // Rebuild the list so it's fresh (no stale search)
+      const listEl=picker.querySelector('.ov-ask-catpicker-list');
+      if(listEl){
+        const p=resolveOvPeriod();
+        const q=ovQueryCurrent(p);
+        if(q&&q.categoryTree){
+          const excludeId = slot==='A'
+            ? (q.selectedEntryB?q.selectedEntryB.id:null)
+            : (q.selectedEntry ?q.selectedEntry.id :null);
+          let listHTML='';
+          q.categoryTree.forEach(section=>{
+            const rows=[];
+            section.items.forEach(it=>{
+              const id=`${section.type}::${it.name}`;
+              const isSelected=(slot==='A'?q.selectedEntry:q.selectedEntryB)&&
+                               (slot==='A'?q.selectedEntry:q.selectedEntryB).id===id;
+              const isExcluded=excludeId&&id===excludeId;
+              const cls=['ov-ask-catpicker-item',
+                it.kind==='parent'?'parent':(it.kind==='sub'?'sub':'orphan'),
+                isSelected?'selected':'',isExcluded?'disabled':''].filter(Boolean).join(' ');
+              const onclick=isExcluded?'':`onclick="ovAskPickEntry('${slot}','${ovAskEscAttr(id)}');event.stopPropagation();"`;
+              rows.push(`<div class="${cls}" ${onclick}><span>${it.name}</span></div>`);
+            });
+            if(rows.length)listHTML+=`<div class="ov-ask-catpicker-group">${section.label}</div>${rows.join('')}`;
+          });
+          if(!listHTML)listHTML=`<div class="ov-ask-catpicker-empty">${t('gastos.noResults')}</div>`;
+          listEl.innerHTML=listHTML;
+        }
+      }
+      // Focus search input without triggering scroll
+      setTimeout(()=>{
+        const el=picker.querySelector('.ov-ask-catpicker-search input');
+        if(el)el.focus({preventScroll:true});
+      },0);
+    }
+  }
 }
 
 function ovAskPickerSearchInput(slot,val){
@@ -11557,25 +11708,36 @@ function ovRenderCompareSelector(q){
 // Uses a single grid for bars + labels with explicit column count to keep them aligned.
 function ovRenderMiniChart(series,p,tone,highlightIdx){
   const valid=series.filter(v=>v!=null&&v>0);
-  if(valid.length<2)return '';
+  if(valid.length<1)return '';
   const max=Math.max(...valid);
   if(max<=0)return '';
-  const n=series.length;
-  const bars=series.map((v,i)=>{
-    const m=p.from+i;
+  // Trim leading and trailing empty months so the chart only shows the active range
+  let first=series.findIndex(v=>v!=null&&v>0);
+  let last=series.length-1;
+  while(last>first&&(series[last]==null||series[last]<=0))last--;
+  // 1-month padding only if it doesn't expose an empty column at the very start
+  if(first>0)first=first-1;
+  last=Math.min(series.length-1,last+1);
+  // Also keep highlight month in view
+  if(highlightIdx!=null){first=Math.min(first,highlightIdx);last=Math.max(last,highlightIdx);}
+  const trimmed=series.slice(first,last+1);
+  const offset=first;
+  const n=trimmed.length;
+  const bars=trimmed.map((v,i)=>{
+    const m=p.from+offset+i;
     const hasData=(v!=null&&v>0);
     if(!hasData){
       return `<div class="ov-ask-chart-bar empty"></div>`;
     }
-    const pct=Math.max(4,Math.round((v/max)*100));
-    const isHi=(highlightIdx!=null&&i===highlightIdx);
+    const pct=Math.round((v/max)*88);
+    const isHi=(highlightIdx!=null&&(offset+i)===highlightIdx);
     const barCls=`ov-ask-chart-bar tone-${tone}${isHi?' highlight':''}`;
     return `<div class="${barCls}" style="height:${pct}%">
       <span class="ov-ask-chart-tip">${tMonthsS()[m]} · ${fmt(v)}</span>
     </div>`;
   }).join('');
-  const labels=series.map((_,i)=>{
-    const m=p.from+i;
+  const labels=trimmed.map((_,i)=>{
+    const m=p.from+offset+i;
     return `<div class="ov-ask-chart-label">${tMonthsS()[m]}</div>`;
   }).join('');
   return `<div class="ov-ask-chart" style="--cols:${n}">
@@ -11594,21 +11756,31 @@ function ovRenderDualChart(dc,p){
   const max=Math.max(...allValid);
   if(max<=0)return '';
 
+  // Compute global trim range from both series combined so A and B share same visible months
+  const bothSeries=[...dc.aSeries,...dc.bSeries];
+  let gFirst=dc.aSeries.findIndex((v,i)=>(dc.aSeries[i]!=null&&dc.aSeries[i]>0)||(dc.bSeries[i]!=null&&dc.bSeries[i]>0));
+  let gLast=dc.aSeries.length-1;
+  while(gLast>gFirst&&(dc.aSeries[gLast]==null||dc.aSeries[gLast]<=0)&&(dc.bSeries[gLast]==null||dc.bSeries[gLast]<=0))gLast--;
+  if(gFirst>0)gFirst=gFirst-1;
+  gLast=Math.min(dc.aSeries.length-1,gLast+1);
+
   const renderSide=(series,tone)=>{
-    const n=series.length;
-    const bars=series.map((v,i)=>{
-      const m=p.from+i;
+    const trimmed=series.slice(gFirst,gLast+1);
+    const offset=gFirst;
+    const n=trimmed.length;
+    const bars=trimmed.map((v,i)=>{
+      const m=p.from+offset+i;
       const hasData=(v!=null&&v>0);
       if(!hasData){
         return `<div class="ov-ask-chart-bar empty"></div>`;
       }
-      const pct=Math.max(4,Math.round((v/max)*100));
+      const pct=Math.round((v/max)*88);
       return `<div class="ov-ask-chart-bar tone-${tone}" style="height:${pct}%">
         <span class="ov-ask-chart-tip">${tMonthsS()[m]} · ${fmt(v)}</span>
       </div>`;
     }).join('');
-    const labels=series.map((_,i)=>{
-      const m=p.from+i;
+    const labels=trimmed.map((_,i)=>{
+      const m=p.from+offset+i;
       return `<div class="ov-ask-chart-label">${tMonthsS()[m]}</div>`;
     }).join('');
     return `<div class="ov-ask-chart" style="--cols:${n}">
@@ -13089,6 +13261,98 @@ function obGoToStep(n){
 }
 function obNextStep(){obGoToStep(2);}
 function obPrevStep(){obGoToStep(1);}
+
+// Step 2 → Step 3: validate name first, then proceed
+function obGoToStep3(){
+  const nameInput=document.getElementById('ob-name');
+  const name=nameInput.value.trim();
+  if(!name){
+    nameInput.classList.add('finput-error');
+    nameInput.focus();
+    nameInput.addEventListener('input',function handler(){
+      nameInput.classList.remove('finput-error');
+      nameInput.removeEventListener('input',handler);
+    });
+    return;
+  }
+  // applyStaticTranslations handles step 3 labels via data-t / data-t-html
+  obGoToStep(3);
+}
+
+// Load sample data then finish onboarding
+function obLoadSampleAndFinish(){
+  // Commit profile first
+  const nameInput=document.getElementById('ob-name');
+  CONFIG.name=nameInput.value.trim()||'Alex';
+  CONFIG.currency=obCur;
+  if(!CONFIG.period)CONFIG.period='1-31';
+  CONFIG.onboarded=true;
+  CONFIG.onboardingVersion=ONBOARDING_VERSION;
+  if(obPhotoData)CONFIG.photo=obPhotoData;
+  obPhotoData=null;obIsReview=false;
+  // Inject sample data
+  (function(){
+    const now=new Date();
+    const year=now.getFullYear();
+    const month=now.getMonth();
+    function mK(m,y){return y+'-'+String(m).padStart(2,'0');}
+    function isoWK(date){
+      const d=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));
+      const day=d.getUTCDay()||7;d.setUTCDate(d.getUTCDate()+4-day);
+      const ys=new Date(Date.UTC(d.getUTCFullYear(),0,1));
+      const w=Math.ceil((((d-ys)/86400000)+1)/7);
+      return d.getUTCFullYear()+'-W'+String(w).padStart(2,'0');
+    }
+    function getM(offset){let m=month-offset,y=year;while(m<0){m+=12;y--;}return{m:m+1,y};}
+    function d(m,y,day){return y+'-'+String(m).padStart(2,'0')+'-'+String(Math.min(day,28)).padStart(2,'0');}
+    const sample={};
+    // Income
+    const incSets=[[{id:'inc-s-0-1',desc:'Monthly salary',amt:3800,cat:'💼 Employment',date:d(getM(0).m,getM(0).y,1)},{id:'inc-s-0-2',desc:'Freelance project',amt:650,cat:'💻 Freelance',date:d(getM(0).m,getM(0).y,15)}],[{id:'inc-s-1-1',desc:'Monthly salary',amt:3800,cat:'💼 Employment',date:d(getM(1).m,getM(1).y,1)},{id:'inc-s-1-2',desc:'Freelance project',amt:480,cat:'💻 Freelance',date:d(getM(1).m,getM(1).y,15)},{id:'inc-s-1-3',desc:'Tax refund',amt:340,cat:'🏛️ Government support',date:d(getM(1).m,getM(1).y,22)}],[{id:'inc-s-2-1',desc:'Monthly salary',amt:3800,cat:'💼 Employment',date:d(getM(2).m,getM(2).y,1)},{id:'inc-s-2-2',desc:'Freelance project',amt:720,cat:'💻 Freelance',date:d(getM(2).m,getM(2).y,15)}]];
+    const gasSets=[[{id:'gas-s-0-1',desc:'Rent',amt:1200,cat:'🏠 Rent',date:d(getM(0).m,getM(0).y,1)},{id:'gas-s-0-2',desc:'Electricity',amt:68,cat:'💡 Electricity',date:d(getM(0).m,getM(0).y,3)},{id:'gas-s-0-3',desc:'Internet',amt:35,cat:'📡 Internet',date:d(getM(0).m,getM(0).y,3)},{id:'gas-s-0-4',desc:'Supermarket',amt:180,cat:'🛒 Supermarket',date:d(getM(0).m,getM(0).y,5)},{id:'gas-s-0-5',desc:'Dinner out',amt:62,cat:'🍽️ Restaurants',date:d(getM(0).m,getM(0).y,8)},{id:'gas-s-0-6',desc:'Uber',amt:14,cat:'🚕 Taxi / Uber',date:d(getM(0).m,getM(0).y,9)},{id:'gas-s-0-7',desc:'Supermarket',amt:95,cat:'🛒 Supermarket',date:d(getM(0).m,getM(0).y,13)},{id:'gas-s-0-8',desc:'Gym membership',amt:45,cat:'💪 Gym',date:d(getM(0).m,getM(0).y,14)},{id:'gas-s-0-9',desc:'Netflix',amt:18,cat:'📺 Streaming',date:d(getM(0).m,getM(0).y,15)},{id:'gas-s-0-10',desc:'Coffee shop runs',amt:38,cat:'☕ Cafés',date:d(getM(0).m,getM(0).y,17)},{id:'gas-s-0-11',desc:'Work clothes',amt:85,cat:'👕 Clothing & shoes',date:d(getM(0).m,getM(0).y,19)},{id:'gas-s-0-12',desc:'Supermarket',amt:110,cat:'🛒 Supermarket',date:d(getM(0).m,getM(0).y,22)},{id:'gas-s-0-13',desc:'Public transport pass',amt:72,cat:'🚇 Public transport',date:d(getM(0).m,getM(0).y,23)},{id:'gas-s-0-14',desc:'Therapy session',amt:80,cat:'🧘 Therapy',date:d(getM(0).m,getM(0).y,25)},{id:'gas-s-0-15',desc:'Birthday gift',amt:45,cat:'🎁 Gifts',date:d(getM(0).m,getM(0).y,27)}],[{id:'gas-s-1-1',desc:'Rent',amt:1200,cat:'🏠 Rent',date:d(getM(1).m,getM(1).y,1)},{id:'gas-s-1-2',desc:'Electricity',amt:74,cat:'💡 Electricity',date:d(getM(1).m,getM(1).y,3)},{id:'gas-s-1-3',desc:'Internet',amt:35,cat:'📡 Internet',date:d(getM(1).m,getM(1).y,3)},{id:'gas-s-1-4',desc:'Supermarket',amt:165,cat:'🛒 Supermarket',date:d(getM(1).m,getM(1).y,6)},{id:'gas-s-1-5',desc:'Dinner out',amt:88,cat:'🍽️ Restaurants',date:d(getM(1).m,getM(1).y,7)},{id:'gas-s-1-6',desc:'Flights for holiday',amt:310,cat:'✈️ Flights',date:d(getM(1).m,getM(1).y,9)},{id:'gas-s-1-7',desc:'Gym membership',amt:45,cat:'💪 Gym',date:d(getM(1).m,getM(1).y,14)},{id:'gas-s-1-8',desc:'Netflix',amt:18,cat:'📺 Streaming',date:d(getM(1).m,getM(1).y,15)},{id:'gas-s-1-9',desc:'Supermarket',amt:140,cat:'🛒 Supermarket',date:d(getM(1).m,getM(1).y,16)},{id:'gas-s-1-10',desc:'Coffee shop',amt:42,cat:'☕ Cafés',date:d(getM(1).m,getM(1).y,18)},{id:'gas-s-1-11',desc:'Doctor visit',amt:60,cat:'🏥 Doctor',date:d(getM(1).m,getM(1).y,20)},{id:'gas-s-1-12',desc:'Pharmacy',amt:28,cat:'💊 Medication',date:d(getM(1).m,getM(1).y,21)},{id:'gas-s-1-13',desc:'Public transport pass',amt:72,cat:'🚇 Public transport',date:d(getM(1).m,getM(1).y,23)},{id:'gas-s-1-14',desc:'Online course',amt:129,cat:'🎓 Education',date:d(getM(1).m,getM(1).y,25)},{id:'gas-s-1-15',desc:'Spotify',amt:10,cat:'📺 Streaming',date:d(getM(1).m,getM(1).y,28)}],[{id:'gas-s-2-1',desc:'Rent',amt:1200,cat:'🏠 Rent',date:d(getM(2).m,getM(2).y,1)},{id:'gas-s-2-2',desc:'Electricity',amt:58,cat:'💡 Electricity',date:d(getM(2).m,getM(2).y,3)},{id:'gas-s-2-3',desc:'Internet',amt:35,cat:'📡 Internet',date:d(getM(2).m,getM(2).y,3)},{id:'gas-s-2-4',desc:'Supermarket',amt:195,cat:'🛒 Supermarket',date:d(getM(2).m,getM(2).y,5)},{id:'gas-s-2-5',desc:'Dinner out',amt:54,cat:'🍽️ Restaurants',date:d(getM(2).m,getM(2).y,8)},{id:'gas-s-2-6',desc:'Pub night',amt:48,cat:'🍷 Alcohol & drinks',date:d(getM(2).m,getM(2).y,9)},{id:'gas-s-2-7',desc:'Gym membership',amt:45,cat:'💪 Gym',date:d(getM(2).m,getM(2).y,14)},{id:'gas-s-2-8',desc:'Netflix',amt:18,cat:'📺 Streaming',date:d(getM(2).m,getM(2).y,15)},{id:'gas-s-2-9',desc:'Supermarket',amt:125,cat:'🛒 Supermarket',date:d(getM(2).m,getM(2).y,17)},{id:'gas-s-2-10',desc:'Uber Eats delivery',amt:32,cat:'🍕 Delivery',date:d(getM(2).m,getM(2).y,19)},{id:'gas-s-2-11',desc:'Books',amt:28,cat:'📚 Books',date:d(getM(2).m,getM(2).y,20)},{id:'gas-s-2-12',desc:'Public transport pass',amt:72,cat:'🚇 Public transport',date:d(getM(2).m,getM(2).y,23)},{id:'gas-s-2-13',desc:'Clothing impulse buy',amt:120,cat:'👕 Clothing & shoes',date:d(getM(2).m,getM(2).y,24)},{id:'gas-s-2-14',desc:'Therapy session',amt:80,cat:'🧘 Therapy',date:d(getM(2).m,getM(2).y,26)}]];
+    const ahoSets=[
+      [{id:'aho-s-0-1',desc:'Emergency fund',amt:300,cat:'🛡️ Emergency fund',meta:0,metaAnnual:3600,date:d(getM(0).m,getM(0).y,2)},{id:'aho-s-0-2',desc:'Holiday fund',amt:150,cat:'✈️ Holiday savings',meta:0,metaAnnual:1800,date:d(getM(0).m,getM(0).y,15)}],
+      [{id:'aho-s-1-1',desc:'Emergency fund',amt:300,cat:'🛡️ Emergency fund',meta:0,metaAnnual:3600,date:d(getM(1).m,getM(1).y,2)},{id:'aho-s-1-2',desc:'House deposit',amt:200,cat:'🏠 House deposit',meta:0,metaAnnual:5000,date:d(getM(1).m,getM(1).y,20)}],
+      [{id:'aho-s-2-1',desc:'Emergency fund',amt:250,cat:'🛡️ Emergency fund',meta:0,metaAnnual:3600,date:d(getM(2).m,getM(2).y,2)},{id:'aho-s-2-2',desc:'Holiday fund',amt:150,cat:'✈️ Holiday savings',meta:0,metaAnnual:1800,date:d(getM(2).m,getM(2).y,15)}]
+    ];
+    const invSets=[
+      [{id:'inv-s-0-1',desc:'Vanguard S&P 500 ETF',amt:200,cat:'📈 ETFs',meta:0,metaAnnual:2400,date:d(getM(0).m,getM(0).y,5)}],
+      [{id:'inv-s-1-1',desc:'Vanguard S&P 500 ETF',amt:200,cat:'📈 ETFs',meta:0,metaAnnual:2400,date:d(getM(1).m,getM(1).y,5)},{id:'inv-s-1-2',desc:'Bitcoin',amt:50,cat:'🪙 Crypto',meta:0,metaAnnual:600,date:d(getM(1).m,getM(1).y,18)}],
+      [{id:'inv-s-2-1',desc:'Vanguard S&P 500 ETF',amt:200,cat:'📈 ETFs',meta:0,metaAnnual:2400,date:d(getM(2).m,getM(2).y,5)},{id:'inv-s-2-2',desc:'Bitcoin',amt:50,cat:'🪙 Crypto',meta:0,metaAnnual:600,date:d(getM(2).m,getM(2).y,18)}]
+    ];
+    const deuSets=[[{id:'deu-s-0-1',desc:'Student loan monthly payment',amt:180,cat:'🎓 Student loan',date:d(getM(0).m,getM(0).y,1)},{id:'deu-s-0-2',desc:'Credit card balance',amt:120,cat:'💳 Credit card',date:d(getM(0).m,getM(0).y,28)}],[{id:'deu-s-1-1',desc:'Student loan monthly payment',amt:180,cat:'🎓 Student loan',date:d(getM(1).m,getM(1).y,1)},{id:'deu-s-1-2',desc:'Credit card balance',amt:95,cat:'💳 Credit card',date:d(getM(1).m,getM(1).y,28)}],[{id:'deu-s-2-1',desc:'Student loan monthly payment',amt:180,cat:'🎓 Student loan',date:d(getM(2).m,getM(2).y,1)},{id:'deu-s-2-2',desc:'Credit card balance',amt:150,cat:'💳 Credit card',date:d(getM(2).m,getM(2).y,28)}]];
+    [0,1,2].forEach(function(i){
+      const info=getM(i);const k=mK(info.m,info.y);
+      sample[k]={income:{entries:incSets[i]},gastos:gasSets[i],ahorro:ahoSets[i],inversion:invSets[i],deudas:deuSets[i]};
+    });
+    // Diary: 12 weeks
+    sample._diary={};
+    const diaryData=[
+      {areaId:7,answers:{closed:'yes',chips:['With pride'],open:"I skipped buying lunch out every day this week and it felt great."},reflection:{q1:'The habit of checking my account daily is sticking.',q2:'How little I actually missed the takeaways.',q3:'Whether I can keep the streak going.'},freetext:'Feeling more in control than I have in months. Small wins matter.'},
+      {areaId:3,answers:{closed:'yes',chips:['Stress'],open:"Bought new trainers after a rough Thursday at work. Knew it even then."},reflection:{q1:'Stress triggers spending for me — work stress especially.',q2:'I spent £85 and felt guilty immediately.',q3:'The emotion that comes right before I open Amazon.'},freetext:"Work has been intense. Need to find outlets that don't cost money."},
+      {areaId:2,answers:{closed:2,chips:['A mix of both'],open:"Thought about the flight purchase a lot. But it was planned so I'm ok with it."},reflection:{q1:'I plan big purchases but still obsess over them after.',q2:'',q3:''},freetext:''},
+      {areaId:4,answers:{closed:'yes',chips:['Yes, clearly'],open:'Invested my usual £200 into the ETF. That always feels right.'},reflection:{q1:'Consistency in investing feels like identity now.',q2:'How aligned it feels to just click invest without overthinking.',q3:'What one unnecessary subscription I could cancel.'},freetext:"Reading about index investing again. Morgan Housel's podcast episode about boring wins."},
+      {areaId:1,answers:{closed:'yes',chips:['Anxiety'],open:'Saw a colleague buy a house. Felt behind.'},reflection:{q1:'Comparison is my biggest trigger — especially around property.',q2:'I actually have decent savings for my situation.',q3:'Whether this feeling passes on its own.'},freetext:'Property prices in this city are insane. I need to remember my own timeline.'},
+      {areaId:8,answers:{closed:'no',chips:[],open:''},reflection:{q1:'',q2:'',q3:''},freetext:'Good week. Checked balances twice, paid the credit card on time.'},
+      {areaId:5,answers:{closed:'yes',chips:['One or two'],open:"Held off buying something I wanted because I felt money was tight — it wasn't really."},reflection:{q1:"Scarcity mindset shows up even when I'm objectively fine.",q2:'I have more financial cushion than I feel I do.',q3:'The gap between actual numbers and how I feel about them.'},freetext:'That fear of running out is deep-seated. Need to look at the actual numbers more often.'},
+      {areaId:7,answers:{closed:'yes',chips:['With frustration'],open:'Skipped a weekend trip with friends to save. Worth it but annoying.'},reflection:{q1:"Delayed gratification is hard when it's social.",q2:"I didn't resent it as much on Sunday.",q3:'How to balance saving and not missing out.'},freetext:''},
+      {areaId:3,answers:{closed:'no',chips:[],open:'Nothing impulsive. Good week for that.'},reflection:{q1:'When work is calm, spending is calm.',q2:'',q3:''},freetext:'Cooked at home four times. Proud of that.'},
+      {areaId:6,answers:{closed:'yes',chips:['Good but guilty'],open:"Bought a nice jacket — felt expensive but also like a treat I earned."},reflection:{q1:'I use clothes to reward myself.',q2:'I felt guilty despite being able to afford it.',q3:'Where that guilt comes from — family stuff probably.'},freetext:'The jacket is great though.'},
+      {areaId:2,answers:{closed:3,chips:['Repetitive worrying'],open:"All week thinking about whether I'm saving enough."},reflection:{q1:'Anxiety about the future comes in waves.',q2:'That even on good income months I still worry.',q3:'If the worry is useful or just noise.'},freetext:'Talked to a friend about money for the first time. It helped.'},
+      {areaId:4,answers:{closed:'yes',chips:['None'],open:'Donated to a cause I care about. Felt completely aligned.'},reflection:{q1:'Giving actually makes me feel richer somehow.',q2:'How rarely I do it despite wanting to.',q3:'Setting a monthly donation amount.'},freetext:'Small donation but it felt meaningful. Will do it regularly.'}
+    ];
+    for(var i=0;i<diaryData.length;i++){
+      const dt=new Date(now);dt.setDate(dt.getDate()-i*7);
+      const wk=isoWK(dt);
+      sample._diary[wk]=Object.assign({},diaryData[i],{updatedAt:Date.now()-i*7*24*3600*1000});
+    }
+    // Merge into DB (preserve _groups if already set)
+    Object.keys(sample).forEach(function(k){DB[k]=sample[k];});
+  })();
+  persist();
+  document.getElementById('onboarding').style.display='none';
+  obGoToStep(1);
+  updateProfileBtn();initMonths();render();
+}
 
 // Language toggle inside the onboarding (top-right of ob-box).
 // Persists via setLang() and updates the visual on/off state of both buttons.
